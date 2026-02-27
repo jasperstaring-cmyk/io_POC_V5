@@ -36,10 +36,11 @@ function SelectionButton({ icon, label, onClick }) {
 }
 
 /* ═══ Main LoginPage component ═════════════════════════════════════════ */
-export default function LoginModal({ onClose, onGoRegister, onLoginSuccess, onGoWhitelist }) {
+export default function LoginModal({ onClose, onGoRegister, onLoginSuccess, onGoWhitelist, initialEmail }) {
   const { t } = useLang()
-  const [step, setStep]         = useState("email")
-  const [email, setEmail]       = useState("")
+  const hasInitialEmail = !!(initialEmail)
+  const [step, setStep]         = useState(hasInitialEmail ? "password" : "email")
+  const [email, setEmail]       = useState(initialEmail || "")
   const [password, setPassword] = useState("")
 
   const companyName = getCompanyNameFromEmail(email)

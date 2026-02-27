@@ -100,7 +100,7 @@ export default function EmailGate({ onRoute, onBack, onGoLogin }) {
                 {t("pf_existing_body")}
               </div>
               <div style={{ display:"flex", flexDirection:"column", gap:"0.625rem", marginTop:"1.25rem" }}>
-                <button className="btn-primary btn-full" onClick={onGoLogin}>{t("pf_existing_login")}</button>
+                <button className="btn-primary btn-full" onClick={() => onGoLogin(email)}>{t("pf_existing_login")}</button>
                 <button className="btn-secondary btn-full" onClick={() => setStep("email")}>{t("pf_existing_other")}</button>
               </div>
             </>

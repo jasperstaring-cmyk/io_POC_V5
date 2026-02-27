@@ -164,7 +164,9 @@ export default function App() {
     setView("onboarding")
   }
 
-  function handleGoLogin() { setModal(null); setView("login") }
+  const [loginEmail, setLoginEmail] = useState("")
+
+  function handleGoLogin(email) { setModal(null); setLoginEmail(email || ""); setView("login") }
 
   function handleSkipToSite() {
     setLoggedIn(true)
@@ -231,13 +233,13 @@ export default function App() {
           if (id === "enterprise") setView("enterprise")
           else if (id === "business_intl") setView("bizintl")
           else setView("business")
-        }} onSwitchToPersonal={() => setView("plans")} onBack={() => profileData ? setView("profileintent") : gateEmail ? setView("emailgate") : setView("choice")} />
+        }} onSwitchToPersonal={() => setView("plans")} onBack={() => businessContext ? setView("business") : profileData ? setView("profileintent") : gateEmail ? setView("emailgate") : setView("choice")} />
       )}
       {view === "personal" && (
         <PersonalFlow selectedPlan={selectedPlan} onComplete={handleRegComplete} onSkipToSite={handleSkipToSite} onBack={() => setView("plans")} onGoLogin={handleGoLogin} onGoWhitelist={handleGoWhitelist} gateEmail={gateEmail} profileData={profileData} />
       )}
       {view === "business" && (
-        <BusinessFlow onComplete={() => handleRegComplete(true)} onSkipToSite={handleSkipToSite} onBack={() => profileData ? setView("profileintent") : gateEmail ? setView("emailgate") : setView("bizplans")} onGoLogin={handleGoLogin} onGoEnterprise={handleGoEnterprise} gateEmail={gateEmail} profileData={profileData} onGoIntl={(ctx) => { setBusinessContext(ctx); setView("bizintl") }} />
+        <BusinessFlow onComplete={() => handleRegComplete(true)} onSkipToSite={handleSkipToSite} onBack={() => profileData ? setView("profileintent") : gateEmail ? setView("emailgate") : setView("bizplans")} onGoLogin={handleGoLogin} onGoEnterprise={handleGoEnterprise} gateEmail={gateEmail} profileData={profileData} onGoIntl={(ctx) => { setBusinessContext(ctx); setView("bizplans") }} />
       )}
       {view === "bizintl" && (
         <BusinessInternationalFlow onComplete={() => handleRegComplete(true)} onSkipToSite={handleSkipToSite} onBack={() => profileData ? setView("business") : setView("bizplans")} onGoEnterprise={handleGoEnterprise} gateEmail={gateEmail} profileData={profileData} businessContext={businessContext} />
@@ -290,7 +292,7 @@ export default function App() {
         />
       )}
       {view === "login" && (
-        <LoginModal onClose={() => setView("article")} onGoRegister={() => setView("emailgate")} onLoginSuccess={handleLoginSuccess} onGoWhitelist={handleGoWhitelist} />
+        <LoginModal onClose={() => setView("article")} onGoRegister={() => setView("emailgate")} onLoginSuccess={handleLoginSuccess} onGoWhitelist={handleGoWhitelist} initialEmail={loginEmail} />
       )}
     </>
   )
