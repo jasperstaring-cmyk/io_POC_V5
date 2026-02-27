@@ -2,14 +2,28 @@
 const PRIVATE_DOMAINS    = ["gmail.com","hotmail.com","yahoo.com","outlook.com","icloud.com","live.com","me.com","hotmail.nl","ziggo.nl","kpnmail.nl"]
 const GENERIC_PREFIXES   = ["info","team","admin","service","subscriptions","contact","support","sales","hello","noreply","no-reply","office","mail","post","help","reception","secretariat","redactie","bestuur","algemeen"]
 const ENTERPRISE_DOMAINS = ["abnamro.com"]
-const EXISTING_ACCOUNTS  = ["demo@aegon.com"]
+const EXISTING_ACCOUNTS  = ["demo@aegon.com", "demo@trial.com"]
+
+// Domains/prefixes that had a trial in the past 2 years (in production: backend lookup)
+const TRIAL_BLOCKED_PREFIXES = ["trial"]
+const TRIAL_BLOCKED_DOMAINS  = ["trial.com"]
+
+/**
+ * Checks if an email belongs to an organisation that had a recent trial.
+ * In production this would be a backend API call.
+ */
+export function hadRecentTrial(email) {
+  if (!email || !email.includes("@")) return false
+  const [prefix, domain] = email.toLowerCase().split("@")
+  return TRIAL_BLOCKED_PREFIXES.includes(prefix) || TRIAL_BLOCKED_DOMAINS.includes(domain)
+}
 
 // Domain → company name for SSO display
 const COMPANY_NAMES = { "abnamro.com":"ABN AMRO" }
 
 const PRIVATE_DOMAINS_LOGIN = ["gmail.com","hotmail.com","yahoo.com","outlook.com","icloud.com","live.com","me.com"]
 const SSO_DOMAINS           = ["abnamro.com"]
-const KNOWN_ACCOUNTS_LOGIN  = ["demo@aegon.com"]
+const KNOWN_ACCOUNTS_LOGIN  = ["demo@aegon.com", "demo@trial.com"]
 
 // SSO domain → company name
 const SSO_COMPANY_NAMES = { "abnamro.com":"ABN AMRO" }
@@ -56,7 +70,7 @@ export function getWhitelistInfo(email) {
 
 /**
  * Classifies an email for the registration flow.
- * Returns: "generic" | "private" | "existing" | "enterprise" | "whitelist" | "new" | "invalid"
+ * Returns: "generic" | "private" | "existing" | "enterprise" | "whitelist" | "trial_blocked" | "new" | "invalid"
  */
 export function classifyEmailForReg(email) {
   if (!email || !email.includes("@")) return "invalid"
@@ -68,6 +82,7 @@ export function classifyEmailForReg(email) {
   if (ENTERPRISE_DOMAINS.includes(domain)) return "enterprise"
   if (WHITELIST_DOMAINS.includes(domain)) return "whitelist"
   if (EXISTING_ACCOUNTS.includes(email.toLowerCase())) return "existing"
+  if (hadRecentTrial(email)) return "trial_blocked"
   return "new"
 }
 

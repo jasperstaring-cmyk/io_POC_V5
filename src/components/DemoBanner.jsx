@@ -489,7 +489,8 @@ export default function DemoBanner() {
     { email: "new@gmail.com",       scenarios: "Login → private email warning · Register → private email warning" },
     { email: "info@company.com",    scenarios: "Register → generic address rejected" },
     { email: "user@unknown.com",    scenarios: "Login → no account found" },
-    { email: "trial@company.com",   scenarios: "Business reg. → 2-year block → paid plans" },
+    { email: "trial@company.com",   scenarios: "New user → 2-year block → profile → paid plans" },
+    { email: "demo@trial.com",     scenarios: "Existing user → login → Account → upgrade → trial block → paid plans" },
     { email: "colleague@aegon.com", scenarios: "Invited user → profile-only registration (use deep link or invite from Account)" },
   ]
 

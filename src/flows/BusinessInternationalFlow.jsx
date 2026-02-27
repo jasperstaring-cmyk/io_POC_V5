@@ -37,16 +37,20 @@ function getSidebarMeta(size, segId, xlCount, t, tBizIntl) {
 }
 
 /* ─── Component ────────────────────────────────────────────────────────── */
-export default function BusinessInternationalFlow({ onComplete, onSkipToSite, onBack, onGoEnterprise }) {
+export default function BusinessInternationalFlow({ onComplete, onSkipToSite, onBack, onGoEnterprise, gateEmail, profileData, businessContext }) {
   const { t, tSeg, tType, tBizIntl } = useLang()
-  const [step, setStep]             = useState("email")
-  const [email, setEmail]           = useState("")
-  const [firstName, setFirstName]   = useState("")
-  const [lastName, setLastName]     = useState("")
-  const [jobRole, setJobRole]       = useState("")
-  const [password, setPassword]     = useState("")
-  const [segment, setSegment]       = useState(null)
-  const [orgType, setOrgType]       = useState(null)
+  const hasProfile = !!(profileData)
+  const hasContext = !!(businessContext?.segment)
+  // Determine start step: skip email+profile if profileData, skip segment+type if businessContext
+  const initialStep = hasContext ? "size_picker" : hasProfile ? "segment" : gateEmail ? "profile" : "email"
+  const [step, setStep]             = useState(initialStep)
+  const [email, setEmail]           = useState(profileData?.email || gateEmail || "")
+  const [firstName, setFirstName]   = useState(profileData?.firstName || "")
+  const [lastName, setLastName]     = useState(profileData?.lastName || "")
+  const [jobRole, setJobRole]       = useState(profileData?.jobRole || "")
+  const [password, setPassword]     = useState(profileData?.password || "")
+  const [segment, setSegment]       = useState(businessContext?.segment || null)
+  const [orgType, setOrgType]       = useState(businessContext?.orgType || null)
   const [chosenSize, setChosenSize] = useState(null)
   const [xlUserCount, setXlUserCount] = useState("")
   const [company, setCompany]       = useState({ kvk:"", name:"", street:"", number:"", addition:"", zip:"", city:"", country:"NL", vat:"" })
@@ -205,7 +209,7 @@ export default function BusinessInternationalFlow({ onComplete, onSkipToSite, on
               {segment && !hasDiscount(segment.id) && (
                 <div className="alert alert-info" style={{ marginTop:"1rem", fontSize:"0.85rem" }}>{t("bi_no_discount_info")}</div>
               )}
-              <div className="reg-nav-bar"><BackButton onClick={() => setStep("profile")} /><button className="btn-green btn-full" onClick={handleSegmentNext} disabled={!segment}>{t("bf_next")}</button></div>
+              <div className="reg-nav-bar"><BackButton onClick={() => hasProfile ? onBack() : setStep("profile")} /><button className="btn-green btn-full" onClick={handleSegmentNext} disabled={!segment}>{t("bf_next")}</button></div>
             </>
           )}
 
@@ -296,7 +300,7 @@ export default function BusinessInternationalFlow({ onComplete, onSkipToSite, on
                 )
               })}
               <div className="reg-nav-bar" style={{ marginTop:"1rem" }}>
-                <BackButton onClick={() => setStep(selectedSegment?.types?.length > 0 ? "type" : "segment")} />
+                <BackButton onClick={() => hasContext ? onBack() : setStep(selectedSegment?.types?.length > 0 ? "type" : "segment")} />
                 <button className="btn-green btn-full" onClick={() => setStep("company")} disabled={!chosenSize || (chosenSize.id === "XL" && (!xlUserCount || parseInt(xlUserCount) < 16))}>{t("bf_further")}</button>
               </div>
             </>

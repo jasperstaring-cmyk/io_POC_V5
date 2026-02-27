@@ -11,7 +11,7 @@ import { useLang } from '../LanguageContext.jsx'
  *
  * For private emails (personal_direct), this component skips intent and goes straight to onComplete("personal").
  */
-export default function ProfileIntent({ email, isPrivate, onComplete, onBack }) {
+export default function ProfileIntent({ email, isPrivate, forceBusinessPaid, onComplete, onBack }) {
   const { t } = useLang()
   const [step, setStep]         = useState("profile")
   const [firstName, setFirstName] = useState("")
@@ -26,6 +26,9 @@ export default function ProfileIntent({ email, isPrivate, onComplete, onBack }) 
     if (isPrivate) {
       // Private emails skip intent, go straight to personal
       onComplete("personal", profileData)
+    } else if (forceBusinessPaid) {
+      // Trial-blocked emails skip intent, go straight to business (paid)
+      onComplete("business", profileData)
     } else {
       setStep("intent")
     }

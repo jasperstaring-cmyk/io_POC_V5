@@ -312,7 +312,7 @@ export default function PersonalFlow({ selectedPlan, onComplete, onSkipToSite, o
                 </div>
                 <button className="btn-red btn-full" type="submit">{t("pf_payment_cta")}</button>
               </form>
-              <button className="btn-secondary btn-full" style={{ marginTop:"0.75rem" }} onClick={() => setStep("profile")}>{t("pf_payment_back")}</button>
+              <button className="btn-secondary btn-full" style={{ marginTop:"0.75rem" }} onClick={() => setStep("confirm")}>{t("pf_payment_back")}</button>
             </>
           )}
 

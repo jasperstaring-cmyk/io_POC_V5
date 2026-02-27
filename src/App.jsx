@@ -39,6 +39,8 @@ export default function App() {
   const [gateEmail, setGateEmail]             = useState(null)
   const [profileData, setProfileData]         = useState(null)   // { firstName, lastName, jobRole, password, email }
   const [isPrivateEmail, setIsPrivateEmail]   = useState(false)
+  const [forceBusinessPaid, setForceBusinessPaid] = useState(false)
+  const [businessContext, setBusinessContext]  = useState(null)   // { segment, orgType } — passed from BusinessFlow to Intl
 
   const { setLang } = useLang()
 
@@ -52,6 +54,12 @@ export default function App() {
     } else if (destination === "profile") {
       // New business email → profile first, then intent
       setIsPrivateEmail(false)
+      setForceBusinessPaid(false)
+      setView("profileintent")
+    } else if (destination === "business_paid") {
+      // Trial-blocked email → profile first, then straight to business (paid, no intent)
+      setIsPrivateEmail(false)
+      setForceBusinessPaid(true)
       setView("profileintent")
     } else if (destination === "personal_direct") {
       // Private email → profile first, then straight to personal (no intent)
@@ -124,6 +132,14 @@ export default function App() {
     if (domain === "abnamro.com") setActivePlanType("enterprise")
     else if (domain === "aegon.com") setActivePlanType("business")
     else setActivePlanType("freemium")
+  }
+
+  function handleUpgrade() {
+    // Build profileData from current logged-in user
+    const pd = { firstName: userData.firstName, lastName: userData.lastName, jobRole: userData.jobRole || "portfolio_manager", password: "********", email: userEmail }
+    setProfileData(pd)
+    setGateEmail(userEmail)
+    setView("business")
   }
 
   function handleLogout() {
@@ -204,7 +220,7 @@ export default function App() {
         <EmailGate onRoute={handleEmailGateRoute} onBack={() => setView("article")} onGoLogin={handleGoLogin} />
       )}
       {view === "profileintent" && (
-        <ProfileIntent email={gateEmail} isPrivate={isPrivateEmail} onComplete={handleProfileIntentComplete} onBack={() => setView("emailgate")} />
+        <ProfileIntent email={gateEmail} isPrivate={isPrivateEmail} forceBusinessPaid={forceBusinessPaid} onComplete={handleProfileIntentComplete} onBack={() => setView("emailgate")} />
       )}
       {view === "plans" && (
         <PlanPickerPage onSelectPlan={handleSelectPlan} onSwitchToBusiness={() => setView("bizplans")} onBack={() => profileData ? setView("profileintent") : gateEmail ? setView("emailgate") : setView("choice")} />
@@ -221,10 +237,10 @@ export default function App() {
         <PersonalFlow selectedPlan={selectedPlan} onComplete={handleRegComplete} onSkipToSite={handleSkipToSite} onBack={() => setView("plans")} onGoLogin={handleGoLogin} onGoWhitelist={handleGoWhitelist} gateEmail={gateEmail} profileData={profileData} />
       )}
       {view === "business" && (
-        <BusinessFlow onComplete={() => handleRegComplete(true)} onSkipToSite={handleSkipToSite} onBack={() => profileData ? setView("profileintent") : gateEmail ? setView("emailgate") : setView("bizplans")} onGoLogin={handleGoLogin} onGoEnterprise={handleGoEnterprise} gateEmail={gateEmail} profileData={profileData} onGoIntl={() => setView("bizintl")} />
+        <BusinessFlow onComplete={() => handleRegComplete(true)} onSkipToSite={handleSkipToSite} onBack={() => profileData ? setView("profileintent") : gateEmail ? setView("emailgate") : setView("bizplans")} onGoLogin={handleGoLogin} onGoEnterprise={handleGoEnterprise} gateEmail={gateEmail} profileData={profileData} onGoIntl={(ctx) => { setBusinessContext(ctx); setView("bizintl") }} />
       )}
       {view === "bizintl" && (
-        <BusinessInternationalFlow onComplete={() => handleRegComplete(true)} onSkipToSite={handleSkipToSite} onBack={() => setView("bizplans")} onGoEnterprise={handleGoEnterprise} />
+        <BusinessInternationalFlow onComplete={() => handleRegComplete(true)} onSkipToSite={handleSkipToSite} onBack={() => profileData ? setView("business") : setView("bizplans")} onGoEnterprise={handleGoEnterprise} gateEmail={gateEmail} profileData={profileData} businessContext={businessContext} />
       )}
       {view === "enterprise" && (
         <EnterpriseFlow onComplete={() => setView("article")} onBack={() => setView("bizplans")} />
@@ -259,7 +275,7 @@ export default function App() {
         />
       )}
       {view === "account" && (
-        <AccountPage user={userData} planType={activePlanType} onBack={() => setView("article")} onSimulateInvite={handleSimulateInvite} />
+        <AccountPage user={userData} planType={activePlanType} onBack={() => setView("article")} onSimulateInvite={handleSimulateInvite} onUpgrade={handleUpgrade} />
       )}
       {view === "invited" && (
         <PersonalFlow

@@ -226,7 +226,7 @@ function NewsletterSection() {
 }
 
 // ─── Abonnementen sectie ──────────────────────────────────────────────────────
-function AbonnementenSection({ planType }) {
+function AbonnementenSection({ planType, onUpgrade }) {
   const { t } = useLang()
   const isGratis   = planType === "freemium"
   const isTrial    = planType === "trial"
@@ -293,7 +293,7 @@ function AbonnementenSection({ planType }) {
         <div style={{ flex:1 }}>
           <div style={{ fontFamily:"var(--font-sans)", fontWeight:800, fontSize:"1rem", color:C.navy, marginBottom:"0.375rem", lineHeight:"var(--lh-heading)" }}>{t("acc_upgrade_title")}</div>
           <div style={{ fontFamily:"var(--font-sans)", fontSize:"0.875rem", color:C.gray700, lineHeight:"var(--lh-body)", marginBottom:"1rem" }}>{t("acc_upgrade_body")}</div>
-          <button className="btn-primary" style={{ padding:"0.625rem 1.5rem" }} onClick={() => alert("POC: upgrade flow")}>
+          <button className="btn-primary" style={{ padding:"0.625rem 1.5rem" }} onClick={onUpgrade}>
             {t("acc_upgrade_cta")}
           </button>
         </div>
@@ -384,7 +384,7 @@ const MOCK_USERS = [
 ]
 const MAX_SEATS = 16
 
-function GebruikersSection({ planType, onSimulateInvite }) {
+function GebruikersSection({ planType, onSimulateInvite, onUpgrade }) {
   const { t } = useLang()
   const isBusiness = planType === "business"
   const [users, setUsers]         = useState(MOCK_USERS)
@@ -402,7 +402,7 @@ function GebruikersSection({ planType, onSimulateInvite }) {
             <div style={{ fontFamily:"var(--font-sans)", fontWeight:800, fontSize:"1.125rem", color:C.navy, marginBottom:"0.5rem" }}>{t("acc_upsell_title")}</div>
             <div style={{ fontFamily:"var(--font-sans)", fontSize:"0.9rem", color:C.gray700, lineHeight:"var(--lh-body)", marginBottom:"1.25rem" }}>{t("acc_upsell_body")}</div>
             <div style={{ display:"flex", alignItems:"center", gap:"1rem" }}>
-              <button className="btn-primary" style={{ padding:"0.625rem 1.5rem" }} onClick={() => alert("POC: upgrade naar Business flow")}>
+              <button className="btn-primary" style={{ padding:"0.625rem 1.5rem" }} onClick={onUpgrade}>
                 {t("acc_upsell_cta")}
               </button>
               <span style={{ fontFamily:"var(--font-sans)", fontSize:"0.9rem", color:C.gray500 }}>{t("acc_upsell_from")}</span>
@@ -570,7 +570,7 @@ function GebruikersSection({ planType, onSimulateInvite }) {
 }
 
 // ─── Main AccountPage ─────────────────────────────────────────────────────────
-export default function AccountPage({ user, planType, onBack, onSimulateInvite }) {
+export default function AccountPage({ user, planType, onBack, onSimulateInvite, onUpgrade }) {
   const { t } = useLang()
   const [section, setSection]     = useState("account")
   const [currentUser, setCurrentUser] = useState(user)
@@ -593,8 +593,8 @@ export default function AccountPage({ user, planType, onBack, onSimulateInvite }
           <div style={{ flex:1, minWidth:0 }}>
             {section === "account"      && <AccountSection user={currentUser} onUpdate={setCurrentUser} />}
             {section === "nieuwsbrief"  && <NewsletterSection />}
-            {section === "abonnementen" && <AbonnementenSection planType={planType} />}
-            {section === "gebruikers"   && <GebruikersSection planType={planType} onSimulateInvite={onSimulateInvite} />}
+            {section === "abonnementen" && <AbonnementenSection planType={planType} onUpgrade={onUpgrade} />}
+            {section === "gebruikers"   && <GebruikersSection planType={planType} onSimulateInvite={onSimulateInvite} onUpgrade={onUpgrade} />}
             {section === "facturatie"   && <FacturatieSection />}
           </div>
         </div>

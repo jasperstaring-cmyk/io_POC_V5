@@ -23,6 +23,7 @@ export default function EmailGate({ onRoute, onBack, onGoLogin }) {
       onRoute("whitelist", email, wlInfo)
       return
     }
+    if (type === "trial_blocked")              { setStep("trial_blocked"); return }
     // type === "new" → go to profile (intent comes after profile)
     onRoute("profile", email)
   }
@@ -36,7 +37,7 @@ export default function EmailGate({ onRoute, onBack, onGoLogin }) {
   return (
     <div className="reg-layout">
       <TopProgressBar total={4} current={0.5} />
-      <AuthNav onBack={onBack} />
+      <AuthNav onBack={step === "email" ? onBack : () => setStep("email")} />
       <div className="reg-container">
         <div className="reg-main">
 
@@ -101,6 +102,29 @@ export default function EmailGate({ onRoute, onBack, onGoLogin }) {
               <div style={{ display:"flex", flexDirection:"column", gap:"0.625rem", marginTop:"1.25rem" }}>
                 <button className="btn-primary btn-full" onClick={onGoLogin}>{t("pf_existing_login")}</button>
                 <button className="btn-secondary btn-full" onClick={() => setStep("email")}>{t("pf_existing_other")}</button>
+              </div>
+            </>
+          )}
+
+          {/* ── Trial blocked ── */}
+          {step === "trial_blocked" && (
+            <>
+              <h2 className="reg-step-title">{t("bf_trial_blocked_title")}</h2>
+              <EmailChip email={email} onEdit={() => setStep("email")} />
+              <div className="alert alert-warn" style={{ marginBottom:"1.25rem" }}>
+                <strong>{t("bf_trial_blocked_alert")}</strong><br/>{t("bf_trial_blocked_body")}
+              </div>
+              <div style={{ background:"rgba(78,213,150,0.08)", border:`1.5px solid rgba(78,213,150,0.4)`, borderRadius:10, padding:"1.25rem 1.5rem", marginBottom:"1.5rem" }}>
+                <div style={{ fontFamily:"var(--font-sans)", fontWeight:800, fontSize:"1.05rem", color:C.navy, marginBottom:"0.5rem" }}>
+                  {t("bf_trial_blocked_avail_title")}
+                </div>
+                <div style={{ fontFamily:"var(--font-sans)", fontSize:"0.875rem", color:C.gray500, lineHeight:"var(--lh-body)" }}>
+                  {t("bf_trial_blocked_avail_body")}
+                </div>
+              </div>
+              <div style={{ display:"flex", flexDirection:"column", gap:"0.625rem" }}>
+                <button className="btn-green btn-full" onClick={() => onRoute("business_paid", email)}>{t("bf_trial_blocked_cta")}</button>
+                <button className="btn-secondary btn-full" onClick={() => setStep("email")}>{t("bf_trial_blocked_other")}</button>
               </div>
             </>
           )}

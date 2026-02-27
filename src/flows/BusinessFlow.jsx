@@ -3,7 +3,7 @@ import { C } from '../tokens.js'
 import { SEGMENTS, JOB_ROLE_CLUSTERS, BUSINESS_SIZES } from '../data.js'
 import { TopProgressBar, RegSidebar, SelectionRow, JobRoleSelector, EmailChip, BackButton, AuthNav, CdpProductLabel } from '../components/shared.jsx'
 import { useLang } from '../LanguageContext.jsx'
-import { classifyEmailForReg, getWhitelistInfo, getCompanyNameFromEmail } from '../utils.js'
+import { classifyEmailForReg, getWhitelistInfo, getCompanyNameFromEmail, hadRecentTrial } from '../utils.js'
 import IOLogo from '../components/IOLogo.jsx'
 
 /* ─── Segment → pricing logic ──────────────────────────────────────────── */
@@ -42,14 +42,12 @@ function getSidebarMeta(segId, isPaid, chosenSize, xlCount, t, tBiz) {
   return { name:"Business", price: t("inline_free"), priceSuffix: t("bf_sidebar_free_trial_suffix"), cta: t("bf_sidebar_free_trial"), features, savings:0 }
 }
 
-/* ─── 2-year trial check (demo): e-mails starting with "trial@" ────── */
-function hadRecentTrial(email) { return email.toLowerCase().startsWith("trial@") }
-
 /* ─── Component ────────────────────────────────────────────────────────── */
 export default function BusinessFlow({ onComplete, onSkipToSite, onBack, onGoLogin, onGoEnterprise, gateEmail, profileData, onGoIntl }) {
   const { t, tSeg, tType, tBiz } = useLang()
   const hasProfile = !!(profileData)
-  const [step, setStep]             = useState(hasProfile ? "segment" : gateEmail ? "profile" : "email")
+  const initialTrialBlocked = hasProfile && hadRecentTrial(profileData.email)
+  const [step, setStep]             = useState(initialTrialBlocked ? "size_picker" : hasProfile ? "segment" : gateEmail ? "profile" : "email")
   const [email, setEmail]           = useState(profileData?.email || gateEmail || "")
   const [firstName, setFirstName]   = useState(profileData?.firstName || "")
   const [lastName, setLastName]     = useState(profileData?.lastName || "")
@@ -60,9 +58,10 @@ export default function BusinessFlow({ onComplete, onSkipToSite, onBack, onGoLog
   const [company, setCompany]       = useState({ kvk:"", name:"", street:"", number:"", addition:"", zip:"", city:"", country:"NL", vat:"" })
   const [inviteEmails, setInviteEmails] = useState(["",""])
   const [agreed, setAgreed]         = useState(false)
-  const [isPaidFlow, setIsPaidFlow] = useState(false)
+  const [isPaidFlow, setIsPaidFlow] = useState(initialTrialBlocked)
   const [chosenSize, setChosenSize] = useState(null)
   const [xlUserCount, setXlUserCount] = useState("")
+  const [returnToOverview, setReturnToOverview] = useState(false)
 
   const STEP_NUM_FREE = { email:1, profile:2, segment:3, type:4, intl_question:5, company:6, overview:7, invite:8, done:9 }
   const STEP_NUM_PAID = { email:1, trial_blocked:1, profile:2, size_picker:3, segment:4, type:5, intl_question:6, company:7, overview:8, payment:9, invite:10, done:11 }
@@ -229,7 +228,7 @@ export default function BusinessFlow({ onComplete, onSkipToSite, onBack, onGoLog
             <>
               <h2 className="reg-step-title">{t("bf_profile_title")}</h2>
               <EmailChip email={email} onEdit={() => { setEmailClass(null); setStep("email") }} />
-              <form autoComplete="off" data-1p-ignore="true" data-lpignore="true" onSubmit={e => { e.preventDefault(); if (!jobRole) return; setStep(isPaidFlow ? "size_picker" : "segment") }}>
+              <form autoComplete="off" data-1p-ignore="true" data-lpignore="true" onSubmit={e => { e.preventDefault(); if (!jobRole) return; if (returnToOverview) { setReturnToOverview(false); setStep("overview") } else { setStep(isPaidFlow ? "size_picker" : "segment") } }}>
                 <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"0 1rem" }}>
                   <div className="input-group"><label className="input-label">{t("pf_firstname")}</label><input className="input-field" type="text" placeholder={t("pf_firstname")} value={firstName} onChange={e => setFirstName(e.target.value)} autoFocus required /></div>
                   <div className="input-group"><label className="input-label">{t("pf_lastname")}</label><input className="input-field" type="text" placeholder={t("pf_lastname")} value={lastName} onChange={e => setLastName(e.target.value)} required /></div>
@@ -268,7 +267,7 @@ export default function BusinessFlow({ onComplete, onSkipToSite, onBack, onGoLog
                 </div>
               </div>
               <div style={{ display:"flex", flexDirection:"column", gap:"0.625rem" }}>
-                <button className="btn-green btn-full" onClick={() => setStep("profile")}>{t("bf_trial_blocked_cta")}</button>
+                <button className="btn-green btn-full" onClick={() => setStep(hasProfile ? "size_picker" : "profile")}>{t("bf_trial_blocked_cta")}</button>
                 <button className="btn-secondary btn-full" onClick={() => { setIsPaidFlow(false); setStep("email") }}>{t("bf_trial_blocked_other")}</button>
               </div>
             </>
@@ -428,7 +427,7 @@ export default function BusinessFlow({ onComplete, onSkipToSite, onBack, onGoLog
                   <div style={{ fontFamily:"var(--font-sans)", fontSize:"0.75rem", color:C.gray500, marginTop:"0.25rem", paddingLeft:"0.125rem" }}>{t("bf_intl_q_no_sub")}</div>
                 </button>
                 <button className="eg-intent-card eg-intent-secondary" style={{ border:`1.5px solid ${C.gray200}` }}
-                  onClick={() => { if (onGoIntl) onGoIntl() }}>
+                  onClick={() => { if (onGoIntl) onGoIntl({ segment, orgType }) }}>
                   <div style={{ display:"flex", alignItems:"center", gap:"0.5rem" }}>
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke={C.navy} strokeWidth="1.75"/><path d="M3 12h18M12 3c2.5 2.5 4 5.5 4 9s-1.5 6.5-4 9c-2.5-2.5-4-5.5-4-9s1.5-6.5 4-9z" stroke={C.navy} strokeWidth="1.5"/></svg>
                     <span style={{ fontFamily:"var(--font-sans)", fontSize:"0.9rem", fontWeight:700, color:C.navy }}>{t("bf_intl_q_yes")}</span>
@@ -521,7 +520,7 @@ export default function BusinessFlow({ onComplete, onSkipToSite, onBack, onGoLog
               <div style={{ border:`1px solid ${C.gray200}`, borderRadius:8, padding:"1.125rem 1.25rem", marginBottom:"0.75rem" }}>
                 <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"0.5rem" }}>
                   <span style={{ fontFamily:"var(--font-sans)", fontSize:"0.7rem", fontWeight:700, letterSpacing:"0.08em", textTransform:"uppercase", color:C.gray500 }}>1. {t("bf_overview_personal")}</span>
-                  <button className="link-btn" style={{ fontSize:"0.8rem" }} onClick={() => setStep("profile")}>{t("bf_overview_edit")}</button>
+                  <button className="link-btn" style={{ fontSize:"0.8rem" }} onClick={() => { setReturnToOverview(true); setStep("profile") }}>{t("bf_overview_edit")}</button>
                 </div>
                 <div style={{ fontFamily:"var(--font-sans)", fontSize:"0.9rem", color:C.navy, lineHeight:1.6 }}>{firstName} {lastName}<br/>{email}<br/>{jobRole ? t(`jr_${jobRole}_name`) : ""}</div>
               </div>
@@ -529,7 +528,7 @@ export default function BusinessFlow({ onComplete, onSkipToSite, onBack, onGoLog
               <div style={{ border:`1px solid ${C.gray200}`, borderRadius:8, padding:"1.125rem 1.25rem", marginBottom:"0.75rem" }}>
                 <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"0.5rem" }}>
                   <span style={{ fontFamily:"var(--font-sans)", fontSize:"0.7rem", fontWeight:700, letterSpacing:"0.08em", textTransform:"uppercase", color:C.gray500 }}>2. {t("bf_overview_org")}</span>
-                  <button className="link-btn" style={{ fontSize:"0.8rem" }} onClick={() => setStep("company")}>{t("bf_overview_edit")}</button>
+                  <button className="link-btn" style={{ fontSize:"0.8rem" }} onClick={() => { setReturnToOverview(true); setStep("company") }}>{t("bf_overview_edit")}</button>
                 </div>
                 <div style={{ fontFamily:"var(--font-sans)", fontSize:"0.9rem", color:C.navy, lineHeight:1.6 }}>
                   {company.name}<br/>{company.street} {company.number}{company.addition ? ` ${company.addition}` : ""}, {company.zip} {company.city}<br/>
