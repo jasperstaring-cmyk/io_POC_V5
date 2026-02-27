@@ -158,6 +158,105 @@ export function JobRoleSelector({ clusters, selectedId, onSelect, t }) {
 }
 
 // ─── CheckItem ────────────────────────────────────────────────────────────────
+
+// ─── SegmentTypeSelector (accordion: segment → type, same pattern as JobRoleSelector) ──
+export function SegmentTypeSelector({ segments, selectedSegment, selectedType, onSelect, tSeg, tType, t }) {
+  const [openSegment, setOpenSegment] = useState(null)
+
+  // Auto-open segment that contains the selected type
+  useEffect(() => {
+    if (selectedSegment && selectedType && !openSegment) {
+      setOpenSegment(selectedSegment.id)
+    }
+  }, [selectedSegment, selectedType])
+
+  function handleSelectType(seg, tp) {
+    onSelect(seg, tp)
+    // Close accordion after selection
+    setTimeout(() => setOpenSegment(null), 150)
+  }
+
+  function toggleSegment(segId) {
+    setOpenSegment(prev => prev === segId ? null : segId)
+  }
+
+  // If both segment and type are selected and accordion is closed, show confirmation
+  if (selectedSegment && selectedType && openSegment === null) {
+    return (
+      <div className="jr-confirmation">
+        <div className="sel-dot checked">
+          <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+            <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </div>
+        <div style={{ flex:1, minWidth:0 }}>
+          <div style={{ fontFamily:"var(--font-sans)", fontSize:"0.7rem", color:C.gray500, marginBottom:"0.125rem" }}>{t("bf_segment_selected")}</div>
+          <div style={{ fontFamily:"var(--font-sans)", fontSize:"0.9rem", fontWeight:700, color:C.navy }}>{tSeg(selectedSegment.id, "name")}</div>
+          <div style={{ fontFamily:"var(--font-sans)", fontSize:"0.75rem", color:C.gray500, lineHeight:1.45, marginTop:"0.125rem" }}>
+            {tType(selectedType.id, "name")}
+          </div>
+        </div>
+        <button
+          onClick={() => { onSelect(null, null); setOpenSegment(null) }}
+          style={{ background:"none", border:"none", cursor:"pointer", fontFamily:"var(--font-sans)", fontSize:"0.8125rem", fontWeight:600, color:C.red, padding:"0.25rem 0.5rem", flexShrink:0 }}
+        >{t("bf_segment_change")}</button>
+      </div>
+    )
+  }
+
+  return (
+    <div className="jr-accordion">
+      {segments.map(seg => {
+        const isOpen = openSegment === seg.id
+        const segDesc = tSeg(seg.id, "desc")
+        return (
+          <div key={seg.id} className="jr-cluster">
+            <button
+              className={`jr-cluster-header${isOpen ? " open" : ""}`}
+              onClick={() => toggleSegment(seg.id)}
+            >
+              <div style={{ flex:1, minWidth:0 }}>
+                <div className="jr-cluster-name">{tSeg(seg.id, "name")}</div>
+                {segDesc && <div className="jr-cluster-desc">{segDesc}</div>}
+              </div>
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style={{ flexShrink:0, transition:"transform 0.2s", transform: isOpen ? "rotate(180deg)" : "none" }}>
+                <path d="M3.5 5.25L7 8.75L10.5 5.25" stroke={C.gray500} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </button>
+            {isOpen && (
+              <div className="jr-cluster-body">
+                {seg.types.map(tp => {
+                  const isSelected = selectedType?.id === tp.id && selectedSegment?.id === seg.id
+                  return (
+                    <button
+                      key={tp.id}
+                      className={`jr-card${isSelected ? " selected" : ""}`}
+                      onClick={() => handleSelectType(seg, tp)}
+                    >
+                      <div className={`sel-dot${isSelected ? " checked" : ""}`}>
+                        {isSelected && (
+                          <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+                            <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
+                        )}
+                      </div>
+                      <div style={{ flex:1, minWidth:0 }}>
+                        <div className="jr-card-name">{tType(tp.id, "name")}</div>
+                        <div className="jr-card-desc">{tType(tp.id, "desc")}</div>
+                      </div>
+                    </button>
+                  )
+                })}
+              </div>
+            )}
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
+// ─── CheckItem (original position restored) ──────────────────────────────────
 export function CheckItem({ children }) {
   return (
     <div className="sub-check">

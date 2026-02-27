@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { C } from '../tokens.js'
 import { SEGMENTS, JOB_ROLE_CLUSTERS, BUSINESS_INTL_SIZES } from '../data.js'
-import { TopProgressBar, RegSidebar, SelectionRow, JobRoleSelector, EmailChip, BackButton, AuthNav, CdpProductLabel } from '../components/shared.jsx'
+import { TopProgressBar, RegSidebar, SelectionRow, JobRoleSelector, SegmentTypeSelector, EmailChip, BackButton, AuthNav, CdpProductLabel } from '../components/shared.jsx'
 import { useLang } from '../LanguageContext.jsx'
 import { classifyEmailForReg, getWhitelistInfo, getCompanyNameFromEmail } from '../utils.js'
 import IOLogo from '../components/IOLogo.jsx'
@@ -42,7 +42,7 @@ export default function BusinessInternationalFlow({ onComplete, onSkipToSite, on
   const hasProfile = !!(profileData)
   const hasContext = !!(businessContext?.segment)
   // Determine start step: skip email+profile if profileData, skip segment+type if businessContext
-  const initialStep = hasContext ? "size_picker" : hasProfile ? "segment" : gateEmail ? "profile" : "email"
+  const initialStep = hasContext ? "size_picker" : hasProfile ? "segment_type" : gateEmail ? "profile" : "email"
   const [step, setStep]             = useState(initialStep)
   const [email, setEmail]           = useState(profileData?.email || gateEmail || "")
   const [firstName, setFirstName]   = useState(profileData?.firstName || "")
@@ -58,19 +58,18 @@ export default function BusinessInternationalFlow({ onComplete, onSkipToSite, on
   const [agreed, setAgreed]         = useState(false)
   const [emailClass, setEmailClass] = useState(null)
 
-  const STEP_NUM    = { email:1, profile:2, segment:3, type:4, size_picker:5, company:6, overview:7, payment:8, invite:9, done:10 }
-  const TOTAL = 10
+  const STEP_NUM    = { email:1, profile:2, segment_type:3, size_picker:4, company:5, overview:6, payment:7, invite:8, done:9 }
+  const TOTAL = 9
   const curr  = STEP_NUM[step] || 1
   const selectedSegment = SEGMENTS.find(s => s.id === segment?.id)
   const xlCount = parseInt(xlUserCount) || 16
   const sidebar = getSidebarMeta(chosenSize, segment?.id, xlCount, t, tBizIntl)
 
   function handleCompanyChange(f, v) { setCompany(prev => ({ ...prev, [f]: v })) }
-  function handleSegmentNext() {
-    if (!segment) return
-    if (selectedSegment?.types?.length > 0) { setOrgType(null); setStep("type") } else setStep("size_picker")
+  function handleSegmentTypeNext() {
+    if (!segment || !orgType) return
+    setStep("size_picker")
   }
-  function handleTypeNext() { if (!orgType) return; setStep("size_picker") }
 
   const yr = chosenSize ? yearlyPrice(chosenSize, segment?.id, xlCount) : 0
   const baseYr = chosenSize ? (chosenSize.id === "XL" ? xlCount * chosenSize.perUser * 12 : chosenSize.yearlyPrice) : 0
@@ -176,7 +175,7 @@ export default function BusinessInternationalFlow({ onComplete, onSkipToSite, on
             <>
               <h2 className="reg-step-title">{t("bf_profile_title")}</h2>
               <EmailChip email={email} onEdit={() => { setEmailClass(null); setStep("email") }} />
-              <form autoComplete="off" data-1p-ignore="true" data-lpignore="true" onSubmit={e => { e.preventDefault(); if (!jobRole) return; setStep("segment") }}>
+              <form autoComplete="off" data-1p-ignore="true" data-lpignore="true" onSubmit={e => { e.preventDefault(); if (!jobRole) return; setStep("segment_type") }}>
                 <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"0 1rem" }}>
                   <div className="input-group"><label className="input-label">{t("pf_firstname")}</label><input className="input-field" type="text" placeholder={t("pf_firstname")} value={firstName} onChange={e => setFirstName(e.target.value)} autoFocus required /></div>
                   <div className="input-group"><label className="input-label">{t("pf_lastname")}</label><input className="input-field" type="text" placeholder={t("pf_lastname")} value={lastName} onChange={e => setLastName(e.target.value)} required /></div>
@@ -195,12 +194,20 @@ export default function BusinessInternationalFlow({ onComplete, onSkipToSite, on
             </>
           )}
 
-          {/* ── Segment ── */}
-          {step === "segment" && (
+          {/* ── Segment & Type (gecombineerd via accordion) ── */}
+          {step === "segment_type" && (
             <>
               <h2 className="reg-step-title">{t("bf_segment_title")}</h2>
               <p className="reg-step-sub">{t("bf_segment_sub")}</p>
-              {SEGMENTS.map(s => (<SelectionRow key={s.id} selected={segment?.id === s.id} onSelect={() => setSegment(s)} name={tSeg(s.id, "name")} desc={tSeg(s.id, "desc")} />))}
+              <SegmentTypeSelector
+                segments={SEGMENTS}
+                selectedSegment={segment}
+                selectedType={orgType}
+                onSelect={(seg, tp) => { setSegment(seg); setOrgType(tp) }}
+                tSeg={tSeg}
+                tType={tType}
+                t={t}
+              />
               {segment && hasDiscount(segment.id) && (
                 <div className="alert alert-success" style={{ marginTop:"1rem", fontSize:"0.85rem" }}>
                   <strong>{t("bi_discount_badge")}!</strong> {t("bf_segment_orgs_in")} {tSeg(segment.id, "name")} {t("bi_discount_body")}
@@ -209,17 +216,7 @@ export default function BusinessInternationalFlow({ onComplete, onSkipToSite, on
               {segment && !hasDiscount(segment.id) && (
                 <div className="alert alert-info" style={{ marginTop:"1rem", fontSize:"0.85rem" }}>{t("bi_no_discount_info")}</div>
               )}
-              <div className="reg-nav-bar"><BackButton onClick={() => hasProfile ? onBack() : setStep("profile")} /><button className="btn-green btn-full" onClick={handleSegmentNext} disabled={!segment}>{t("bf_next")}</button></div>
-            </>
-          )}
-
-          {/* ── Type ── */}
-          {step === "type" && selectedSegment && (
-            <>
-              <h2 className="reg-step-title">{t("bf_type_title")}</h2>
-              <p className="reg-step-sub">{t("bf_type_sub")}</p>
-              {selectedSegment.types.map(tp => (<SelectionRow key={tp.id} selected={orgType?.id === tp.id} onSelect={() => setOrgType(tp)} name={tType(tp.id, "name")} desc={tType(tp.id, "desc")} />))}
-              <div className="reg-nav-bar"><BackButton onClick={() => setStep("segment")} /><button className="btn-green btn-full" onClick={handleTypeNext} disabled={!orgType}>{t("bf_next")}</button></div>
+              <div className="reg-nav-bar"><BackButton onClick={() => hasProfile ? onBack() : setStep("profile")} /><button className="btn-green btn-full" onClick={handleSegmentTypeNext} disabled={!segment || !orgType}>{t("bf_next")}</button></div>
             </>
           )}
 
@@ -300,7 +297,7 @@ export default function BusinessInternationalFlow({ onComplete, onSkipToSite, on
                 )
               })}
               <div className="reg-nav-bar" style={{ marginTop:"1rem" }}>
-                <BackButton onClick={() => hasContext ? onBack() : setStep(selectedSegment?.types?.length > 0 ? "type" : "segment")} />
+                <BackButton onClick={() => hasContext ? onBack() : setStep("segment_type")} />
                 <button className="btn-green btn-full" onClick={() => setStep("company")} disabled={!chosenSize || (chosenSize.id === "XL" && (!xlUserCount || parseInt(xlUserCount) < 16))}>{t("bf_further")}</button>
               </div>
             </>

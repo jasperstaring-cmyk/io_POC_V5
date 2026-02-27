@@ -328,6 +328,8 @@ export const translations = {
 
     bf_segment_title: "Kies in welke sector je werkt",
     bf_segment_sub:   "Afhankelijk van je sector en organisatie heb je mogelijk gratis toegang.",
+    bf_segment_selected: "Uw keuze:",
+    bf_segment_change:   "Wijzigen",
 
     bf_type_title:    "Wat voor organisatie bent u?",
     bf_type_sub:      "Selecteer het type dat het beste bij uw organisatie past.",
@@ -1316,6 +1318,8 @@ export const translations = {
 
     bf_segment_title: "Choose which sector you work in",
     bf_segment_sub:   "Depending on your sector and organisation you may have free access.",
+    bf_segment_selected: "Your selection:",
+    bf_segment_change:   "Change",
 
     bf_type_title:    "What type of organisation are you?",
     bf_type_sub:      "Select the type that best fits your organisation.",
@@ -2292,6 +2296,8 @@ export const translations = {
 
     bf_segment_title: "Wählen Sie Ihre Branche",
     bf_segment_sub:   "Abhängig von Ihrer Branche und Organisation haben Sie möglicherweise kostenlosen Zugang.",
+    bf_segment_selected: "Ihre Auswahl:",
+    bf_segment_change:   "Ändern",
 
     bf_type_title:    "Was für eine Organisation sind Sie?",
     bf_type_sub:      "Wählen Sie den Typ, der am besten zu Ihrer Organisation passt.",
@@ -3269,6 +3275,8 @@ export const translations = {
 
     bf_segment_title: "Choisissez votre secteur d'activité",
     bf_segment_sub:   "Selon votre secteur et votre organisation, vous pouvez bénéficier d'un accès gratuit.",
+    bf_segment_selected: "Votre choix :",
+    bf_segment_change:   "Modifier",
 
     bf_type_title:    "Quel type d'organisation êtes-vous ?",
     bf_type_sub:      "Sélectionnez le type qui correspond le mieux à votre organisation.",

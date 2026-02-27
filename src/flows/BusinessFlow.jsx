@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { C } from '../tokens.js'
 import { SEGMENTS, JOB_ROLE_CLUSTERS, BUSINESS_SIZES } from '../data.js'
-import { TopProgressBar, RegSidebar, SelectionRow, JobRoleSelector, EmailChip, BackButton, AuthNav, CdpProductLabel } from '../components/shared.jsx'
+import { TopProgressBar, RegSidebar, SelectionRow, JobRoleSelector, SegmentTypeSelector, EmailChip, BackButton, AuthNav, CdpProductLabel } from '../components/shared.jsx'
 import { useLang } from '../LanguageContext.jsx'
 import { classifyEmailForReg, getWhitelistInfo, getCompanyNameFromEmail, hadRecentTrial } from '../utils.js'
 import IOLogo from '../components/IOLogo.jsx'
@@ -47,7 +47,7 @@ export default function BusinessFlow({ onComplete, onSkipToSite, onBack, onGoLog
   const { t, tSeg, tType, tBiz } = useLang()
   const hasProfile = !!(profileData)
   const initialTrialBlocked = hasProfile && hadRecentTrial(profileData.email)
-  const [step, setStep]             = useState(initialTrialBlocked ? "size_picker" : hasProfile ? "segment" : gateEmail ? "profile" : "email")
+  const [step, setStep]             = useState(initialTrialBlocked ? "size_picker" : hasProfile ? "segment_type" : gateEmail ? "profile" : "email")
   const [email, setEmail]           = useState(profileData?.email || gateEmail || "")
   const [firstName, setFirstName]   = useState(profileData?.firstName || "")
   const [lastName, setLastName]     = useState(profileData?.lastName || "")
@@ -63,10 +63,10 @@ export default function BusinessFlow({ onComplete, onSkipToSite, onBack, onGoLog
   const [xlUserCount, setXlUserCount] = useState("")
   const [returnToOverview, setReturnToOverview] = useState(false)
 
-  const STEP_NUM_FREE = { email:1, profile:2, segment:3, type:4, intl_question:5, company:6, overview:7, invite:8, done:9 }
-  const STEP_NUM_PAID = { email:1, trial_blocked:1, profile:2, size_picker:3, segment:4, type:5, intl_question:6, company:7, overview:8, payment:9, invite:10, done:11 }
+  const STEP_NUM_FREE = { email:1, profile:2, segment_type:3, intl_question:4, company:5, overview:6, invite:7, done:8 }
+  const STEP_NUM_PAID = { email:1, trial_blocked:1, profile:2, size_picker:3, segment_type:4, intl_question:5, company:6, overview:7, payment:8, invite:9, done:10 }
   const stepMap = isPaidFlow ? STEP_NUM_PAID : STEP_NUM_FREE
-  const TOTAL   = isPaidFlow ? 11 : 9
+  const TOTAL   = isPaidFlow ? 10 : 8
   const curr    = stepMap[step] || 1
 
   const selectedSegment = SEGMENTS.find(s => s.id === segment?.id)
@@ -88,20 +88,15 @@ export default function BusinessFlow({ onComplete, onSkipToSite, onBack, onGoLog
     setStep("profile")
   }
 
-  function handleSegmentNext() {
-    if (!segment) return
-    if (selectedSegment?.types?.length > 0) { setOrgType(null); setStep("type") }
-    else setStep("intl_question")
-  }
-
-  function handleTypeNext() {
-    if (!orgType) return
+  function handleSegmentTypeNext() {
+    if (!segment || !orgType) return
+    if (returnToOverview) { setReturnToOverview(false); setStep("overview"); return }
     setStep("intl_question")
   }
 
   function handleSizeNext() {
     if (!chosenSize) return
-    setStep("segment")
+    setStep("segment_type")
   }
 
   const xlCount = parseInt(xlUserCount) || 16
@@ -228,7 +223,7 @@ export default function BusinessFlow({ onComplete, onSkipToSite, onBack, onGoLog
             <>
               <h2 className="reg-step-title">{t("bf_profile_title")}</h2>
               <EmailChip email={email} onEdit={() => { setEmailClass(null); setStep("email") }} />
-              <form autoComplete="off" data-1p-ignore="true" data-lpignore="true" onSubmit={e => { e.preventDefault(); if (!jobRole) return; if (returnToOverview) { setReturnToOverview(false); setStep("overview") } else { setStep(isPaidFlow ? "size_picker" : "segment") } }}>
+              <form autoComplete="off" data-1p-ignore="true" data-lpignore="true" onSubmit={e => { e.preventDefault(); if (!jobRole) return; if (returnToOverview) { setReturnToOverview(false); setStep("overview") } else { setStep(isPaidFlow ? "size_picker" : "segment_type") } }}>
                 <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"0 1rem" }}>
                   <div className="input-group"><label className="input-label">{t("pf_firstname")}</label><input className="input-field" type="text" placeholder={t("pf_firstname")} value={firstName} onChange={e => setFirstName(e.target.value)} autoFocus required /></div>
                   <div className="input-group"><label className="input-label">{t("pf_lastname")}</label><input className="input-field" type="text" placeholder={t("pf_lastname")} value={lastName} onChange={e => setLastName(e.target.value)} required /></div>
@@ -349,14 +344,20 @@ export default function BusinessFlow({ onComplete, onSkipToSite, onBack, onGoLog
             </>
           )}
 
-          {/* ── Segment ── */}
-          {step === "segment" && (
+          {/* ── Segment & Type (gecombineerd via accordion) ── */}
+          {step === "segment_type" && (
             <>
               <h2 className="reg-step-title">{t("bf_segment_title")}</h2>
               <p className="reg-step-sub">{t("bf_segment_sub")}</p>
-              {SEGMENTS.map(s => (
-                <SelectionRow key={s.id} selected={segment?.id === s.id} onSelect={() => setSegment(s)} name={tSeg(s.id, "name")} desc={tSeg(s.id, "desc")} />
-              ))}
+              <SegmentTypeSelector
+                segments={SEGMENTS}
+                selectedSegment={segment}
+                selectedType={orgType}
+                onSelect={(seg, tp) => { setSegment(seg); setOrgType(tp) }}
+                tSeg={tSeg}
+                tType={tType}
+                t={t}
+              />
               {segment && !isPaidFlow && isFreePermanent(segment.id) && (
                 <div style={{
                   marginTop:"1rem", borderRadius:10, overflow:"hidden",
@@ -392,22 +393,7 @@ export default function BusinessFlow({ onComplete, onSkipToSite, onBack, onGoLog
               )}
               <div className="reg-nav-bar">
                 <BackButton onClick={() => isPaidFlow ? setStep("size_picker") : hasProfile ? onBack() : setStep("profile")} />
-                <button className="btn-green btn-full" onClick={handleSegmentNext} disabled={!segment}>{t("bf_next")}</button>
-              </div>
-            </>
-          )}
-
-          {/* ── Organisatietype ── */}
-          {step === "type" && selectedSegment && (
-            <>
-              <h2 className="reg-step-title">{t("bf_type_title")}</h2>
-              <p className="reg-step-sub">{t("bf_type_sub")}</p>
-              {selectedSegment.types.map(tp => (
-                <SelectionRow key={tp.id} selected={orgType?.id === tp.id} onSelect={() => setOrgType(tp)} name={tType(tp.id, "name")} desc={tType(tp.id, "desc")} />
-              ))}
-              <div className="reg-nav-bar">
-                <BackButton onClick={() => setStep("segment")} />
-                <button className="btn-green btn-full" onClick={handleTypeNext} disabled={!orgType}>{t("bf_next")}</button>
+                <button className="btn-green btn-full" onClick={handleSegmentTypeNext} disabled={!segment || !orgType}>{t("bf_next")}</button>
               </div>
             </>
           )}
@@ -436,7 +422,7 @@ export default function BusinessFlow({ onComplete, onSkipToSite, onBack, onGoLog
                 </button>
               </div>
               <div className="reg-nav-bar" style={{ marginTop:"1.25rem" }}>
-                <BackButton onClick={() => setStep(selectedSegment?.types?.length > 0 ? "type" : "segment")} />
+                <BackButton onClick={() => setStep("segment_type")} />
               </div>
             </>
           )}
@@ -539,7 +525,7 @@ export default function BusinessFlow({ onComplete, onSkipToSite, onBack, onGoLog
               <div style={{ border:`1px solid ${C.gray200}`, borderRadius:8, padding:"1.125rem 1.25rem", marginBottom:"0.75rem" }}>
                 <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"0.5rem" }}>
                   <span style={{ fontFamily:"var(--font-sans)", fontSize:"0.7rem", fontWeight:700, letterSpacing:"0.08em", textTransform:"uppercase", color:C.gray500 }}>3. {t("bf_overview_segment")}</span>
-                  <button className="link-btn" style={{ fontSize:"0.8rem" }} onClick={() => setStep("segment")}>{t("bf_overview_edit")}</button>
+                  <button className="link-btn" style={{ fontSize:"0.8rem" }} onClick={() => setStep("segment_type")}>{t("bf_overview_edit")}</button>
                 </div>
                 <div style={{ fontFamily:"var(--font-sans)", fontSize:"0.9rem", color:C.navy, lineHeight:1.6 }}>{segment ? tSeg(segment.id, "name") : "–"}{orgType ? ` — ${tType(orgType.id, "name")}` : ""}</div>
               </div>
