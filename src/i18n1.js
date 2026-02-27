@@ -471,6 +471,7 @@ export const translations = {
     bpp_business_cta:     "Start Business regeling",
     bpp_business_note:    "Geen verplichtingen tijdens de proefperiode.",
     bpp_business_badge:   "Meest gekozen door Asset Owners",
+    pp_recommended:       "Aanbevolen",
     bpp_business_features: [
       "Toegang tot de lokale editie van uw land",
       "Toegang voor alle collega's binnen uw organisatie",
@@ -1102,6 +1103,7 @@ export const translations = {
     bpp_business_cta:     "Start Business plan",
     bpp_business_note:    "No obligations during the trial period.",
     bpp_business_badge:   "Most popular with Asset Owners",
+    pp_recommended:       "Recommended",
     bpp_business_features: [
       "Access to the local edition of your country",
       "Access for all colleagues within your organisation",

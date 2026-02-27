@@ -3,8 +3,7 @@ import './styles/global.css'
 
 import ArticlePage        from './pages/ArticlePage.jsx'
 import SubscriptionPage   from './pages/SubscriptionPage.jsx'
-import PlanPickerPage         from './pages/PlanPickerPage.jsx'
-import BusinessPlanPickerPage from './pages/BusinessPlanPickerPage.jsx'
+import ProductPicker      from './pages/ProductPicker.jsx'
 import AccountPage        from './pages/AccountPage.jsx'
 import OnboardingPage     from './pages/OnboardingPage.jsx'
 import AccountTypeChoice  from './flows/AccountTypeChoice.jsx'
@@ -41,6 +40,8 @@ export default function App() {
   const [isPrivateEmail, setIsPrivateEmail]   = useState(false)
   const [forceBusinessPaid, setForceBusinessPaid] = useState(false)
   const [businessContext, setBusinessContext]  = useState(null)   // { segment, orgType } — passed from BusinessFlow to Intl
+  const [pickerMode, setPickerMode]            = useState("personal")  // ProductPicker mode
+  const [cameFromPicker, setCameFromPicker]    = useState(false)       // Track if user entered BusinessFlow via picker
 
   const { setLang } = useLang()
 
@@ -216,7 +217,7 @@ export default function App() {
         <SubscriptionPage onStartReg={() => setView("emailgate")} onLogin={() => setView("login")} />
       )}
       {view === "choice" && (
-        <AccountTypeChoice onChoose={t => setView(t==="business"?"bizplans":"plans")} onBack={() => setView("article")} />
+        <AccountTypeChoice onChoose={t => { if (t==="business") { setPickerMode("business_default"); setView("bizplans") } else { setView("plans") } }} onBack={() => setView("article")} />
       )}
       {view === "emailgate" && (
         <EmailGate onRoute={handleEmailGateRoute} onBack={() => setView("article")} onGoLogin={handleGoLogin} />
@@ -225,24 +226,39 @@ export default function App() {
         <ProfileIntent email={gateEmail} isPrivate={isPrivateEmail} forceBusinessPaid={forceBusinessPaid} onComplete={handleProfileIntentComplete} onBack={() => setView("emailgate")} />
       )}
       {view === "plans" && (
-        <PlanPickerPage onSelectPlan={handleSelectPlan} onSwitchToBusiness={() => setView("bizplans")} onBack={() => profileData ? setView("profileintent") : gateEmail ? setView("emailgate") : setView("choice")} />
+        <ProductPicker
+          mode="personal"
+          onSelectPlan={handleSelectPlan}
+          onSwitchToBusiness={() => { setPickerMode("business_default"); setView("bizplans") }}
+          onBack={() => profileData ? setView("profileintent") : gateEmail ? setView("emailgate") : setView("choice")}
+          progressTotal={4}
+          progressCurrent={1}
+        />
       )}
       {view === "bizplans" && (
-        <BusinessPlanPickerPage onSelectPlan={(id) => {
-          setSelectedPlan(id)
-          if (id === "enterprise") setView("enterprise")
-          else if (id === "business_intl") setView("bizintl")
-          else setView("business")
-        }} onSwitchToPersonal={() => setView("plans")} onBack={() => businessContext ? setView("business") : profileData ? setView("profileintent") : gateEmail ? setView("emailgate") : setView("choice")} />
+        <ProductPicker
+          mode={pickerMode}
+          context={{ segment: businessContext?.segment?.id }}
+          onSelectPlan={(id) => {
+            setSelectedPlan(id)
+            if (id === "enterprise") setView("enterprise")
+            else if (id === "business_intl") { setCameFromPicker(true); setView("bizintl") }
+            else { setCameFromPicker(true); setView("business") }
+          }}
+          onSwitchToPersonal={() => { setPickerMode("personal"); setView("plans") }}
+          onBack={() => businessContext ? setView("business") : profileData ? setView("profileintent") : gateEmail ? setView("emailgate") : setView("choice")}
+          progressTotal={6}
+          progressCurrent={1}
+        />
       )}
       {view === "personal" && (
         <PersonalFlow selectedPlan={selectedPlan} onComplete={handleRegComplete} onSkipToSite={handleSkipToSite} onBack={() => setView("plans")} onGoLogin={handleGoLogin} onGoWhitelist={handleGoWhitelist} gateEmail={gateEmail} profileData={profileData} />
       )}
       {view === "business" && (
-        <BusinessFlow onComplete={() => handleRegComplete(true)} onSkipToSite={handleSkipToSite} onBack={() => profileData ? setView("profileintent") : gateEmail ? setView("emailgate") : setView("bizplans")} onGoLogin={handleGoLogin} onGoEnterprise={handleGoEnterprise} gateEmail={gateEmail} profileData={profileData} onGoIntl={(ctx) => { setBusinessContext(ctx); setView("bizplans") }} />
+        <BusinessFlow onComplete={() => handleRegComplete(true)} onSkipToSite={handleSkipToSite} onBack={() => { if (cameFromPicker) { setCameFromPicker(false); setView("bizplans") } else if (profileData) { setView("profileintent") } else if (gateEmail) { setView("emailgate") } else { setView("bizplans") } }} onGoLogin={handleGoLogin} onGoEnterprise={handleGoEnterprise} gateEmail={gateEmail} profileData={profileData} onGoIntl={(ctx) => { setBusinessContext(ctx); setPickerMode("business_intl"); setView("bizplans") }} />
       )}
       {view === "bizintl" && (
-        <BusinessInternationalFlow onComplete={() => handleRegComplete(true)} onSkipToSite={handleSkipToSite} onBack={() => profileData ? setView("business") : setView("bizplans")} onGoEnterprise={handleGoEnterprise} gateEmail={gateEmail} profileData={profileData} businessContext={businessContext} />
+        <BusinessInternationalFlow onComplete={() => handleRegComplete(true)} onSkipToSite={handleSkipToSite} onBack={() => { if (cameFromPicker) { setCameFromPicker(false); setView("bizplans") } else if (profileData) { setView("business") } else { setView("bizplans") } }} onGoEnterprise={handleGoEnterprise} gateEmail={gateEmail} profileData={profileData} businessContext={businessContext} />
       )}
       {view === "enterprise" && (
         <EnterpriseFlow onComplete={() => setView("article")} onBack={() => setView("bizplans")} />
