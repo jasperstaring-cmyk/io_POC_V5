@@ -8,6 +8,8 @@ import BusinessPlanPickerPage from './pages/BusinessPlanPickerPage.jsx'
 import AccountPage        from './pages/AccountPage.jsx'
 import OnboardingPage     from './pages/OnboardingPage.jsx'
 import AccountTypeChoice  from './flows/AccountTypeChoice.jsx'
+import EmailGate          from './flows/EmailGate.jsx'
+import ProfileIntent      from './flows/ProfileIntent.jsx'
 import PersonalFlow       from './flows/PersonalFlow.jsx'
 import BusinessFlow       from './flows/BusinessFlow.jsx'
 import BusinessInternationalFlow from './flows/BusinessInternationalFlow.jsx'
@@ -17,7 +19,7 @@ import { useLang }        from './LanguageContext.jsx'
 
 /* Valid view names that can be targeted via hash */
 const VALID_VIEWS = new Set([
-  "article","login","choice","plans","bizplans","subscriptions",
+  "article","login","choice","emailgate","profileintent","plans","bizplans","subscriptions",
   "personal","business","bizintl","enterprise","onboarding","account","invited","whitelistReg","enterpriseReg",
 ])
 
@@ -34,8 +36,42 @@ export default function App() {
   const [invitedEmail, setInvitedEmail]     = useState(null)
   const [invitedCompany, setInvitedCompany] = useState(null)
   const [invitedPlanType, setInvitedPlanType] = useState(null)
+  const [gateEmail, setGateEmail]             = useState(null)
+  const [profileData, setProfileData]         = useState(null)   // { firstName, lastName, jobRole, password, email }
+  const [isPrivateEmail, setIsPrivateEmail]   = useState(false)
 
   const { setLang } = useLang()
+
+  /* ── EmailGate routing ── */
+  function handleEmailGateRoute(destination, email, wlInfo) {
+    setGateEmail(email)
+    if (destination === "enterprise") {
+      handleGoEnterprise(email, null)
+    } else if (destination === "whitelist") {
+      handleGoWhitelist(email, wlInfo)
+    } else if (destination === "profile") {
+      // New business email → profile first, then intent
+      setIsPrivateEmail(false)
+      setView("profileintent")
+    } else if (destination === "personal_direct") {
+      // Private email → profile first, then straight to personal (no intent)
+      setIsPrivateEmail(true)
+      setView("profileintent")
+    }
+  }
+
+  /* ── ProfileIntent routing ── */
+  function handleProfileIntentComplete(intent, profData) {
+    setProfileData(profData)
+    setGateEmail(profData.email)
+    if (intent === "business") {
+      setView("business")
+    } else {
+      // personal → plan picker, then personal flow
+      setSelectedPlan(null)
+      setView("plans")
+    }
+  }
 
   /* ── Hash routing ── */
   const handleHash = useCallback(() => {
@@ -153,23 +189,25 @@ export default function App() {
         <ArticlePage
           loggedIn={loggedIn} userEmail={userEmail}
           onLogin={() => setView("login")}
-          onSubscribe={() => setView("choice")}
+          onSubscribe={() => setView("emailgate")}
           onLogout={handleLogout}
           onAccount={() => setView("account")}
         />
       )}
       {view === "subscriptions" && (
-        <SubscriptionPage onStartReg={(trigger) => {
-          if (trigger === "business") setView("business")
-          else if (trigger && trigger.startsWith("personal_")) { setSelectedPlan(trigger.replace("personal_","")); setView("personal") }
-          else setView("choice")
-        }} onLogin={() => setView("login")} />
+        <SubscriptionPage onStartReg={() => setView("emailgate")} onLogin={() => setView("login")} />
       )}
       {view === "choice" && (
         <AccountTypeChoice onChoose={t => setView(t==="business"?"bizplans":"plans")} onBack={() => setView("article")} />
       )}
+      {view === "emailgate" && (
+        <EmailGate onRoute={handleEmailGateRoute} onBack={() => setView("article")} onGoLogin={handleGoLogin} />
+      )}
+      {view === "profileintent" && (
+        <ProfileIntent email={gateEmail} isPrivate={isPrivateEmail} onComplete={handleProfileIntentComplete} onBack={() => setView("emailgate")} />
+      )}
       {view === "plans" && (
-        <PlanPickerPage onSelectPlan={handleSelectPlan} onSwitchToBusiness={() => setView("bizplans")} onBack={() => setView("choice")} />
+        <PlanPickerPage onSelectPlan={handleSelectPlan} onSwitchToBusiness={() => setView("bizplans")} onBack={() => profileData ? setView("profileintent") : gateEmail ? setView("emailgate") : setView("choice")} />
       )}
       {view === "bizplans" && (
         <BusinessPlanPickerPage onSelectPlan={(id) => {
@@ -177,13 +215,13 @@ export default function App() {
           if (id === "enterprise") setView("enterprise")
           else if (id === "business_intl") setView("bizintl")
           else setView("business")
-        }} onSwitchToPersonal={() => setView("plans")} onBack={() => setView("choice")} />
+        }} onSwitchToPersonal={() => setView("plans")} onBack={() => profileData ? setView("profileintent") : gateEmail ? setView("emailgate") : setView("choice")} />
       )}
       {view === "personal" && (
-        <PersonalFlow selectedPlan={selectedPlan} onComplete={handleRegComplete} onSkipToSite={handleSkipToSite} onBack={() => setView("plans")} onGoLogin={handleGoLogin} onGoWhitelist={handleGoWhitelist} />
+        <PersonalFlow selectedPlan={selectedPlan} onComplete={handleRegComplete} onSkipToSite={handleSkipToSite} onBack={() => setView("plans")} onGoLogin={handleGoLogin} onGoWhitelist={handleGoWhitelist} gateEmail={gateEmail} profileData={profileData} />
       )}
       {view === "business" && (
-        <BusinessFlow onComplete={() => handleRegComplete(true)} onSkipToSite={handleSkipToSite} onBack={() => setView("bizplans")} onGoLogin={handleGoLogin} onGoEnterprise={handleGoEnterprise} />
+        <BusinessFlow onComplete={() => handleRegComplete(true)} onSkipToSite={handleSkipToSite} onBack={() => profileData ? setView("profileintent") : gateEmail ? setView("emailgate") : setView("bizplans")} onGoLogin={handleGoLogin} onGoEnterprise={handleGoEnterprise} gateEmail={gateEmail} profileData={profileData} onGoIntl={() => setView("bizintl")} />
       )}
       {view === "bizintl" && (
         <BusinessInternationalFlow onComplete={() => handleRegComplete(true)} onSkipToSite={handleSkipToSite} onBack={() => setView("bizplans")} onGoEnterprise={handleGoEnterprise} />
@@ -236,7 +274,7 @@ export default function App() {
         />
       )}
       {view === "login" && (
-        <LoginModal onClose={() => setView("article")} onGoRegister={() => setView("choice")} onLoginSuccess={handleLoginSuccess} onGoWhitelist={handleGoWhitelist} />
+        <LoginModal onClose={() => setView("article")} onGoRegister={() => setView("emailgate")} onLoginSuccess={handleLoginSuccess} onGoWhitelist={handleGoWhitelist} />
       )}
     </>
   )

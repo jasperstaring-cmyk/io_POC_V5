@@ -86,8 +86,8 @@ function PocGuide({ onClose }) {
         <div style={S.header}>
           <h1 style={S.h1}>Investment Officer — POC Guide</h1>
           <p style={S.subtitle}>
-            This prototype demonstrates the new subscription and onboarding flows for Investment Officer.
-            Below you'll find all scenarios you can walk through.
+            This prototype demonstrates the email-first subscription and onboarding flows for Investment Officer.
+            Below you'll find the flow architecture, all test scenarios and the complete product catalogue.
           </p>
           <button style={S.closeBtn} onClick={onClose}>
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M4.5 4.5l9 9M13.5 4.5l-9 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
@@ -97,11 +97,38 @@ function PocGuide({ onClose }) {
         {/* ── Body ── */}
         <div style={S.body}>
 
-          {/* ── 1. Account types ── */}
-          <div style={S.sectionTitleFirst}>1. Account types</div>
+          {/* ── 0. Flow architecture ── */}
+          <div style={S.sectionTitleFirst}>0. Flow architecture — Email-first</div>
           <div style={S.card}>
-            <div style={S.cardTitle}>Personal (gratis)</div>
-            <div style={S.cardBody}>Individual account with access to a selection of articles, newsletters and profile management. Optionally upgradable to Pro.</div>
+            <div style={S.cardTitle}>Email as universal entry point</div>
+            <div style={S.cardBody}>
+              All registration flows start with a single email input screen (<strong>EmailGate</strong>). The email address is classified automatically and routes the user to the correct flow. There is no manual account type choice upfront.<br/><br/>
+              <strong>Routing logic:</strong><br/>
+              • Enterprise domain (e.g. @abnamro.com) → Enterprise profile creation<br/>
+              • Whitelist domain (e.g. @wealthpro.com) → Enterprise fast-track<br/>
+              • Existing account → "You already have an account" + login<br/>
+              • New business email → <strong>Intent question</strong> (Business recommended / Personal secondary)<br/>
+              • Private email (@gmail.com) → Warning + Personal only<br/>
+              • Generic address (info@...) → Blocked
+            </div>
+          </div>
+          <div style={S.card}>
+            <div style={S.cardTitle}>Intent question (key conversion moment)</div>
+            <div style={S.cardBody}>
+              For new business emails, users see an asymmetric choice:<br/>
+              <strong>Option A (primary, recommended):</strong> "Activate a business plan" — with three value props: free for Wealth &amp; Institutional, 6 months free for others, shared user management.<br/>
+              <strong>Option B (secondary):</strong> "Just for myself" — individual account.<br/>
+              This is designed to maximise business registrations while keeping Personal accessible.
+            </div>
+          </div>
+
+          <hr style={S.divider} />
+
+          {/* ── 1. Account types ── */}
+          <div style={S.sectionTitle}>1. Account types</div>
+          <div style={S.card}>
+            <div style={S.cardTitle}>Personal (free)</div>
+            <div style={S.cardBody}>Individual account with access to a selection of articles, newsletters and profile management. Optionally upgradable to Premium (€648/yr).</div>
           </div>
           <div style={S.card}>
             <div style={S.cardTitle}>Business NL</div>
@@ -109,7 +136,7 @@ function PocGuide({ onClose }) {
           </div>
           <div style={S.card}>
             <div style={S.cardTitle}>Business International</div>
-            <div style={S.cardBody}>Business account with access to all editions (NL, BE, DE, FR, LU, COM). Package choice S/M/L/XL. 50% discount for Wealth/Institutional segment.</div>
+            <div style={S.cardBody}>Business account with access to all editions (NL, BE, DE, FR, LU, COM). Package choice S/M/L/XL. 50% discount for Wealth/Institutional. Only shown when user indicates multi-country presence within Business flow.</div>
           </div>
           <div style={S.card}>
             <div style={S.cardTitle}>Enterprise</div>
@@ -125,9 +152,8 @@ function PocGuide({ onClose }) {
             <div style={S.cardTitle}>🟢 Enterprise — domain-based (ABN AMRO)</div>
             <div style={S.cardBody}>
               Use: <span style={S.email}>anything@abnamro.com</span><br/>
+              <strong>Via EmailGate:</strong> email → enterprise detection → profile → done<br/>
               <strong>Via Login:</strong> email → SSO screen (Google / Microsoft / password) → logged in<br/>
-              <strong>Via Registration (Personal):</strong> email → enterprise detection → create profile → done<br/>
-              <strong>Via Registration (Business):</strong> email → "Continue as Enterprise" → profile → done<br/>
               <span style={S.step}>2 steps</span> profile → done
             </div>
           </div>
@@ -136,8 +162,8 @@ function PocGuide({ onClose }) {
             <div style={S.cardTitle}>🟢 Enterprise — whitelist NL (WealthPro)</div>
             <div style={S.cardBody}>
               Use: <span style={S.email}>new@wealthpro.com</span><br/>
+              <strong>Via EmailGate:</strong> email → whitelist detection → profile → done<br/>
               <strong>Via Login:</strong> email → "Enterprise access available" + "Dutch edition" → create profile<br/>
-              <strong>Via Registration:</strong> email → whitelist detection → profile → done<br/>
               Sidebar shows "Enterprise — NL"<br/>
               <span style={S.step}>2 steps</span> profile → done
             </div>
@@ -153,30 +179,32 @@ function PocGuide({ onClose }) {
           </div>
 
           <div style={S.card}>
-            <div style={S.cardTitle}>🔵 Personal — standard</div>
+            <div style={S.cardTitle}>🔵 New business email → Business (recommended path)</div>
             <div style={S.cardBody}>
-              Use: <span style={S.email}>new@aegon.com</span> or any new business email address<br/>
-              <strong>Registration:</strong> email → profile → plan choice (Free / Pro / Trial) → done<br/>
-              <span style={S.step}>4 steps</span> email → profile → plan → done<br/>
-              <span style={{ display:"inline-block", marginTop:"0.375rem", background:"#F0F0FF", border:"1px dashed #7B7BEE", borderRadius:4, padding:"0.15rem 0.5rem", fontSize:"0.75rem", color:"#4A4AB5" }}>CDP: Personal Free / Trial / Pro — .NL</span>
-            </div>
-          </div>
-
-          <div style={S.card}>
-            <div style={S.cardTitle}>🔵 Business NL — standard</div>
-            <div style={S.cardBody}>
-              Use: <span style={S.email}>new@aegon.com</span> via "Team / Organisation" → Business NL<br/>
-              <strong>Registration:</strong> email → profile → segment → type → company details → overview → invite colleagues → done<br/>
+              Use: <span style={S.email}>new@aegon.com</span> or any new business email<br/>
+              <strong>EmailGate:</strong> email → "Professional email detected" → intent question → choose "Activate business plan"<br/>
+              <strong>Business flow:</strong> profile → segment → type → company details → overview → invite colleagues → done<br/>
               <span style={S.step}>8 steps</span><br/>
               <span style={{ display:"inline-block", marginTop:"0.375rem", background:"#F0F0FF", border:"1px dashed #7B7BEE", borderRadius:4, padding:"0.15rem 0.5rem", fontSize:"0.75rem", color:"#4A4AB5" }}>CDP: Business Buy Side — .NL (Wealth/Institutional) or Business Sell Side — .NL (other)</span>
             </div>
           </div>
 
           <div style={S.card}>
-            <div style={S.cardTitle}>🔵 Business International — standard</div>
+            <div style={S.cardTitle}>🔵 New business email → Personal</div>
             <div style={S.cardBody}>
-              Use: <span style={S.email}>new@aegon.com</span> via "Team / Organisation" → Business International<br/>
-              <strong>Registration:</strong> email → profile → segment → type → package choice → company → overview → payment → invite → done<br/>
+              Use: <span style={S.email}>new@aegon.com</span> or any new business email<br/>
+              <strong>EmailGate:</strong> email → intent question → choose "Just for myself"<br/>
+              <strong>Personal flow:</strong> profile → plan choice (Free / Premium Trial / Premium) → done<br/>
+              <span style={S.step}>4 steps</span> email → profile → plan → done<br/>
+              <span style={{ display:"inline-block", marginTop:"0.375rem", background:"#F0F0FF", border:"1px dashed #7B7BEE", borderRadius:4, padding:"0.15rem 0.5rem", fontSize:"0.75rem", color:"#4A4AB5" }}>CDP: Personal Free / Trial / Premium — .NL</span>
+            </div>
+          </div>
+
+          <div style={S.card}>
+            <div style={S.cardTitle}>🔵 Business International</div>
+            <div style={S.cardBody}>
+              Accessible via Business plans page after choosing "Activate business plan" in the intent question.<br/>
+              <strong>Flow:</strong> email → intent → Business plans → choose International → profile → segment → type → package → company → overview → payment → invite → done<br/>
               <span style={S.step}>10 steps</span><br/>
               <span style={{ display:"inline-block", marginTop:"0.375rem", background:"#F0F0FF", border:"1px dashed #7B7BEE", borderRadius:4, padding:"0.15rem 0.5rem", fontSize:"0.75rem", color:"#4A4AB5" }}>CDP: Business International S/M/L/XL — All editions</span>
             </div>
@@ -186,8 +214,8 @@ function PocGuide({ onClose }) {
             <div style={S.cardTitle}>🟡 Existing account — Business admin</div>
             <div style={S.cardBody}>
               Use: <span style={S.email}>demo@aegon.com</span><br/>
+              <strong>Via EmailGate:</strong> email → "You already have an account" → log in or use different email<br/>
               <strong>Via Login:</strong> email → password → logged in as Business admin<br/>
-              <strong>Via Registration:</strong> email → "You already have an account" warning<br/>
               <strong>After login:</strong> Go to Account to manage users, company details, subscriptions, newsletters and billing/invoices.
             </div>
           </div>
@@ -196,7 +224,7 @@ function PocGuide({ onClose }) {
             <div style={S.cardTitle}>🟡 Private email</div>
             <div style={S.cardBody}>
               Use: <span style={S.email}>new@gmail.com</span><br/>
-              Warning "this is a private email address" with option to continue anyway.
+              <strong>Via EmailGate:</strong> Warning "this is a private email address" with option to use a different address or continue to Personal flow only (no Business option).
             </div>
           </div>
 
@@ -211,7 +239,7 @@ function PocGuide({ onClose }) {
           <div style={S.card}>
             <div style={S.cardTitle}>🟡 Trial block (Business)</div>
             <div style={S.cardBody}>
-              Use: <span style={S.email}>trial@company.com</span> in Business NL flow<br/>
+              Use: <span style={S.email}>trial@company.com</span> — go through EmailGate → intent → Business flow<br/>
               Email → 2-year block notification → choice of paid packages S/M/L/XL.<br/>
               <span style={{ display:"inline-block", marginTop:"0.375rem", background:"#F0F0FF", border:"1px dashed #7B7BEE", borderRadius:4, padding:"0.15rem 0.5rem", fontSize:"0.75rem", color:"#4A4AB5" }}>CDP: Business Sell Side Paid S/M/L/XL — .NL</span>
             </div>
@@ -223,7 +251,8 @@ function PocGuide({ onClose }) {
               <strong>Option A:</strong> Deep link <span style={S.email}>#invited</span> (simulates colleague@aegon.com)<br/>
               <strong>Option B:</strong> Go to Account → Users → invite someone → click "Open as…"<br/>
               Flow: create profile (email pre-filled, "invited" banner) → done<br/>
-              <span style={S.step}>2 steps</span> profile → done
+              <span style={S.step}>2 steps</span> profile → done<br/>
+              <em>Note: invited users bypass EmailGate entirely.</em>
             </div>
           </div>
 
@@ -233,6 +262,8 @@ function PocGuide({ onClose }) {
           <div style={S.sectionTitle}>3. Pricing logic</div>
           <div style={S.card}>
             <div style={S.cardBody}>
+              <strong>Personal Free:</strong> Free, limited access.<br/>
+              <strong>Personal Premium:</strong> €648/yr (€54/mo), full access to one edition.<br/>
               <strong>Business Buy Side:</strong> Wealth/Institutional segment → free 24-month access.<br/>
               <strong>Business Sell Side:</strong> Other segments → 6-month free trial.<br/>
               <strong>Business Sell Side Paid:</strong> After trial block → paid packages S/M/L/XL.<br/>
@@ -247,8 +278,9 @@ function PocGuide({ onClose }) {
           <div style={S.sectionTitle}>4. Navigation</div>
           <div style={S.card}>
             <div style={S.cardBody}>
-              Use the <strong>deep links</strong> in the test panel to jump to specific screens.
-              Switch language via the language button in the top right (NL / EN / DE / FR).
+              The primary registration entry is <strong>#emailgate</strong> — this is where "Subscribe" and all registration CTAs lead.<br/>
+              Use the <strong>deep links</strong> in the test panel to jump to specific screens. The old account type choice is still accessible via <strong>#choice</strong> for reference.<br/>
+              Switch language via the language button in the top right (NL / EN / DE / FR).<br/>
               After registration you can choose <strong>"Start introduction"</strong> (onboarding) or <strong>"Go directly to the website"</strong> (skip).
             </div>
           </div>
@@ -270,8 +302,25 @@ function PocGuide({ onClose }) {
 
           <hr style={S.divider} />
 
-          {/* ── 6. CDP Product matrix ── */}
-          <div style={S.sectionTitle}>6. CDP Product matrix (58 products)</div>
+          {/* ── 6. Job role selection ── */}
+          <div style={S.sectionTitle}>6. Job role selection</div>
+          <div style={S.card}>
+            <div style={S.cardBody}>
+              Job roles are organised in <strong>6 clusters</strong> using an accordion interface:<br/>
+              <span style={S.step}>1</span> Senior Leadership (5 roles)<br/>
+              <span style={S.step}>2</span> Investment Professionals (9 roles)<br/>
+              <span style={S.step}>3</span> Client &amp; Commercial Roles (10 roles)<br/>
+              <span style={S.step}>4</span> Risk, Legal &amp; Finance (7 roles)<br/>
+              <span style={S.step}>5</span> Operations &amp; Technology (7 roles)<br/>
+              <span style={S.step}>6</span> Consulting &amp; Other (4 roles)<br/><br/>
+              Click a cluster to expand, select a role, and see a confirmation with a "Change" option. Single-select only. 42 roles total across all clusters. Available in NL / EN / DE / FR.
+            </div>
+          </div>
+
+          <hr style={S.divider} />
+
+          {/* ── 7. CDP Product matrix ── */}
+          <div style={S.sectionTitle}>7. CDP Product matrix (58 products)</div>
           <div style={S.card}>
             <div style={S.cardBody}>
               Each registration results in a specific CDP product. The edition is determined by the website domain (.nl, .be, .lu, .de, .fr, .com). Below is the complete product catalogue.
@@ -294,7 +343,7 @@ function PocGuide({ onClose }) {
                 {[
                   ["Personal Free", "Free", "NL, BE, LU, DE, FR, COM", "1"],
                   ["Personal Trial", "10 days free", "NL, BE, LU, DE, FR, COM", "1"],
-                  ["Personal Pro", "€648/yr (€54/mo)", "NL, BE, LU, DE, FR, COM", "1"],
+                  ["Personal Premium", "€648/yr (€54/mo)", "NL, BE, LU, DE, FR, COM", "1"],
                 ].map(([name, price, eds, users], i) => (
                   <tr key={i} style={{ borderBottom:`1px solid ${C.gray100}` }}>
                     <td style={{ padding:"0.4rem 0.625rem", fontWeight:600, color:C.navy }}>{name}</td>
@@ -380,8 +429,8 @@ function PocGuide({ onClose }) {
 
           <hr style={S.divider} />
 
-          {/* ── 7. Account management ── */}
-          <div style={S.sectionTitle}>7. Account management</div>
+          {/* ── 8. Account management ── */}
+          <div style={S.sectionTitle}>8. Account management</div>
           <div style={S.card}>
             <div style={S.cardBody}>
               After login or registration, click the avatar (top right) → "My account" to access:<br/>
@@ -416,6 +465,8 @@ export default function DemoBanner() {
   const deepLinks = [
     { label: "Article",           hash: "#article" },
     { label: "Login",             hash: "#login" },
+    { label: "Email gate",        hash: "#emailgate" },
+    { label: "Profile+Intent",    hash: "#profileintent" },
     { label: "Personal plans",    hash: "#plans" },
     { label: "Business plans",    hash: "#bizplans" },
     { label: "Personal reg.",     hash: "#personal" },

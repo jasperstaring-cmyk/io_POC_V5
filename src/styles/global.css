@@ -129,6 +129,15 @@ select.input-field { appearance: none; background-image: url("data:image/svg+xml
 
 /* ─── Choice cards (Personal / Business split) ──────────────────────────────── */
 .choice-cards  { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2rem; }
+
+/* ─── EmailGate intent cards ────────────────────────────────────────────────── */
+.eg-intent-card { display: block; width: 100%; text-align: left; border-radius: 10px; padding: 1rem 1.25rem; cursor: pointer; transition: border-color 0.15s, box-shadow 0.15s, background 0.15s; }
+.eg-intent-primary   { border: 2px solid var(--navy); background: rgba(12,24,46,0.015); }
+.eg-intent-primary:hover  { box-shadow: 0 0 0 3px rgba(12,24,46,0.08); background: rgba(12,24,46,0.025); }
+.eg-intent-primary:focus-visible  { outline: 2px solid var(--navy); outline-offset: 2px; }
+.eg-intent-secondary { border: 1.5px solid var(--gray-200); background: #fff; }
+.eg-intent-secondary:hover { border-color: var(--gray-400); background: var(--gray-50); }
+.eg-intent-secondary:focus-visible { outline: 2px solid var(--navy); outline-offset: 2px; }
 .choice-card   { border: 1.5px solid var(--gray-200); border-radius: 8px; padding: 1.75rem 1.5rem; background: #fff; cursor: pointer; text-align: left; transition: border-color 0.15s, box-shadow 0.15s; }
 .choice-card:hover { border-color: var(--gray-500); box-shadow: 0 4px 16px rgba(12,24,46,0.08); }
 .choice-icon   { width: 44px; height: 44px; background: var(--gray-100); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 0.875rem; }

@@ -2,6 +2,7 @@ import { C } from '../tokens.js'
 import { TopProgressBar, CheckItem, LangSwitcher } from '../components/shared.jsx'
 import { useLang } from '../LanguageContext.jsx'
 import IOLogo from '../components/IOLogo.jsx'
+import { img } from '../images.js'
 
 // ─── Toggle component ───────────────────────────────────────────────────────
 function PlanTypeToggle({ active, onChange, t }) {
@@ -76,6 +77,28 @@ export default function PlanPickerPage({ onSelectPlan, onSwitchToBusiness, onBac
 
           {/* Toggle */}
           <PlanTypeToggle active="personal" onChange={handleToggle} t={t} />
+        </div>
+
+        {/* Business banner */}
+        <div className="sub-banner" style={{ maxWidth:900, margin:"0 auto 2rem" }}>
+          <div style={{ flex:1 }}>
+            <h3 style={{ fontFamily:"var(--font-sans)", fontWeight:800, fontSize:"1.0625rem", lineHeight:"var(--lh-heading)", letterSpacing:"var(--tracking-heading)", color:C.navy, marginBottom:"0.5rem" }}>{t("sp_biz_title")}</h3>
+            <p style={{ fontFamily:"var(--font-sans)", fontSize:"0.9rem", color:C.gray700, lineHeight:"var(--lh-body)", marginBottom:"1rem" }}>{t("sp_biz_body")}</p>
+            <button className="btn-primary" style={{ padding:"0.625rem 1.5rem" }} onClick={onSwitchToBusiness}>{t("sp_biz_cta")}</button>
+          </div>
+          <div style={{ width:160, flexShrink:0, display:"flex", alignItems:"center", justifyContent:"center" }}>
+            {img("subscription_biz_visual") ? (
+              <img src={img("subscription_biz_visual")} alt="" style={{ width:140, height:90, objectFit:"cover", borderRadius:8, boxShadow:"0 8px 24px rgba(12,24,46,0.2)" }} />
+            ) : (
+              <div style={{ width:140, height:90, background:`linear-gradient(135deg,${C.navy},${C.navyMid})`, borderRadius:8, position:"relative", boxShadow:"0 8px 24px rgba(12,24,46,0.2)" }}>
+                <div style={{ position:"absolute", inset:8, border:"1px solid rgba(255,255,255,0.15)", borderRadius:4 }}/>
+                <div style={{ position:"absolute", bottom:12, left:12, right:12 }}>
+                  {[70,50,60].map((w,i) => <div key={i} style={{ height:3, width:`${w}%`, background:"rgba(255,255,255,0.3)", borderRadius:2, marginBottom:4 }}/>)}
+                </div>
+              </div>
+            )}
+          </div>
+          <div className="sub-banner-badge">{t("sp_biz_badge")}</div>
         </div>
 
         {/* Plan kaarten */}

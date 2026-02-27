@@ -17,16 +17,22 @@ function planMeta(planId, t) {
   return map[planId] || {}
 }
 
-export default function PersonalFlow({ selectedPlan, onComplete, onSkipToSite, onBack, onGoLogin, onGoWhitelist, invitedEmail, invitedCompany, invitedPlanType, whitelistEmail, whitelistInfo, enterpriseEmail }) {
+export default function PersonalFlow({ selectedPlan, onComplete, onSkipToSite, onBack, onGoLogin, onGoWhitelist, invitedEmail, invitedCompany, invitedPlanType, whitelistEmail, whitelistInfo, enterpriseEmail, gateEmail, profileData }) {
   const { t } = useLang()
   const isWhitelistEnterprise = !!(whitelistEmail && whitelistInfo)
   const isEnterpriseRedirect = !!(enterpriseEmail)
-  const [step, setStep]             = useState(invitedEmail ? "profile" : (isWhitelistEnterprise || isEnterpriseRedirect) ? "profile" : "email")
-  const [email, setEmail]           = useState(invitedEmail || whitelistEmail || enterpriseEmail || "")
-  const [firstName, setFirstName]   = useState("")
-  const [lastName, setLastName]     = useState("")
-  const [jobRole, setJobRole]       = useState("")
-  const [password, setPassword]     = useState("")
+  const hasPrefilledEmail = !!(invitedEmail || whitelistEmail || enterpriseEmail || gateEmail || profileData)
+  const hasPrefilledProfile = !!(profileData)
+  // If profileData is provided, skip both email and profile steps → start at plan choice (confirm)
+  const initialStep = hasPrefilledProfile ? (selectedPlan === "pro" ? "payment" : "confirm")
+                    : hasPrefilledEmail ? "profile"
+                    : "email"
+  const [step, setStep]             = useState(initialStep)
+  const [email, setEmail]           = useState(profileData?.email || invitedEmail || whitelistEmail || enterpriseEmail || gateEmail || "")
+  const [firstName, setFirstName]   = useState(profileData?.firstName || "")
+  const [lastName, setLastName]     = useState(profileData?.lastName || "")
+  const [jobRole, setJobRole]       = useState(profileData?.jobRole || "")
+  const [password, setPassword]     = useState(profileData?.password || "")
   const [chosenPlan, setChosenPlan] = useState(selectedPlan || "freemium")
   const [privateOverride, setPrivateOverride] = useState(false)
   const [isEnterprise, setIsEnterprise]   = useState(isWhitelistEnterprise || isEnterpriseRedirect)

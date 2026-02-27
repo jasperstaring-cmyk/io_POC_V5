@@ -46,14 +46,15 @@ function getSidebarMeta(segId, isPaid, chosenSize, xlCount, t, tBiz) {
 function hadRecentTrial(email) { return email.toLowerCase().startsWith("trial@") }
 
 /* ─── Component ────────────────────────────────────────────────────────── */
-export default function BusinessFlow({ onComplete, onSkipToSite, onBack, onGoLogin, onGoEnterprise }) {
+export default function BusinessFlow({ onComplete, onSkipToSite, onBack, onGoLogin, onGoEnterprise, gateEmail, profileData, onGoIntl }) {
   const { t, tSeg, tType, tBiz } = useLang()
-  const [step, setStep]             = useState("email")
-  const [email, setEmail]           = useState("")
-  const [firstName, setFirstName]   = useState("")
-  const [lastName, setLastName]     = useState("")
-  const [jobRole, setJobRole]       = useState("")
-  const [password, setPassword]     = useState("")
+  const hasProfile = !!(profileData)
+  const [step, setStep]             = useState(hasProfile ? "segment" : gateEmail ? "profile" : "email")
+  const [email, setEmail]           = useState(profileData?.email || gateEmail || "")
+  const [firstName, setFirstName]   = useState(profileData?.firstName || "")
+  const [lastName, setLastName]     = useState(profileData?.lastName || "")
+  const [jobRole, setJobRole]       = useState(profileData?.jobRole || "")
+  const [password, setPassword]     = useState(profileData?.password || "")
   const [segment, setSegment]       = useState(null)
   const [orgType, setOrgType]       = useState(null)
   const [company, setCompany]       = useState({ kvk:"", name:"", street:"", number:"", addition:"", zip:"", city:"", country:"NL", vat:"" })
@@ -63,10 +64,10 @@ export default function BusinessFlow({ onComplete, onSkipToSite, onBack, onGoLog
   const [chosenSize, setChosenSize] = useState(null)
   const [xlUserCount, setXlUserCount] = useState("")
 
-  const STEP_NUM_FREE = { email:1, profile:2, segment:3, type:4, company:5, overview:6, invite:7, done:8 }
-  const STEP_NUM_PAID = { email:1, trial_blocked:1, profile:2, size_picker:3, segment:4, type:5, company:6, overview:7, payment:8, invite:9, done:10 }
+  const STEP_NUM_FREE = { email:1, profile:2, segment:3, type:4, intl_question:5, company:6, overview:7, invite:8, done:9 }
+  const STEP_NUM_PAID = { email:1, trial_blocked:1, profile:2, size_picker:3, segment:4, type:5, intl_question:6, company:7, overview:8, payment:9, invite:10, done:11 }
   const stepMap = isPaidFlow ? STEP_NUM_PAID : STEP_NUM_FREE
-  const TOTAL   = isPaidFlow ? 10 : 8
+  const TOTAL   = isPaidFlow ? 11 : 9
   const curr    = stepMap[step] || 1
 
   const selectedSegment = SEGMENTS.find(s => s.id === segment?.id)
@@ -91,12 +92,12 @@ export default function BusinessFlow({ onComplete, onSkipToSite, onBack, onGoLog
   function handleSegmentNext() {
     if (!segment) return
     if (selectedSegment?.types?.length > 0) { setOrgType(null); setStep("type") }
-    else setStep("company")
+    else setStep("intl_question")
   }
 
   function handleTypeNext() {
     if (!orgType) return
-    setStep("company")
+    setStep("intl_question")
   }
 
   function handleSizeNext() {
@@ -121,8 +122,8 @@ export default function BusinessFlow({ onComplete, onSkipToSite, onBack, onGoLog
               {isPaidFlow
                 ? <>{t("inline_your")} Business {chosenSize?.label || ""} {t("inline_plan_for")} <strong>{company.name || t("inline_your_org")}</strong> {t("inline_activated")}</>
                 : isFreePermanent(segment?.id)
-                  ? <>{t("inline_your_biz_plan_for")} <strong>{company.name || t("inline_your_org")}</strong> {t("inline_activated_segment_perm")} {segment ? tSeg(segment.id, "name") : ""} {t("inline_free_ongoing_validated")}</>
-                  : <>{t("inline_your_biz_plan_for")} <strong>{company.name || t("inline_your_org")}</strong> {t("inline_activated_6mo")}</>
+                  ? <>{t("bf_done_buyside_verification")} <strong>{company.name || t("inline_your_org")}</strong>.</>
+                  : <>{t("bf_done_sellside_trial")} <strong>{company.name || t("inline_your_org")}</strong>.</>
               }
             </p>
             <p style={{ fontFamily:"var(--font-sans)", fontSize:"0.8125rem", color:C.gray500, marginBottom:"2rem", fontStyle:"italic" }}>
@@ -391,7 +392,7 @@ export default function BusinessFlow({ onComplete, onSkipToSite, onBack, onGoLog
                 </div>
               )}
               <div className="reg-nav-bar">
-                <BackButton onClick={() => setStep(isPaidFlow ? "size_picker" : "profile")} />
+                <BackButton onClick={() => isPaidFlow ? setStep("size_picker") : hasProfile ? onBack() : setStep("profile")} />
                 <button className="btn-green btn-full" onClick={handleSegmentNext} disabled={!segment}>{t("bf_next")}</button>
               </div>
             </>
@@ -412,36 +413,104 @@ export default function BusinessFlow({ onComplete, onSkipToSite, onBack, onGoLog
             </>
           )}
 
-          {/* ── Bedrijfsgegevens ── */}
-          {step === "company" && (
+          {/* ── International question ── */}
+          {step === "intl_question" && (
+            <>
+              <h2 className="reg-step-title">{t("bf_intl_q_title")}</h2>
+              <p className="reg-step-sub">{t("bf_intl_q_sub")}</p>
+              <div style={{ display:"flex", flexDirection:"column", gap:"0.75rem", marginTop:"1.25rem" }}>
+                <button className="eg-intent-card eg-intent-secondary" style={{ border:`1.5px solid ${C.gray200}` }}
+                  onClick={() => setStep("company")}>
+                  <div style={{ display:"flex", alignItems:"center", gap:"0.5rem" }}>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M3 21V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v16" stroke={C.navy} strokeWidth="1.75" strokeLinecap="round"/><path d="M9 21V13h6v8" stroke={C.navy} strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                    <span style={{ fontFamily:"var(--font-sans)", fontSize:"0.9rem", fontWeight:700, color:C.navy }}>{t("bf_intl_q_no")}</span>
+                  </div>
+                  <div style={{ fontFamily:"var(--font-sans)", fontSize:"0.75rem", color:C.gray500, marginTop:"0.25rem", paddingLeft:"0.125rem" }}>{t("bf_intl_q_no_sub")}</div>
+                </button>
+                <button className="eg-intent-card eg-intent-secondary" style={{ border:`1.5px solid ${C.gray200}` }}
+                  onClick={() => { if (onGoIntl) onGoIntl() }}>
+                  <div style={{ display:"flex", alignItems:"center", gap:"0.5rem" }}>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke={C.navy} strokeWidth="1.75"/><path d="M3 12h18M12 3c2.5 2.5 4 5.5 4 9s-1.5 6.5-4 9c-2.5-2.5-4-5.5-4-9s1.5-6.5 4-9z" stroke={C.navy} strokeWidth="1.5"/></svg>
+                    <span style={{ fontFamily:"var(--font-sans)", fontSize:"0.9rem", fontWeight:700, color:C.navy }}>{t("bf_intl_q_yes")}</span>
+                  </div>
+                  <div style={{ fontFamily:"var(--font-sans)", fontSize:"0.75rem", color:C.gray500, marginTop:"0.25rem", paddingLeft:"0.125rem" }}>{t("bf_intl_q_yes_sub")}</div>
+                </button>
+              </div>
+              <div className="reg-nav-bar" style={{ marginTop:"1.25rem" }}>
+                <BackButton onClick={() => setStep(selectedSegment?.types?.length > 0 ? "type" : "segment")} />
+              </div>
+            </>
+          )}
+
+          {/* ── Bedrijfsgegevens (restructured: conditional fields) ── */}
+          {step === "company" && (() => {
+            const isBuySide = isFreePermanent(segment?.id)
+            const needsKvkVat = isBuySide || isPaidFlow  // Buy Side NL or Paid → KvK+VAT required
+            const needsAddress = isPaidFlow               // Only paid needs full address
+            return (
             <>
               <h2 className="reg-step-title">{t("bf_company_title")}</h2>
               <p className="reg-step-sub">{t("bf_company_sub_new")}</p>
+
+              {/* Segment verification warning for Buy Side */}
+              {isBuySide && (
+                <div style={{
+                  display:"flex", alignItems:"flex-start", gap:"0.5rem",
+                  background:"rgba(240,200,120,0.1)", border:"1px solid rgba(240,200,120,0.4)",
+                  borderRadius:8, padding:"0.625rem 0.875rem", marginBottom:"1.25rem",
+                }}>
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ marginTop:"0.1rem", flexShrink:0 }}>
+                    <circle cx="8" cy="8" r="7" stroke="#B8860B" strokeWidth="1.25"/>
+                    <path d="M8 5v3.5M8 10.5v.5" stroke="#B8860B" strokeWidth="1.25" strokeLinecap="round"/>
+                  </svg>
+                  <span style={{ fontFamily:"var(--font-sans)", fontSize:"0.8rem", color:"#6B4F00", lineHeight:"1.4" }}>
+                    {t("bf_verification_notice")}
+                  </span>
+                </div>
+              )}
+
               <form autoComplete="off" data-1p-ignore="true" data-lpignore="true" onSubmit={e => { e.preventDefault(); setStep("overview") }}>
-                <div className="input-group"><label className="input-label">{t("bf_kvk_label")}</label><input className="input-field" type="text" placeholder="12345678" value={company.kvk} onChange={e => handleCompanyChange("kvk", e.target.value)} required /></div>
-                <div className="input-group"><label className="input-label">{t("bf_company_name_label")}</label><input className="input-field" type="text" placeholder={t("bf_company_name_label")} value={company.name} onChange={e => handleCompanyChange("name", e.target.value)} required /></div>
-                <div style={{ display:"grid", gridTemplateColumns:"2fr 1fr 1fr", gap:"0 1rem" }}>
-                  <div className="input-group"><label className="input-label">{t("bf_street_label")}</label><input className="input-field" type="text" placeholder={t("bf_street_label")} value={company.street} onChange={e => handleCompanyChange("street", e.target.value)} required /></div>
-                  <div className="input-group"><label className="input-label">{t("bf_housenr_label")}</label><input className="input-field" type="text" placeholder="12" value={company.number} onChange={e => handleCompanyChange("number", e.target.value)} required /></div>
-                  <div className="input-group"><label className="input-label">{t("bf_addition_label")}</label><input className="input-field" type="text" placeholder="A" value={company.addition} onChange={e => handleCompanyChange("addition", e.target.value)} /></div>
-                </div>
-                <div style={{ display:"grid", gridTemplateColumns:"1fr 2fr", gap:"0 1rem" }}>
-                  <div className="input-group"><label className="input-label">{t("bf_zip_label")}</label><input className="input-field" type="text" placeholder="0000 AA" value={company.zip} onChange={e => handleCompanyChange("zip", e.target.value)} required /></div>
-                  <div className="input-group"><label className="input-label">{t("bf_city_label")}</label><input className="input-field" type="text" placeholder={t("bf_city_label")} value={company.city} onChange={e => handleCompanyChange("city", e.target.value)} required /></div>
-                </div>
+                {/* 1. Company name (always required) */}
+                <div className="input-group"><label className="input-label">{t("bf_company_name_label")}</label><input className="input-field" type="text" placeholder={t("bf_company_name_label")} value={company.name} onChange={e => handleCompanyChange("name", e.target.value)} autoFocus required /></div>
+
+                {/* 2. Country (always required) */}
                 <div className="input-group"><label className="input-label">{t("bf_country_label")}</label>
                   <select className="input-field" value={company.country} onChange={e => handleCompanyChange("country", e.target.value)}>
                     <option value="NL">{t("bf_country_nl")}</option><option value="BE">{t("bf_country_be")}</option><option value="DE">{t("bf_country_de")}</option><option value="FR">{t("bf_country_fr")}</option><option value="LU">{t("bf_country_lu")}</option>
                   </select>
                 </div>
-                <div className="input-group"><label className="input-label">{t("bf_vat_label")}</label><input className="input-field" type="text" placeholder="NL123456789B01" value={company.vat} onChange={e => handleCompanyChange("vat", e.target.value)} /></div>
+
+                {/* 3. Address (required for paid, optional for trial) */}
+                <div style={{ display:"grid", gridTemplateColumns:"2fr 1fr 1fr", gap:"0 1rem" }}>
+                  <div className="input-group"><label className="input-label">{t("bf_street_label")}{!needsAddress && <span style={{ color:C.gray400, fontSize:"0.75rem" }}> ({t("bf_optional")})</span>}</label><input className="input-field" type="text" placeholder={t("bf_street_label")} value={company.street} onChange={e => handleCompanyChange("street", e.target.value)} required={needsAddress || isBuySide} /></div>
+                  <div className="input-group"><label className="input-label">{t("bf_housenr_label")}</label><input className="input-field" type="text" placeholder="12" value={company.number} onChange={e => handleCompanyChange("number", e.target.value)} required={needsAddress || isBuySide} /></div>
+                  <div className="input-group"><label className="input-label">{t("bf_addition_label")}</label><input className="input-field" type="text" placeholder="A" value={company.addition} onChange={e => handleCompanyChange("addition", e.target.value)} /></div>
+                </div>
+                <div style={{ display:"grid", gridTemplateColumns:"1fr 2fr", gap:"0 1rem" }}>
+                  <div className="input-group"><label className="input-label">{t("bf_zip_label")}{!needsAddress && <span style={{ color:C.gray400, fontSize:"0.75rem" }}> ({t("bf_optional")})</span>}</label><input className="input-field" type="text" placeholder="0000 AA" value={company.zip} onChange={e => handleCompanyChange("zip", e.target.value)} required={needsAddress || isBuySide} /></div>
+                  <div className="input-group"><label className="input-label">{t("bf_city_label")}{!needsAddress && <span style={{ color:C.gray400, fontSize:"0.75rem" }}> ({t("bf_optional")})</span>}</label><input className="input-field" type="text" placeholder={t("bf_city_label")} value={company.city} onChange={e => handleCompanyChange("city", e.target.value)} required={needsAddress || isBuySide} /></div>
+                </div>
+
+                {/* 4. KvK (conditional: required for Buy Side NL + Paid, optional for trial) */}
+                <div className="input-group">
+                  <label className="input-label">{t("bf_kvk_label")}{!needsKvkVat && <span style={{ color:C.gray400, fontSize:"0.75rem" }}> ({t("bf_optional")})</span>}</label>
+                  <input className="input-field" type="text" placeholder="12345678" value={company.kvk} onChange={e => handleCompanyChange("kvk", e.target.value)} required={needsKvkVat} />
+                </div>
+
+                {/* 5. VAT (conditional: required for Buy Side NL + Paid, optional for trial) */}
+                <div className="input-group">
+                  <label className="input-label">{t("bf_vat_label")}{!needsKvkVat && <span style={{ color:C.gray400, fontSize:"0.75rem" }}> ({t("bf_optional")})</span>}</label>
+                  <input className="input-field" type="text" placeholder="NL123456789B01" value={company.vat} onChange={e => handleCompanyChange("vat", e.target.value)} required={needsKvkVat} />
+                </div>
+
                 <div className="reg-nav-bar">
-                  <BackButton onClick={() => setStep(selectedSegment?.types?.length > 0 ? "type" : "segment")} />
+                  <BackButton onClick={() => setStep("intl_question")} />
                   <button className="btn-green btn-full" type="submit">{t("bf_further")}</button>
                 </div>
               </form>
             </>
-          )}
+            )
+          })()}
 
           {/* ── Overzicht ── */}
           {step === "overview" && (
