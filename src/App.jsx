@@ -29,6 +29,7 @@ export default function App() {
   const [userEmail, setUserEmail] = useState("")
   const [selectedPlan, setSelectedPlan] = useState(null)
   const [activePlanType, setActivePlanType] = useState("freemium")
+  const [bizVariant, setBizVariant] = useState("trial") // "trial" | "free" — for business status banner
   const [userData, setUserData]   = useState({ firstName:"Jasper", lastName:"", email:"", jobRole:"Portfolio Manager", initials:"J" })
   const [whitelistEmail, setWhitelistEmail] = useState(null)
   const [whitelistInfo, setWhitelistInfo]   = useState(null)
@@ -94,7 +95,21 @@ export default function App() {
       if (["en","nl","de","fr"].includes(code)) {
         setLang(code)
       }
-      // Clear hash so the pill can be clicked again
+      history.replaceState(null, "", window.location.pathname)
+      return
+    }
+
+    // Banner scenario deep links: #account-biz-trial, #account-biz-free, etc.
+    if (hash.startsWith("account-")) {
+      const scenario = hash.replace("account-", "")
+      setLoggedIn(true)
+      setUserData({ firstName:"Jasper", lastName:"Smits", email:"demo@aegon.com", jobRole:"Portfolio Manager", initials:"J" })
+      if (scenario === "biz-trial")  { setActivePlanType("business"); setBizVariant("trial") }
+      else if (scenario === "biz-free") { setActivePlanType("business"); setBizVariant("free") }
+      else if (scenario === "trial")    { setActivePlanType("trial") }
+      else if (scenario === "freemium") { setActivePlanType("freemium") }
+      else if (scenario === "pro")      { setActivePlanType("pro") }
+      setView("account")
       history.replaceState(null, "", window.location.pathname)
       return
     }
@@ -134,7 +149,7 @@ export default function App() {
     // Set plan type based on email domain for demo purposes
     const domain = email.toLowerCase().split("@")[1]
     if (domain === "abnamro.com") setActivePlanType("enterprise")
-    else if (domain === "aegon.com") setActivePlanType("business")
+    else if (domain === "aegon.com") { setActivePlanType("business"); setBizVariant("trial") }
     else setActivePlanType("freemium")
   }
 
@@ -297,7 +312,7 @@ export default function App() {
         />
       )}
       {view === "account" && (
-        <AccountPage user={userData} planType={activePlanType} onBack={() => setView("article")} onSimulateInvite={handleSimulateInvite} onUpgrade={handleUpgrade} />
+        <AccountPage user={userData} planType={activePlanType} bizVariant={bizVariant} onBack={() => setView("article")} onSimulateInvite={handleSimulateInvite} onUpgrade={handleUpgrade} />
       )}
       {view === "invited" && (
         <PersonalFlow

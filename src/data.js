@@ -110,11 +110,143 @@ export const BUSINESS_INTL_SIZES = [
   { id:"XL", label:"Extra Large",  users:"16 of meer gebruikers",   yearlyPrice:null,  perUser:18.50, minUsers:16, maxUsers:null },
 ]
 
+// ─── Upsell Banner Configuration System ──────────────────────────────────────
+// Each banner defines: when to show (conditions), where (position), what (content keys)
+//
+// type:       "status"   = plan status info (trial countdown, gratis badge)
+//             "upsell"   = upgrade within IO (international, business, more seats)
+//             "crosssell" = promote another product (Impact Investor, etc.)
+//
+// position:   "abonnementen_top"    = above plan details in Mijn abonnementen
+//             "abonnementen_bottom" = below plan details in Mijn abonnementen
+//             "gebruikers"          = in Gebruikers uitnodigen tab (personal only)
+//             "hero"                = full-width above sidebar + content
+//
+// conditions: planType  = which plans trigger this banner (array)
+//             scope     = "local" (1 editie) | "international" | "any"
+//             category  = "personal" | "business" | "any"
+//
+// style:      variant   = "info_blue" | "success_green" | "promo_red" | "neutral"
+//
+// i18n keys:  title, body, cta, badge — looked up as t(key)
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const UPSELL_BANNERS = [
+  // ── Status banners (abonnementen_top) ──────────────────────────────────────
+  {
+    id: "status_trial",
+    type: "status",
+    position: "abonnementen_top",
+    conditions: { planType: ["trial"], category: "any", scope: "any" },
+    style: { variant: "info_blue" },
+    image: "account_status_visual",
+    i18n: { title: "acc_trial_title", body: "acc_trial_body", badge: "acc_trial_badge" },
+  },
+  {
+    id: "status_free",
+    type: "status",
+    position: "abonnementen_top",
+    conditions: { planType: ["freemium"], category: "business", scope: "any" },
+    style: { variant: "success_green" },
+    image: "account_status_visual",
+    i18n: { title: "acc_free_title", body: "acc_free_body", badge: "acc_free_badge" },
+  },
+
+  // ── Upsell banners (abonnementen_bottom) ───────────────────────────────────
+  {
+    id: "upsell_international",
+    type: "upsell",
+    position: "abonnementen_bottom",
+    conditions: { planType: ["pro", "trial", "business"], category: "any", scope: "local" },
+    style: { variant: "neutral" },
+    image: "account_upgrade_visual",
+    i18n: { title: "acc_upgrade_title", body: "acc_upgrade_body", cta: "acc_upgrade_cta" },
+    action: "upgrade_international",
+  },
+  {
+    id: "upsell_pro",
+    type: "upsell",
+    position: "abonnementen_bottom",
+    conditions: { planType: ["freemium"], category: "personal", scope: "any" },
+    style: { variant: "neutral" },
+    image: "account_upgrade_visual",
+    i18n: { title: "acc_upsell_pro_title", body: "acc_upsell_pro_body", cta: "acc_upsell_pro_cta" },
+    action: "upgrade_pro",
+  },
+
+  // ── Upsell banners (gebruikers tab) ────────────────────────────────────────
+  {
+    id: "upsell_business",
+    type: "upsell",
+    position: "gebruikers",
+    conditions: { planType: ["freemium", "trial", "pro"], category: "personal", scope: "any" },
+    style: { variant: "info_blue" },
+    image: null,
+    i18n: { title: "acc_upsell_title", body: "acc_upsell_body", cta: "acc_upsell_cta", badge: "acc_upsell_badge", subtitle: "acc_upsell_from" },
+    action: "upgrade_business",
+  },
+  {
+    id: "upsell_more_seats",
+    type: "upsell",
+    position: "gebruikers",
+    conditions: { planType: ["business"], category: "business", scope: "any" },
+    style: { variant: "info_blue" },
+    image: null,
+    i18n: { title: "acc_upsell_seats_title", body: "acc_upsell_seats_body", cta: "acc_upsell_seats_cta" },
+    action: "upgrade_seats",
+  },
+
+  // ── Cross-sell hero banner ─────────────────────────────────────────────────
+  {
+    id: "crosssell_impact_investor",
+    type: "crosssell",
+    position: "hero",
+    conditions: { planType: ["pro", "trial", "business"], category: "any", scope: "any" },
+    style: { variant: "promo_red" },
+    image: "account_crosssell_visual",
+    i18n: { title: "acc_crosssell_title", body: "acc_crosssell_body", cta: "acc_crosssell_cta", badge: "acc_crosssell_badge" },
+    action: "crosssell",
+    enabled: false,   // set to true when image is provided
+  },
+]
+
+// ── Helper: get banners for a given context ──────────────────────────────────
+export function getBannersForContext({ planType, category = "personal", scope = "local", position }) {
+  return UPSELL_BANNERS.filter(b => {
+    if (b.enabled === false) return false
+    if (position && b.position !== position) return false
+    const c = b.conditions
+    if (!c.planType.includes(planType)) return false
+    if (c.category !== "any" && c.category !== category) return false
+    if (c.scope !== "any" && c.scope !== scope) return false
+    return true
+  })
+}
+
+// Alias used by AccountPage — maps section-based calls to position-based filtering
+export function getActiveBanners({ planType, section, variant = null, scope = "local" }) {
+  return UPSELL_BANNERS.filter(b => {
+    if (b.enabled === false) return false
+    if (!b.conditions.planType.includes(planType)) return false
+    // Match position string to section name
+    if (section && b.position !== section && b.position !== "hero") {
+      // For "abonnementen" section: match "abonnementen_top", "abonnementen_bottom", and "hero"
+      if (!b.position.startsWith(section)) return false
+    }
+    if (variant && b.conditions.variant && b.conditions.variant !== variant) return false
+    if (b.conditions.scope && b.conditions.scope !== "any" && b.conditions.scope !== scope) return false
+    if (b.conditions.category && b.conditions.category !== "any") {
+      // Skip category check if not provided
+    }
+    return true
+  })
+}
+
 // ─── Personal plans ───────────────────────────────────────────────────────────
 export const PERSONAL_PLANS = [
   {
     id: "freemium",
-    name: "Freemium",
+    name: "Gratis",
     sub: "Voor professionals",
     priceLabel: "Gratis",
     priceSuffix: "",
@@ -129,11 +261,11 @@ export const PERSONAL_PLANS = [
   },
   {
     id: "trial",
-    name: "Pro Trial",
+    name: "Premium proef",
     sub: "10 dagen volledige toegang",
     priceLabel: "Gratis",
     priceSuffix: "10 dagen",
-    cta: "Start 10 dagen Pro",
+    cta: "Start 10 dagen Premium",
     ctaNote: "Na 10 dagen stopt uw toegang automatisch.",
     features: [
       "Volledige toegang tot alle Premium artikelen (Nederland)",
@@ -144,11 +276,11 @@ export const PERSONAL_PLANS = [
   },
   {
     id: "pro",
-    name: "Pro",
+    name: "Premium",
     sub: "Volledige toegang – Nederland",
     priceLabel: "€ 648,–",
     priceSuffix: "Per jaar (excl. btw)",
-    cta: "Word Pro lid",
+    cta: "Word Premium lid",
     ctaNote: "Direct onbeperkte toegang na betaling.",
     features: [
       "Onbeperkte toegang tot alle redactionele content",

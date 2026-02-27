@@ -78,6 +78,17 @@ export const IMAGES = {
   account_upgrade_visual: null,
   // "/images/account-upgrade.jpg"
 
+
+  // ── Upsell / status banners ────────────────────────────────────────────────
+  // Product visual voor statusbanners (laptop + telefoon mockup)
+  // Aanbevolen formaat: 120×80px
+  account_status_visual: "/images/beeld_laptop_en_smartphone.png",
+
+  // Cross-sell hero banner afbeelding (bijv. Impact Investor)
+  // Aanbevolen formaat: 280×180px — wordt als volledig plaatje getoond
+  account_crosssell_visual: null,
+  // "/images/impact-investor-promo.png"
+
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

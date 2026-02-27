@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { C } from '../tokens.js'
-import { JOB_ROLES } from '../data.js'
+import { JOB_ROLES, getActiveBanners } from '../data.js'
 import IOLogo from '../components/IOLogo.jsx'
 import { LangSwitcher } from '../components/shared.jsx'
 import { useLang } from '../LanguageContext.jsx'
@@ -225,78 +225,240 @@ function NewsletterSection() {
   )
 }
 
-// ─── Abonnementen sectie ──────────────────────────────────────────────────────
-function AbonnementenSection({ planType, onUpgrade }) {
+// ─── Banner Components ────────────────────────────────────────────────────────
+
+// Status banner (trial countdown / free access) — matches wireframe exactly
+function StatusBanner({ banner }) {
   const { t } = useLang()
-  const isGratis   = planType === "freemium"
-  const isTrial    = planType === "trial"
-  const isPro      = planType === "pro"
-  const isBusiness = planType === "business"
+  const c = banner.i18n || banner.content || {}
+  const style_ = banner.style || {}
+  const isGreen = style_.variant === "success_green" || (banner.content?.color === "green")
+  const bgColor = isGreen ? "#EDFBF4" : "#EEF4FF"
+  const borderColor = isGreen ? C.green : "#7B9FE0"
+  const badgeBg = isGreen ? C.green : "#3B82F6"
+  const badgeColor = isGreen ? C.navy : C.white
+  const imgSrc = img(banner.image || c.imageKey)
 
   return (
-    <div style={{ background:C.white, borderRadius:10, padding:"1.75rem", boxShadow:"0 2px 16px rgba(12,24,46,0.06)" }}>
-      {isTrial && (
-        <div style={{ background:"#EEF4FF", border:`1px solid #7B9FE0`, borderRadius:8, padding:"1rem 1.25rem", marginBottom:"1.5rem", display:"flex", alignItems:"center", gap:"1rem" }}>
-          <div style={{ width:64, height:48, flexShrink:0, background:`linear-gradient(135deg,${C.navy},${C.navyMid})`, borderRadius:6 }}/>
-          <div style={{ flex:1 }}>
-            <div style={{ fontFamily:"var(--font-sans)", fontWeight:700, fontSize:"0.9375rem", color:C.navy, marginBottom:"0.25rem" }}>{t("acc_trial_title")}</div>
-            <div style={{ fontFamily:"var(--font-sans)", fontSize:"0.875rem", color:C.gray700, lineHeight:"var(--lh-body)" }}>{t("acc_trial_body")}</div>
-          </div>
-          <div style={{ background:"#3B82F6", color:C.white, borderRadius:99, padding:"0.3rem 0.875rem", fontFamily:"var(--font-sans)", fontSize:"0.8rem", fontWeight:700, whiteSpace:"nowrap" }}>{t("acc_trial_badge")}</div>
-        </div>
-      )}
-      {isGratis && (
-        <div style={{ background:"#EDFBF4", border:`1px solid ${C.green}`, borderRadius:8, padding:"1rem 1.25rem", marginBottom:"1.5rem", display:"flex", alignItems:"center", gap:"1rem" }}>
-          <div style={{ width:64, height:48, flexShrink:0, background:`linear-gradient(135deg,${C.navy},${C.navyMid})`, borderRadius:6 }}/>
-          <div style={{ flex:1 }}>
-            <div style={{ fontFamily:"var(--font-sans)", fontWeight:700, fontSize:"0.9375rem", color:C.navy, marginBottom:"0.25rem" }}>{t("acc_free_title")}</div>
-            <div style={{ fontFamily:"var(--font-sans)", fontSize:"0.875rem", color:C.gray700, lineHeight:"var(--lh-body)" }}>{t("acc_free_body")}</div>
-          </div>
-          <div style={{ background:C.green, color:C.navy, borderRadius:99, padding:"0.3rem 0.875rem", fontFamily:"var(--font-sans)", fontSize:"0.8rem", fontWeight:700, whiteSpace:"nowrap" }}>{t("acc_free_badge")}</div>
-        </div>
-      )}
-
-      <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"1rem" }}>
-        <h2 style={{ fontFamily:"var(--font-sans)", fontSize:"1.375rem", fontWeight:800, color:C.navy, lineHeight:"var(--lh-heading)", letterSpacing:"var(--tracking-heading)" }}>{t("acc_sub_title")}</h2>
-        <button className="btn-secondary" style={{ padding:"0.4rem 1rem", fontSize:"0.875rem", display:"flex", alignItems:"center", gap:"0.375rem" }}>
-          <span style={{ fontSize:"1.1rem", lineHeight:1 }}>+</span> {t("acc_sub_add")}
-        </button>
-      </div>
-
-      <div style={{ border:`1px solid ${C.gray200}`, borderRadius:8, padding:"1rem 1.25rem", display:"flex", alignItems:"center", gap:"1rem", marginBottom:"1.25rem" }}>
-        <div style={{ width:28, height:20, background:"linear-gradient(180deg,#AE1C28 33%,#fff 33% 66%,#21468B 66%)", borderRadius:3, flexShrink:0, border:`1px solid ${C.gray200}` }}/>
-        <div style={{ flex:1 }}>
-          <div style={{ fontFamily:"var(--font-sans)", fontWeight:700, fontSize:"0.9375rem", color:C.navy }}>
-            Investment Officer · Nederland · {isBusiness ? "Business" : "Personal"} {isPro ? "Pro" : isTrial ? "Trial" : "Free"}
-          </div>
-          <div style={{ fontFamily:"var(--font-sans)", fontSize:"0.75rem", color:"#4A4AB5", marginTop:"0.25rem" }}>
-            CDP: {isBusiness ? "Business Sell Side — .NL" : isPro ? "Personal Pro — .NL" : isTrial ? "Personal Trial — .NL" : "Personal Free — .NL"}
-          </div>
-          <div style={{ fontFamily:"var(--font-sans)", fontSize:"0.8125rem", color:C.gray500, marginTop:"0.2rem" }}>{t("acc_sub_started")} 12 jan 2025</div>
-        </div>
-        {(isPro || isBusiness) && (
-          <span style={{ background:C.red, color:C.white, borderRadius:99, padding:"0.25rem 0.75rem", fontFamily:"var(--font-sans)", fontSize:"0.8rem", fontWeight:700, whiteSpace:"nowrap" }}>{t("acc_sub_auto")}</span>
+    <div style={{
+      background: bgColor, border: `1px solid ${borderColor}`, borderRadius: 8,
+      padding: "1.25rem 1.5rem", marginBottom: "1.5rem",
+      display: "flex", alignItems: "center", gap: "1.25rem",
+    }}>
+      {/* Product visual */}
+      <div style={{ width: 80, height: 56, flexShrink: 0, borderRadius: 6, overflow: "hidden" }}>
+        {imgSrc ? (
+          <img src={imgSrc} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+        ) : (
+          <div style={{ width: "100%", height: "100%", background: `linear-gradient(135deg,${C.navy},${C.navyMid})`, borderRadius: 6 }} />
         )}
-        <button className="btn-secondary" style={{ padding:"0.4rem 1rem", fontSize:"0.875rem" }}>{t("acc_edit")}</button>
       </div>
+      {/* Text */}
+      <div style={{ flex: 1 }}>
+        <div style={{ fontFamily: "var(--font-sans)", fontWeight: 700, fontSize: "0.9375rem", color: C.navy, marginBottom: "0.25rem" }}>
+          {t(c.titleKey || c.title)}
+        </div>
+        <div style={{ fontFamily: "var(--font-sans)", fontSize: "0.875rem", color: C.gray700, lineHeight: "var(--lh-body)" }}>
+          {t(c.bodyKey || c.body)}
+        </div>
+      </div>
+      {/* Badge */}
+      <div style={{
+        background: badgeBg, color: badgeColor, borderRadius: 99,
+        padding: "0.3rem 0.875rem", fontFamily: "var(--font-sans)",
+        fontSize: "0.8rem", fontWeight: 700, whiteSpace: "nowrap",
+      }}>
+        {t(c.badgeKey || c.badge)}
+      </div>
+    </div>
+  )
+}
 
-      <div style={{ border:`1px solid ${C.gray200}`, borderRadius:8, padding:"1.25rem 1.5rem", display:"flex", alignItems:"flex-start", gap:"1.25rem" }}>
-        <div style={{ width:80, height:56, flexShrink:0, borderRadius:6, overflow:"hidden", position:"relative" }}>
-          {img("account_upgrade_visual") ? (
-            <img src={img("account_upgrade_visual")} alt="" style={{ width:"100%", height:"100%", objectFit:"cover" }} />
-          ) : (
-            <div style={{ width:"100%", height:"100%", background:`linear-gradient(135deg,${C.navy},${C.navyMid})`, position:"relative" }}>
-              <div style={{ position:"absolute", inset:5, border:"1px solid rgba(255,255,255,0.15)", borderRadius:3 }}/>
+// Upsell banner (upgrade to international, upgrade to business) — matches wireframe
+function UpsellBanner({ banner, onAction }) {
+  const { t } = useLang()
+  const c = banner.i18n || banner.content || {}
+  const imgSrc = img(banner.image || c.imageKey)
+
+  // personal_to_business has a different layout (with badge circle)
+  if (banner.id === "personal_to_business") {
+    return (
+      <div style={{
+        background: "#EEF4FF", border: "1px solid #C3D4F5", borderRadius: 10,
+        padding: "1.75rem 2rem", display: "flex", alignItems: "center",
+        gap: "2rem", position: "relative", overflow: "hidden",
+      }}>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontFamily: "var(--font-sans)", fontWeight: 800, fontSize: "1.125rem", color: C.navy, marginBottom: "0.5rem" }}>
+            {t(c.titleKey || c.title)}
+          </div>
+          <div style={{ fontFamily: "var(--font-sans)", fontSize: "0.9rem", color: C.gray700, lineHeight: "var(--lh-body)", marginBottom: "1.25rem" }}>
+            {t(c.bodyKey || c.body)}
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+            <button className="btn-primary" style={{ padding: "0.625rem 1.5rem" }} onClick={onAction}>
+              {t(c.ctaKey || c.cta)}
+            </button>
+            {(c.fromKey || c.subtitle) && (
+              <span style={{ fontFamily: "var(--font-sans)", fontSize: "0.9rem", color: C.gray500 }}>{t(c.fromKey || c.subtitle)}</span>
+            )}
+          </div>
+        </div>
+        <div style={{ position: "relative", flexShrink: 0, width: 180, height: 100 }}>
+          <div style={{ display: "flex" }}>
+            {["#E8B4B8", "#B4C8E8", "#B4E8C8"].map((bg, i) => (
+              <div key={i} style={{
+                width: 44, height: 44, borderRadius: "50%", background: bg,
+                border: `2px solid ${C.white}`, marginLeft: i > 0 ? -10 : 0,
+                display: "flex", alignItems: "center", justifyContent: "center",
+                fontFamily: "var(--font-sans)", fontWeight: 700, fontSize: "0.8rem", color: C.navy,
+              }}>
+                {["JV", "SB", "TS"][i]}
+              </div>
+            ))}
+          </div>
+          {(c.badgeKey || c.badge) && (
+            <div style={{
+              position: "absolute", top: -10, right: -10, width: 90, height: 90,
+              borderRadius: "50%", background: C.red,
+              display: "flex", alignItems: "center", justifyContent: "center", textAlign: "center",
+              fontFamily: "var(--font-sans)", fontSize: "0.7rem", fontWeight: 700, color: C.white,
+              lineHeight: 1.3, padding: "0.5rem",
+            }}>
+              {t(c.badgeKey || c.badge)}
             </div>
           )}
         </div>
-        <div style={{ flex:1 }}>
-          <div style={{ fontFamily:"var(--font-sans)", fontWeight:800, fontSize:"1rem", color:C.navy, marginBottom:"0.375rem", lineHeight:"var(--lh-heading)" }}>{t("acc_upgrade_title")}</div>
-          <div style={{ fontFamily:"var(--font-sans)", fontSize:"0.875rem", color:C.gray700, lineHeight:"var(--lh-body)", marginBottom:"1rem" }}>{t("acc_upgrade_body")}</div>
-          <button className="btn-primary" style={{ padding:"0.625rem 1.5rem" }} onClick={onUpgrade}>
-            {t("acc_upgrade_cta")}
+      </div>
+    )
+  }
+
+  // Default upsell: upgrade to international editions
+  return (
+    <div style={{
+      border: `1px solid ${C.gray200}`, borderRadius: 8,
+      padding: "1.25rem 1.5rem", display: "flex", alignItems: "flex-start", gap: "1.25rem",
+    }}>
+      <div style={{ width: 80, height: 56, flexShrink: 0, borderRadius: 6, overflow: "hidden" }}>
+        {imgSrc ? (
+          <img src={imgSrc} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+        ) : (
+          <div style={{ width: "100%", height: "100%", background: `linear-gradient(135deg,${C.navy},${C.navyMid})`, position: "relative" }}>
+            <div style={{ position: "absolute", inset: 5, border: "1px solid rgba(255,255,255,0.15)", borderRadius: 3 }} />
+          </div>
+        )}
+      </div>
+      <div style={{ flex: 1 }}>
+        <div style={{ fontFamily: "var(--font-sans)", fontWeight: 800, fontSize: "1rem", color: C.navy, marginBottom: "0.375rem", lineHeight: "var(--lh-heading)" }}>
+          {t(c.titleKey || c.title)}
+        </div>
+        <div style={{ fontFamily: "var(--font-sans)", fontSize: "0.875rem", color: C.gray700, lineHeight: "var(--lh-body)", marginBottom: "1rem" }}>
+          {t(c.bodyKey || c.body)}
+        </div>
+        <button className="btn-primary" style={{ padding: "0.625rem 1.5rem" }} onClick={onAction}>
+          {t(c.ctaKey || c.cta)}
+        </button>
+      </div>
+    </div>
+  )
+}
+
+// Cross-sell hero banner (full-width, above page content) — for external products
+function CrossSellBanner({ banner, onAction }) {
+  const { t } = useLang()
+  const c = banner.i18n || banner.content || {}
+  const imgSrc = img(banner.image || c.imageKey)
+  if (!imgSrc) return null
+
+  return (
+    <div style={{
+      background: "#EEF4FF", borderRadius: 10,
+      padding: "1.25rem 1.5rem", marginBottom: "1.5rem",
+      display: "flex", alignItems: "center", gap: "1.5rem",
+      overflow: "hidden",
+    }}>
+      <div style={{ width: 220, height: 140, flexShrink: 0, borderRadius: 8, overflow: "hidden" }}>
+        <img src={imgSrc} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+      </div>
+      <div style={{ flex: 1 }}>
+        {/* Cross-sell content comes from the image; CTA is dynamic */}
+      </div>
+      <button style={{
+        background: C.red, color: C.white, border: "none", borderRadius: 6,
+        padding: "0.75rem 1.5rem", fontFamily: "var(--font-sans)",
+        fontWeight: 700, fontSize: "0.9375rem", cursor: "pointer", whiteSpace: "nowrap",
+      }} onClick={onAction}>
+        {t(c.ctaKey || c.cta)}
+      </button>
+    </div>
+  )
+}
+
+// Master renderer: picks the right component for each banner
+function RenderBanner({ banner, onAction }) {
+  switch (banner.type) {
+    case "status":    return <StatusBanner key={banner.id} banner={banner} />
+    case "upsell":    return <UpsellBanner key={banner.id} banner={banner} onAction={onAction} />
+    case "crosssell": return <CrossSellBanner key={banner.id} banner={banner} onAction={onAction} />
+    default:          return null
+  }
+}
+
+// ─── Abonnementen sectie ──────────────────────────────────────────────────────
+function AbonnementenSection({ planType, onUpgrade, bizVariant }) {
+  const { t } = useLang()
+  const isBusiness = planType === "business"
+  const isPro      = planType === "pro"
+  const isTrial    = planType === "trial"
+
+  // Get banners for this section using the configuration engine
+  const banners = getActiveBanners({
+    planType,
+    section: "abonnementen",
+    variant: isBusiness ? (bizVariant || "trial") : null,
+    scope: "local",
+  })
+
+  const statusBanners = banners.filter(b => b.type === "status")
+  const upsellBanners = banners.filter(b => b.type === "upsell")
+  const heroBanners   = banners.filter(b => b.type === "crosssell")
+
+  return (
+    <div>
+      {/* ── Hero / cross-sell banners (above the card) ── */}
+      {heroBanners.map(b => <RenderBanner key={b.id} banner={b} onAction={onUpgrade} />)}
+
+      <div style={{ background: C.white, borderRadius: 10, padding: "1.75rem", boxShadow: "0 2px 16px rgba(12,24,46,0.06)" }}>
+        {/* ── Status banners (trial / free) ── */}
+        {statusBanners.map(b => <RenderBanner key={b.id} banner={b} />)}
+
+        {/* ── Subscription info ── */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
+          <h2 style={{ fontFamily: "var(--font-sans)", fontSize: "1.375rem", fontWeight: 800, color: C.navy, lineHeight: "var(--lh-heading)", letterSpacing: "var(--tracking-heading)" }}>{t("acc_sub_title")}</h2>
+          <button className="btn-secondary" style={{ padding: "0.4rem 1rem", fontSize: "0.875rem", display: "flex", alignItems: "center", gap: "0.375rem" }}>
+            <span style={{ fontSize: "1.1rem", lineHeight: 1 }}>+</span> {t("acc_sub_add")}
           </button>
         </div>
+
+        <div style={{ border: `1px solid ${C.gray200}`, borderRadius: 8, padding: "1rem 1.25rem", display: "flex", alignItems: "center", gap: "1rem", marginBottom: "1.25rem" }}>
+          <div style={{ width: 28, height: 20, background: "linear-gradient(180deg,#AE1C28 33%,#fff 33% 66%,#21468B 66%)", borderRadius: 3, flexShrink: 0, border: `1px solid ${C.gray200}` }} />
+          <div style={{ flex: 1 }}>
+            <div style={{ fontFamily: "var(--font-sans)", fontWeight: 700, fontSize: "0.9375rem", color: C.navy }}>
+              Investment Officer · Nederland · {isBusiness ? "Business" : "Personal"} {isPro ? "Pro" : isTrial ? "Trial" : "Free"}
+            </div>
+            <div style={{ fontFamily: "var(--font-sans)", fontSize: "0.75rem", color: "#4A4AB5", marginTop: "0.25rem" }}>
+              CDP: {isBusiness ? "Business Sell Side — .NL" : isPro ? "Personal Pro — .NL" : isTrial ? "Personal Trial — .NL" : "Personal Free — .NL"}
+            </div>
+            <div style={{ fontFamily: "var(--font-sans)", fontSize: "0.8125rem", color: C.gray500, marginTop: "0.2rem" }}>{t("acc_sub_started")} 12 jan 2025</div>
+          </div>
+          {(isPro || isBusiness) && (
+            <span style={{ background: C.red, color: C.white, borderRadius: 99, padding: "0.25rem 0.75rem", fontFamily: "var(--font-sans)", fontSize: "0.8rem", fontWeight: 700, whiteSpace: "nowrap" }}>{t("acc_sub_auto")}</span>
+          )}
+          <button className="btn-secondary" style={{ padding: "0.4rem 1rem", fontSize: "0.875rem" }}>{t("acc_edit")}</button>
+        </div>
+
+        {/* ── Upsell banners (upgrade international, etc.) ── */}
+        {upsellBanners.map(b => <RenderBanner key={b.id} banner={b} onAction={onUpgrade} />)}
       </div>
     </div>
   )
@@ -394,33 +556,12 @@ function GebruikersSection({ planType, onSimulateInvite, onUpgrade }) {
   const [openMenu, setOpenMenu]   = useState(null)
 
   if (!isBusiness) {
+    // Get upsell banners for this section
+    const banners = getActiveBanners({ planType, section: "gebruikers", scope: "local" })
     return (
       <div style={{ background:C.white, borderRadius:10, padding:"1.75rem", boxShadow:"0 2px 16px rgba(12,24,46,0.06)" }}>
         <h2 style={{ fontFamily:"var(--font-sans)", fontSize:"1.375rem", fontWeight:800, color:C.navy, marginBottom:"1.5rem" }}>{t("acc_upsell_title")}</h2>
-        <div style={{ background:"#EEF4FF", border:`1px solid #C3D4F5`, borderRadius:10, padding:"1.75rem 2rem", display:"flex", alignItems:"center", gap:"2rem", position:"relative", overflow:"hidden" }}>
-          <div style={{ flex:1 }}>
-            <div style={{ fontFamily:"var(--font-sans)", fontWeight:800, fontSize:"1.125rem", color:C.navy, marginBottom:"0.5rem" }}>{t("acc_upsell_title")}</div>
-            <div style={{ fontFamily:"var(--font-sans)", fontSize:"0.9rem", color:C.gray700, lineHeight:"var(--lh-body)", marginBottom:"1.25rem" }}>{t("acc_upsell_body")}</div>
-            <div style={{ display:"flex", alignItems:"center", gap:"1rem" }}>
-              <button className="btn-primary" style={{ padding:"0.625rem 1.5rem" }} onClick={onUpgrade}>
-                {t("acc_upsell_cta")}
-              </button>
-              <span style={{ fontFamily:"var(--font-sans)", fontSize:"0.9rem", color:C.gray500 }}>{t("acc_upsell_from")}</span>
-            </div>
-          </div>
-          <div style={{ position:"relative", flexShrink:0, width:180, height:100 }}>
-            <div style={{ display:"flex" }}>
-              {["#E8B4B8","#B4C8E8","#B4E8C8"].map((bg, i) => (
-                <div key={i} style={{ width:44, height:44, borderRadius:"50%", background:bg, border:`2px solid ${C.white}`, marginLeft: i>0 ? -10 : 0, display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"var(--font-sans)", fontWeight:700, fontSize:"0.8rem", color:C.navy }}>
-                  {["JV","SB","TS"][i]}
-                </div>
-              ))}
-            </div>
-            <div style={{ position:"absolute", top:-10, right:-10, width:90, height:90, borderRadius:"50%", background:C.red, display:"flex", alignItems:"center", justifyContent:"center", textAlign:"center", fontFamily:"var(--font-sans)", fontSize:"0.7rem", fontWeight:700, color:C.white, lineHeight:1.3, padding:"0.5rem" }}>
-              {t("acc_upsell_badge")}
-            </div>
-          </div>
-        </div>
+        {banners.map(b => <RenderBanner key={b.id} banner={b} onAction={onUpgrade} />)}
       </div>
     )
   }
@@ -570,7 +711,7 @@ function GebruikersSection({ planType, onSimulateInvite, onUpgrade }) {
 }
 
 // ─── Main AccountPage ─────────────────────────────────────────────────────────
-export default function AccountPage({ user, planType, onBack, onSimulateInvite, onUpgrade }) {
+export default function AccountPage({ user, planType, onBack, onSimulateInvite, onUpgrade, bizVariant }) {
   const { t } = useLang()
   const [section, setSection]     = useState("account")
   const [currentUser, setCurrentUser] = useState(user)
@@ -588,12 +729,22 @@ export default function AccountPage({ user, planType, onBack, onSimulateInvite, 
             {t("acc_welcome")} {currentUser.firstName}
           </h1>
         </div>
+
+        {/* ── Static cross-sell banner (Impact Investor promo) ── */}
+        <div style={{ marginBottom:"1.5rem", borderRadius:10, overflow:"hidden", cursor:"pointer" }}>
+          <img
+            src="/images/Banner_Impact_Investor_PROMO.png"
+            alt="Krijg nu toegang tot een jaar Impact Investor"
+            style={{ width:"100%", display:"block" }}
+          />
+        </div>
+
         <div style={{ display:"flex", gap:"1.5rem", alignItems:"flex-start", paddingBottom:"4rem" }}>
           <Sidebar active={section} onNav={setSection} />
           <div style={{ flex:1, minWidth:0 }}>
             {section === "account"      && <AccountSection user={currentUser} onUpdate={setCurrentUser} />}
             {section === "nieuwsbrief"  && <NewsletterSection />}
-            {section === "abonnementen" && <AbonnementenSection planType={planType} onUpgrade={onUpgrade} />}
+            {section === "abonnementen" && <AbonnementenSection planType={planType} onUpgrade={onUpgrade} bizVariant={bizVariant} />}
             {section === "gebruikers"   && <GebruikersSection planType={planType} onSimulateInvite={onSimulateInvite} onUpgrade={onUpgrade} />}
             {section === "facturatie"   && <FacturatieSection />}
           </div>

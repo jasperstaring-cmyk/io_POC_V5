@@ -561,9 +561,16 @@ export const translations = {
     acc_free_title:      "Je maakt gebruik van jouw gratis toegang",
     acc_free_body:       "Investment Officer ondersteunt bepaalde sectoren met kosteloze toegang om kennisdeling binnen het ecosysteem te bevorderen.",
     acc_free_badge:      "100% korting",
+    acc_biz_trial_title: "Jouw proefperiode is gestart",
+    acc_biz_trial_body:  "Je hebt nu 180 dagen gratis toegang tot Investment Officer. Na afloop van deze periode start jouw gekozen abonnement. Je kunt het abonnement tijdens deze periode op elk moment stopzetten.",
+    acc_biz_trial_badge: "179 dagen over",
+    acc_biz_free_title:  "Je maakt gebruik van jouw gratis toegang",
+    acc_biz_free_body:   "Investment Officer ondersteunt bepaalde sectoren met kosteloze toegang om kennisdeling binnen het ecosysteem te bevorderen. Andere sectoren dragen bij via een abonnement.",
+    acc_biz_free_badge:  "100% korting",
     acc_upgrade_title:   "Breid je toegang uit naar alle internationale edities",
     acc_upgrade_body:    "Je hebt nu toegang tot de lokale editie van Investment Officer. Met een upgrade lees je ook onze internationale edities en krijg je wereldwijd perspectief op de markt.",
     acc_upgrade_cta:     "Upgrade naar wereldwijde toegang",
+    acc_crosssell_cta:   "Voeg product toe",
 
     acc_users_title:     "Gebruikers uitnodigen",
     acc_users_sub:       "Met de corporate licentie van uw organisatie profiteert u niet alleen van alle voordelen die Investment Officer biedt, maar kunnen ook uw collega's hier zonder beperkingen of extra kosten gebruik van maken.",
@@ -584,6 +591,20 @@ export const translations = {
     acc_upsell_cta:      "Upgrade naar Business",
     acc_upsell_from:     "Vanaf €33,–",
     acc_upsell_badge:    "Nu 6 maanden gratis",
+
+    // ── Upsell banner system (new) ──
+    acc_upsell_pro_title:    "Upgrade naar Premium",
+    acc_upsell_pro_body:     "Je hebt nu een gratis account. Upgrade naar Premium voor onbeperkte toegang tot alle redactionele content, exclusieve analyses en interviews.",
+    acc_upsell_pro_cta:      "Bekijk Premium abonnement",
+
+    acc_upsell_seats_title:  "Meer collega's toegang geven?",
+    acc_upsell_seats_body:   "Uw organisatie groeit. Upgrade naar een groter pakket en geef meer collega's toegang tot Investment Officer.",
+    acc_upsell_seats_cta:    "Bekijk grotere pakketten",
+
+    acc_crosssell_title:     "Krijg nu toegang tot een jaar Impact Investor",
+    acc_crosssell_body:      "Verdiep je in duurzaam en impactvol beleggen met ons zustermerk Impact Investor.",
+    acc_crosssell_cta:       "Voeg product toe",
+    acc_crosssell_badge:     "Nu voor €2,99 per maand",
 
     acc_billing_title:   "Facturatie",
     acc_billing_tab1:    "Betalingsgegevens",
@@ -1551,9 +1572,16 @@ export const translations = {
     acc_free_title:      "You are using your free access",
     acc_free_body:       "Investment Officer supports certain sectors with free access to promote knowledge sharing within the ecosystem.",
     acc_free_badge:      "100% discount",
+    acc_biz_trial_title: "Your trial period has started",
+    acc_biz_trial_body:  "You now have 180 days of free access to Investment Officer. After this period your chosen subscription will start. You can cancel at any time during this period.",
+    acc_biz_trial_badge: "179 days remaining",
+    acc_biz_free_title:  "You are using your free access",
+    acc_biz_free_body:   "Investment Officer supports certain sectors with free access to promote knowledge sharing within the ecosystem. Other sectors contribute through a subscription.",
+    acc_biz_free_badge:  "100% discount",
     acc_upgrade_title:   "Expand your access to all international editions",
     acc_upgrade_body:    "You currently have access to the local edition of Investment Officer. With an upgrade you can also read our international editions and gain a global perspective on the market.",
     acc_upgrade_cta:     "Upgrade to global access",
+    acc_crosssell_cta:   "Add product",
 
     acc_users_title:     "Invite users",
     acc_users_sub:       "With your organisation's corporate licence, not only do you benefit from all the advantages Investment Officer offers, but your colleagues can also use it without restrictions or additional costs.",
@@ -1574,6 +1602,20 @@ export const translations = {
     acc_upsell_cta:      "Upgrade to Business",
     acc_upsell_from:     "From €33,–",
     acc_upsell_badge:    "Now 6 months free",
+
+    // ── Upsell banner system (new) ──
+    acc_upsell_pro_title:    "Upgrade to Premium",
+    acc_upsell_pro_body:     "You have a free account. Upgrade to Premium for unlimited access to all editorial content, exclusive analyses and interviews.",
+    acc_upsell_pro_cta:      "View Premium subscription",
+
+    acc_upsell_seats_title:  "Need access for more colleagues?",
+    acc_upsell_seats_body:   "Your organisation is growing. Upgrade to a larger package and give more colleagues access to Investment Officer.",
+    acc_upsell_seats_cta:    "View larger packages",
+
+    acc_crosssell_title:     "Get access to a full year of Impact Investor",
+    acc_crosssell_body:      "Dive into sustainable and impact investing with our sister brand Impact Investor.",
+    acc_crosssell_cta:       "Add product",
+    acc_crosssell_badge:     "Now for €2.99 per month",
 
     acc_billing_title:   "Billing",
     acc_billing_tab1:    "Payment details",
@@ -2529,9 +2571,16 @@ export const translations = {
     acc_free_title:      "Sie nutzen Ihren kostenlosen Zugang",
     acc_free_body:       "Investment Officer unterstützt bestimmte Branchen mit kostenlosem Zugang, um den Wissensaustausch innerhalb des Ökosystems zu fördern.",
     acc_free_badge:      "100% Rabatt",
+    acc_biz_trial_title: "Ihre Testphase hat begonnen",
+    acc_biz_trial_body:  "Sie haben jetzt 180 Tage kostenlosen Zugang zu Investment Officer. Nach Ablauf beginnt Ihr gewähltes Abonnement. Sie können jederzeit während dieser Phase kündigen.",
+    acc_biz_trial_badge: "Noch 179 Tage",
+    acc_biz_free_title:  "Sie nutzen Ihren kostenlosen Zugang",
+    acc_biz_free_body:   "Investment Officer unterstützt bestimmte Branchen mit kostenlosem Zugang, um den Wissensaustausch innerhalb des Ökosystems zu fördern. Andere Branchen tragen über ein Abonnement bei.",
+    acc_biz_free_badge:  "100% Rabatt",
     acc_upgrade_title:   "Erweitern Sie Ihren Zugang auf alle internationalen Ausgaben",
     acc_upgrade_body:    "Sie haben derzeit Zugang zur lokalen Ausgabe von Investment Officer. Mit einem Upgrade können Sie auch unsere internationalen Ausgaben lesen und eine globale Perspektive auf den Markt gewinnen.",
     acc_upgrade_cta:     "Upgrade auf weltweiten Zugang",
+    acc_crosssell_cta:   "Produkt hinzufügen",
 
     acc_users_title:     "Nutzer einladen",
     acc_users_sub:       "Mit der Firmenlizenz Ihrer Organisation profitieren nicht nur Sie von allen Vorteilen, die Investment Officer bietet, sondern auch Ihre Kollegen können es ohne Einschränkungen oder zusätzliche Kosten nutzen.",
@@ -2552,6 +2601,20 @@ export const translations = {
     acc_upsell_cta:      "Upgrade auf Business",
     acc_upsell_from:     "Ab €33,–",
     acc_upsell_badge:    "Jetzt 6 Monate kostenlos",
+
+    // ── Upsell banner system (new) ──
+    acc_upsell_pro_title:    "Upgrade auf Premium",
+    acc_upsell_pro_body:     "Sie haben ein kostenloses Konto. Upgraden Sie auf Premium für unbegrenzten Zugang zu allen redaktionellen Inhalten, exklusiven Analysen und Interviews.",
+    acc_upsell_pro_cta:      "Premium-Abonnement ansehen",
+
+    acc_upsell_seats_title:  "Mehr Kollegen Zugang geben?",
+    acc_upsell_seats_body:   "Ihre Organisation wächst. Upgraden Sie auf ein größeres Paket und geben Sie mehr Kollegen Zugang zu Investment Officer.",
+    acc_upsell_seats_cta:    "Größere Pakete ansehen",
+
+    acc_crosssell_title:     "Erhalten Sie Zugang zu einem Jahr Impact Investor",
+    acc_crosssell_body:      "Vertiefen Sie sich in nachhaltiges und wirkungsorientiertes Investieren mit unserer Schwestermarke Impact Investor.",
+    acc_crosssell_cta:       "Produkt hinzufügen",
+    acc_crosssell_badge:     "Jetzt für €2,99 pro Monat",
 
     acc_billing_title:   "Rechnungsstellung",
     acc_billing_tab1:    "Zahlungsdaten",
@@ -3508,9 +3571,16 @@ export const translations = {
     acc_free_title:      "Vous utilisez votre accès gratuit",
     acc_free_body:       "Investment Officer soutient certains secteurs avec un accès gratuit pour promouvoir le partage des connaissances dans l'écosystème.",
     acc_free_badge:      "100% de réduction",
+    acc_biz_trial_title: "Votre période d'essai a commencé",
+    acc_biz_trial_body:  "Vous avez maintenant 180 jours d'accès gratuit à Investment Officer. Après cette période, votre abonnement choisi commencera. Vous pouvez annuler à tout moment.",
+    acc_biz_trial_badge: "179 jours restants",
+    acc_biz_free_title:  "Vous utilisez votre accès gratuit",
+    acc_biz_free_body:   "Investment Officer soutient certains secteurs avec un accès gratuit pour promouvoir le partage des connaissances. D'autres secteurs contribuent via un abonnement.",
+    acc_biz_free_badge:  "100% de réduction",
     acc_upgrade_title:   "Étendez votre accès à toutes les éditions internationales",
     acc_upgrade_body:    "Vous avez actuellement accès à l'édition locale d'Investment Officer. Avec un upgrade, vous pouvez également lire nos éditions internationales et obtenir une perspective mondiale sur le marché.",
     acc_upgrade_cta:     "Passer à l'accès mondial",
+    acc_crosssell_cta:   "Ajouter un produit",
 
     acc_users_title:     "Inviter des utilisateurs",
     acc_users_sub:       "Avec la licence d'entreprise de votre organisation, non seulement vous bénéficiez de tous les avantages d'Investment Officer, mais vos collègues peuvent également l'utiliser sans restrictions ni coûts supplémentaires.",
@@ -3531,6 +3601,20 @@ export const translations = {
     acc_upsell_cta:      "Passer à Business",
     acc_upsell_from:     "À partir de €33,–",
     acc_upsell_badge:    "6 mois gratuits maintenant",
+
+    // ── Upsell banner system (new) ──
+    acc_upsell_pro_title:    "Passez à Premium",
+    acc_upsell_pro_body:     "Vous avez un compte gratuit. Passez à Premium pour un accès illimité à tout le contenu éditorial, analyses exclusives et interviews.",
+    acc_upsell_pro_cta:      "Voir l'abonnement Premium",
+
+    acc_upsell_seats_title:  "Donner accès à plus de collègues ?",
+    acc_upsell_seats_body:   "Votre organisation grandit. Passez à un forfait plus grand et donnez accès à plus de collègues.",
+    acc_upsell_seats_cta:    "Voir les forfaits plus grands",
+
+    acc_crosssell_title:     "Obtenez un accès à une année d'Impact Investor",
+    acc_crosssell_body:      "Plongez dans l'investissement durable et à impact avec notre marque sœur Impact Investor.",
+    acc_crosssell_cta:       "Ajouter le produit",
+    acc_crosssell_badge:     "Maintenant pour €2,99 par mois",
 
     acc_billing_title:   "Facturation",
     acc_billing_tab1:    "Données de paiement",

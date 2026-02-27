@@ -479,6 +479,15 @@ export default function DemoBanner() {
     { label: "Invited user",      hash: "#invited" },
   ]
 
+  /* ── Banner scenario links (Account page variants) ── */
+  const bannerScenarios = [
+    { label: "Biz Trial",    hash: "#account-biz-trial",   desc: "Business + 180d proef" },
+    { label: "Biz Free",     hash: "#account-biz-free",    desc: "Business + gratis (wealth)" },
+    { label: "Personal Trial",hash: "#account-trial",      desc: "Personal 10d trial" },
+    { label: "Personal Free", hash: "#account-freemium",   desc: "Personal Gratis" },
+    { label: "Personal Premium",  hash: "#account-pro",        desc: "Personal Premium (betaald)" },
+  ]
+
   /* ── Test accounts ── */
   const accounts = [
     { email: "demo@aegon.com",      scenarios: "Login → password → logged in as Business admin (Account = user mgmt, billing, invoices)" },
@@ -567,6 +576,23 @@ export default function DemoBanner() {
                      onMouseEnter={e => { e.target.style.background="rgba(255,255,255,0.2)" }}
                      onMouseLeave={e => { e.target.style.background="rgba(255,255,255,0.1)" }}>
                     {dl.label}
+                  </a>
+                ))}
+              </div>
+            </div>
+
+            {/* ── Banner scenario pills ── */}
+            <div style={{ marginBottom:"1rem" }}>
+              <div style={{ fontWeight:700, fontSize:"0.65rem", letterSpacing:"0.06em", textTransform:"uppercase", color:"#F59E0B", marginBottom:"0.4rem" }}>
+                🎯 Upsell banner scenarios (Account page)
+              </div>
+              <div style={{ display:"flex", flexWrap:"wrap", gap:"0.3rem" }}>
+                {bannerScenarios.map((bs) => (
+                  <a key={bs.hash} href={bs.hash} style={{...pillStyle, border:"1px solid rgba(245,158,11,0.3)", background:"rgba(245,158,11,0.1)"}}
+                     onMouseEnter={e => { e.target.style.background="rgba(245,158,11,0.2)" }}
+                     onMouseLeave={e => { e.target.style.background="rgba(245,158,11,0.1)" }}
+                     title={bs.desc}>
+                    {bs.label}
                   </a>
                 ))}
               </div>
