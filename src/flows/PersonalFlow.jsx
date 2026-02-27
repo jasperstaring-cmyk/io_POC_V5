@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { C } from '../tokens.js'
-import { JOB_ROLES } from '../data.js'
+import { JOB_ROLE_CLUSTERS } from '../data.js'
 import { classifyEmailForReg, getWhitelistInfo } from '../utils.js'
 import { TopProgressBar, RegSidebar, SelectionRow, JobRoleSelector, EmailChip, AuthNav, CheckItem, CdpProductLabel } from '../components/shared.jsx'
 import { useLang } from '../LanguageContext.jsx'
@@ -277,7 +277,7 @@ export default function PersonalFlow({ selectedPlan, onComplete, onSkipToSite, o
                 <div className="input-group">
                   <label className="input-label">{t("pf_jobrole")}</label>
                   <p style={{ fontFamily:"var(--font-sans)", fontSize:"0.8125rem", color:C.gray500, margin:"0 0 0.75rem" }}>{t("pf_jobrole_sub")}</p>
-                  <JobRoleSelector roles={JOB_ROLES} selectedId={jobRole} onSelect={setJobRole} t={t} />
+                  <JobRoleSelector clusters={JOB_ROLE_CLUSTERS} selectedId={jobRole} onSelect={setJobRole} t={t} />
                 </div>
                 <div className="input-group"><label className="input-label">{t("pf_password")}</label><input className="input-field" type="text" style={{ WebkitTextSecurity:"disc" }} autoComplete="off" data-1p-ignore data-lpignore="true" placeholder={t("pf_password_hint")} value={password} onChange={e => setPassword(e.target.value)} minLength={8} required /></div>
                 <button className="btn-green btn-full" type="submit">{isEnterprise ? t("pf_enterprise_create") : isInvited ? t("inv_create_profile") : chosenPlan ? t("pf_profile_next") : t("pf_profile_create")}</button>

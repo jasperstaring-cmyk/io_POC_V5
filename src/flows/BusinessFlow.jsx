@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { C } from '../tokens.js'
-import { SEGMENTS, JOB_ROLES, BUSINESS_SIZES } from '../data.js'
+import { SEGMENTS, JOB_ROLE_CLUSTERS, BUSINESS_SIZES } from '../data.js'
 import { TopProgressBar, RegSidebar, SelectionRow, JobRoleSelector, EmailChip, BackButton, AuthNav, CdpProductLabel } from '../components/shared.jsx'
 import { useLang } from '../LanguageContext.jsx'
 import { classifyEmailForReg, getWhitelistInfo, getCompanyNameFromEmail } from '../utils.js'
@@ -236,7 +236,7 @@ export default function BusinessFlow({ onComplete, onSkipToSite, onBack, onGoLog
                 <div className="input-group">
                   <label className="input-label">{t("pf_jobrole")}</label>
                   <p style={{ fontFamily:"var(--font-sans)", fontSize:"0.8125rem", color:C.gray500, margin:"0 0 0.75rem" }}>{t("pf_jobrole_sub")}</p>
-                  <JobRoleSelector roles={JOB_ROLES} selectedId={jobRole} onSelect={setJobRole} t={t} />
+                  <JobRoleSelector clusters={JOB_ROLE_CLUSTERS} selectedId={jobRole} onSelect={setJobRole} t={t} />
                 </div>
                 <div className="input-group">
                   <label className="input-label">{t("pf_password")}</label>

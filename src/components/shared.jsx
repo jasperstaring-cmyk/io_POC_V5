@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { C } from '../tokens.js'
 import IOLogo from './IOLogo.jsx'
 import { useLang } from '../LanguageContext.jsx'
@@ -61,30 +61,96 @@ export function SelectionRow({ selected, onSelect, name, desc, right, badge }) {
   )
 }
 
-// ─── JobRoleSelector (2-column card grid) ───────────────────────────────────
-export function JobRoleSelector({ roles, selectedId, onSelect, t }) {
+// ─── JobRoleSelector (accordion clusters, single-column cards) ──────────────
+export function JobRoleSelector({ clusters, selectedId, onSelect, t }) {
+  const [openCluster, setOpenCluster] = useState(null)
+
+  // Find which cluster contains the selected role (to auto-open on mount)
+  useEffect(() => {
+    if (selectedId && !openCluster) {
+      const found = clusters.find(c => c.roles.includes(selectedId))
+      if (found) setOpenCluster(found.id)
+    }
+  }, [selectedId])
+
+  function handleSelect(roleId) {
+    onSelect(roleId)
+    // Close cluster after selection
+    setTimeout(() => setOpenCluster(null), 150)
+  }
+
+  function toggleCluster(clusterId) {
+    setOpenCluster(prev => prev === clusterId ? null : clusterId)
+  }
+
+  // If a role is already selected, show confirmation instead of accordion
+  if (selectedId && openCluster === null) {
+    return (
+      <div className="jr-confirmation">
+        <div className={`sel-dot checked`}>
+          <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+            <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </div>
+        <div style={{ flex:1, minWidth:0 }}>
+          <div style={{ fontFamily:"var(--font-sans)", fontSize:"0.7rem", color:C.gray500, marginBottom:"0.125rem" }}>{t("pf_jobrole_selected")}</div>
+          <div style={{ fontFamily:"var(--font-sans)", fontSize:"0.9rem", fontWeight:700, color:C.navy }}>{t(`jr_${selectedId}_name`)}</div>
+          <div style={{ fontFamily:"var(--font-sans)", fontSize:"0.75rem", color:C.gray500, lineHeight:1.45, marginTop:"0.125rem" }}>{t(`jr_${selectedId}_desc`)}</div>
+        </div>
+        <button
+          onClick={() => { onSelect(""); setOpenCluster(null) }}
+          style={{ background:"none", border:"none", cursor:"pointer", fontFamily:"var(--font-sans)", fontSize:"0.8125rem", fontWeight:600, color:C.red, padding:"0.25rem 0.5rem", flexShrink:0 }}
+        >{t("pf_jobrole_change")}</button>
+      </div>
+    )
+  }
+
   return (
-    <div className="jr-grid">
-      {roles.map(r => {
-        const isSelected = selectedId === r.id
+    <div className="jr-accordion">
+      {clusters.map(cluster => {
+        const isOpen = openCluster === cluster.id
+        const clusterDesc = t(`jrc_${cluster.id}_desc`)
         return (
-          <button
-            key={r.id}
-            className={`jr-card${isSelected ? " selected" : ""}`}
-            onClick={() => onSelect(r.id)}
-          >
-            <div className={`sel-dot${isSelected ? " checked" : ""}`}>
-              {isSelected && (
-                <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
-                  <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              )}
-            </div>
-            <div style={{ flex:1, minWidth:0 }}>
-              <div className="jr-card-name">{t(`jr_${r.id}_name`)}</div>
-              <div className="jr-card-desc">{t(`jr_${r.id}_desc`)}</div>
-            </div>
-          </button>
+          <div key={cluster.id} className="jr-cluster">
+            <button
+              className={`jr-cluster-header${isOpen ? " open" : ""}`}
+              onClick={() => toggleCluster(cluster.id)}
+            >
+              <div style={{ flex:1, minWidth:0 }}>
+                <div className="jr-cluster-name">{t(`jrc_${cluster.id}_name`)}</div>
+                {clusterDesc && <div className="jr-cluster-desc">{clusterDesc}</div>}
+              </div>
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style={{ flexShrink:0, transition:"transform 0.2s", transform: isOpen ? "rotate(180deg)" : "none" }}>
+                <path d="M3.5 5.25L7 8.75L10.5 5.25" stroke={C.gray500} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </button>
+            {isOpen && (
+              <div className="jr-cluster-body">
+                {cluster.roles.map(roleId => {
+                  const isSelected = selectedId === roleId
+                  return (
+                    <button
+                      key={roleId}
+                      className={`jr-card${isSelected ? " selected" : ""}`}
+                      onClick={() => handleSelect(roleId)}
+                    >
+                      <div className={`sel-dot${isSelected ? " checked" : ""}`}>
+                        {isSelected && (
+                          <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+                            <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
+                        )}
+                      </div>
+                      <div style={{ flex:1, minWidth:0 }}>
+                        <div className="jr-card-name">{t(`jr_${roleId}_name`)}</div>
+                        <div className="jr-card-desc">{t(`jr_${roleId}_desc`)}</div>
+                      </div>
+                    </button>
+                  )
+                })}
+              </div>
+            )}
+          </div>
         )
       })}
     </div>

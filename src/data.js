@@ -1,25 +1,17 @@
-// ─── Job roles ────────────────────────────────────────────────────────────────
-// Names and descriptions are in i18n.js under jr_<id>_name / jr_<id>_desc
-export const JOB_ROLES = [
-  { id: "cio" },
-  { id: "ceo" },
-  { id: "coo" },
-  { id: "portfolio_manager" },
-  { id: "investment_analyst" },
-  { id: "fund_selector" },
-  { id: "investment_strategist" },
-  { id: "wealth_manager" },
-  { id: "relationship_manager" },
-  { id: "sales" },
-  { id: "consultant" },
-  { id: "risk_manager" },
-  { id: "compliance_legal" },
-  { id: "product_specialist" },
-  { id: "research_economist" },
-  { id: "board_member" },
-  { id: "operations" },
-  { id: "other" },
+// ─── Job role clusters ────────────────────────────────────────────────────────
+// Cluster names/descriptions are in i18n.js under jrc_<id>_name / jrc_<id>_desc
+// Role names/descriptions are in i18n.js under jr_<id>_name / jr_<id>_desc
+export const JOB_ROLE_CLUSTERS = [
+  { id: "leadership",    roles: ["cio", "ceo", "coo", "board_member", "managing_director"] },
+  { id: "investment",    roles: ["portfolio_manager", "fund_manager", "investment_strategist", "fund_selector", "fiduciary_manager", "investment_analyst", "research_economist", "esg_analyst", "quant_analyst"] },
+  { id: "commercial",    roles: ["wealth_manager", "private_banker", "financial_planner", "relationship_manager", "sales_distribution", "business_development", "product_specialist", "marketing_manager", "communications_pr", "content_specialist"] },
+  { id: "risk_finance",  roles: ["compliance_officer", "risk_manager", "legal_counsel", "regulatory_specialist", "finance_controller", "accountant", "reporting_analyst"] },
+  { id: "ops_tech",      roles: ["operations_middle_office", "client_servicing", "project_manager", "it_manager", "data_analyst", "software_engineer", "innovation_lead"] },
+  { id: "consulting",    roles: ["management_consultant", "investment_consultant", "strategy_advisor", "other"] },
 ]
+
+// Flat list for backward compatibility (AccountPage, etc.)
+export const JOB_ROLES = JOB_ROLE_CLUSTERS.flatMap(c => c.roles.map(id => ({ id })))
 
 // ─── Organisation segments & types ───────────────────────────────────────────
 export const SEGMENTS = [
