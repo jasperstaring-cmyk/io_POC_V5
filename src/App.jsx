@@ -44,6 +44,8 @@ export default function App() {
   const [pickerMode, setPickerMode]            = useState("personal")  // ProductPicker mode
   const [cameFromPicker, setCameFromPicker]    = useState(false)       // Track if user entered BusinessFlow via picker
   const [cameFromAccount, setCameFromAccount]  = useState(false)       // Track if user entered BusinessFlow via account upgrade
+  const [cameFromArticle, setCameFromArticle]  = useState(false)       // Track if user entered reg from a premium article
+  const [articleAccess, setArticleAccess]      = useState(null)        // { articleId, grantedAt } — single-article unlock for Personal Free
 
   const { setLang } = useLang()
 
@@ -181,6 +183,15 @@ export default function App() {
                 : selectedPlan || "freemium"
     setActivePlanType(pType)
     setUserData({ firstName:"New", lastName:"User", email:"new@example.com", jobRole:"Portfolio Manager", initials:"N" })
+
+    // Single-article unlock: Personal Free account created from a premium article
+    if (cameFromArticle && pType === "freemium") {
+      setArticleAccess({ articleId: "article_trump_creditcards", grantedAt: Date.now() })
+      setCameFromArticle(false)
+      setView("article")
+      return
+    }
+    setCameFromArticle(false)
     setView("onboarding")
   }
 
@@ -190,6 +201,14 @@ export default function App() {
 
   function handleSkipToSite() {
     setLoggedIn(true)
+    // Single-article unlock: if user came from article and chose Personal Free
+    // At this point activePlanType may not be set yet, so also check selectedPlan
+    const effectivePlan = selectedPlan || activePlanType || "freemium"
+    if (cameFromArticle && (effectivePlan === "freemium" || effectivePlan === null)) {
+      setActivePlanType("freemium")
+      setArticleAccess({ articleId: "article_trump_creditcards", grantedAt: Date.now() })
+      setCameFromArticle(false)
+    }
     setView("article")
   }
 
@@ -226,10 +245,28 @@ export default function App() {
       {view === "article" && (
         <ArticlePage
           loggedIn={loggedIn} userEmail={userEmail}
+          activePlanType={activePlanType}
+          articleAccess={articleAccess}
           onLogin={() => setView("login")}
-          onSubscribe={() => setView("emailgate")}
+          onSubscribe={() => { setCameFromArticle(true); setView("emailgate") }}
           onLogout={handleLogout}
           onAccount={() => setView("account")}
+          onUpgradeTrial={() => {
+            // Logged-in freemium user → go directly to plan picker (skip emailgate/profile)
+            const pd = { firstName: userData.firstName, lastName: userData.lastName, jobRole: userData.jobRole || "portfolio_manager", password: "********", email: userEmail }
+            setProfileData(pd)
+            setGateEmail(userEmail)
+            setSelectedPlan(null)
+            setView("plans")
+          }}
+          onUpgradeBusiness={() => {
+            // Logged-in freemium user → go directly to business flow
+            const pd = { firstName: userData.firstName, lastName: userData.lastName, jobRole: userData.jobRole || "portfolio_manager", password: "********", email: userEmail }
+            setProfileData(pd)
+            setGateEmail(userEmail)
+            setCameFromAccount(true)
+            setView("business")
+          }}
         />
       )}
       {view === "subscriptions" && (

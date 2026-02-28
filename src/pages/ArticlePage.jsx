@@ -28,6 +28,11 @@ const ARTICLE = {
     demo_login: "Inloggen",
     demo_register: "Registreren / Abonneren",
     demo_reset: "↩ Reset",
+    single_article_notice: "U heeft eenmalig gratis toegang tot dit artikel. Nog geldig voor:",
+    upsell_header: "Meer lezen? Upgrade uw account",
+    upsell_body: "U heeft dit artikel gratis gelezen met uw gratis account. Wilt u onbeperkt toegang? Start een gratis proefperiode of kies een abonnement. Of regel toegang voor uw hele team.",
+    upsell_cta_trial: "Start 10 dagen gratis Premium",
+    upsell_cta_business: "Toegang voor mijn organisatie",
   },
   en: {
     category: "Investing",
@@ -53,6 +58,11 @@ const ARTICLE = {
     demo_login: "Log in",
     demo_register: "Register / Subscribe",
     demo_reset: "↩ Reset",
+    single_article_notice: "You have one-time free access to this article. Valid for:",
+    upsell_header: "Want to read more? Upgrade your account",
+    upsell_body: "You read this article for free with your free account. Want unlimited access? Start a free trial or choose a subscription. Or get access for your entire team.",
+    upsell_cta_trial: "Start 10-day free Premium",
+    upsell_cta_business: "Access for my organisation",
   },
   de: {
     category: "Geldanlage",
@@ -78,6 +88,11 @@ const ARTICLE = {
     demo_login: "Anmelden",
     demo_register: "Registrieren / Abonnieren",
     demo_reset: "↩ Zurücksetzen",
+    single_article_notice: "Sie haben einmalig kostenlosen Zugang zu diesem Artikel. Noch gültig für:",
+    upsell_header: "Mehr lesen? Upgraden Sie Ihr Konto",
+    upsell_body: "Sie haben diesen Artikel kostenlos mit Ihrem kostenlosen Konto gelesen. Möchten Sie unbegrenzten Zugang? Starten Sie eine kostenlose Testphase oder wählen Sie ein Abonnement. Oder erhalten Sie Zugang für Ihr gesamtes Team.",
+    upsell_cta_trial: "10 Tage kostenlos Premium starten",
+    upsell_cta_business: "Zugang für meine Organisation",
   },
   fr: {
     category: "Investissement",
@@ -103,6 +118,11 @@ const ARTICLE = {
     demo_login: "Se connecter",
     demo_register: "S'inscrire / S'abonner",
     demo_reset: "↩ Réinitialiser",
+    single_article_notice: "Vous avez un accès gratuit unique à cet article. Encore valable pour :",
+    upsell_header: "Envie de lire plus ? Améliorez votre compte",
+    upsell_body: "Vous avez lu cet article gratuitement avec votre compte gratuit. Vous souhaitez un accès illimité ? Commencez un essai gratuit ou choisissez un abonnement. Ou obtenez un accès pour toute votre équipe.",
+    upsell_cta_trial: "Démarrer 10 jours Premium gratuits",
+    upsell_cta_business: "Accès pour mon organisation",
   },
 }
 
@@ -154,9 +174,61 @@ function PaywallBlock({ onLogin, onSubscribe, txt }) {
   )
 }
 
-export default function ArticlePage({ loggedIn, userEmail, onLogin, onSubscribe, onLogout, onAccount }) {
+function ArticleUpsellBanner({ onUpgradeTrial, onUpgradeBusiness, txt }) {
+  return (
+    <div style={{ marginTop:"2.5rem", border:`1px solid ${C.gray200}`, borderRadius:10, overflow:"hidden", background:C.white, boxShadow:"0 2px 16px rgba(12,24,46,0.07)" }}>
+      {/* Header bar */}
+      <div style={{ background:C.navy, padding:"1rem 1.5rem", display:"flex", alignItems:"center", gap:"0.75rem" }}>
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 1l2.5 5.5L18 7.5l-4 4 1 5.5L10 14.5 5 17l1-5.5-4-4 5.5-1L10 1z" fill="#4ED596" stroke="#4ED596" strokeWidth="1"/></svg>
+        <span style={{ fontFamily:"var(--font-sans)", fontWeight:700, fontSize:"0.95rem", color:C.white }}>{txt.upsell_header}</span>
+      </div>
+      {/* Body */}
+      <div style={{ padding:"1.5rem" }}>
+        <div style={{ fontFamily:"var(--font-sans)", fontSize:"0.9rem", color:C.gray700, lineHeight:"var(--lh-body)", marginBottom:"1.25rem" }}>
+          {txt.upsell_body}
+        </div>
+        <div style={{ display:"flex", gap:"0.75rem", flexWrap:"wrap" }}>
+          <button className="btn-primary" onClick={onUpgradeTrial} style={{ flex:1, minWidth:200 }}>
+            {txt.upsell_cta_trial}
+          </button>
+          <button className="btn-secondary" onClick={onUpgradeBusiness} style={{ flex:1, minWidth:200 }}>
+            {txt.upsell_cta_business}
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function SingleArticleBanner({ expiresLabel, txt }) {
+  return (
+    <div style={{ marginTop:"1.5rem", marginBottom:"1rem", padding:"0.875rem 1.25rem", background:"#FFF8E1", borderRadius:8, border:"1px solid #FFE082", display:"flex", alignItems:"center", gap:"0.75rem" }}>
+      <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" stroke="#F9A825" strokeWidth="1.5"/><path d="M10 5v5l3.5 2" stroke="#F9A825" strokeWidth="1.5" strokeLinecap="round"/></svg>
+      <span style={{ fontFamily:"var(--font-sans)", fontSize:"0.85rem", color:"#5D4037" }}>
+        {txt.single_article_notice} {expiresLabel}
+      </span>
+    </div>
+  )
+}
+
+export default function ArticlePage({ loggedIn, userEmail, activePlanType, articleAccess, onLogin, onSubscribe, onLogout, onAccount, onUpgradeTrial, onUpgradeBusiness }) {
   const { lang } = useLang()
   const txt = ARTICLE[lang] || ARTICLE.nl
+
+  // Determine access level
+  const hasSubscription = loggedIn && activePlanType && activePlanType !== "freemium"
+  const hasSingleArticleAccess = loggedIn && activePlanType === "freemium" && articleAccess
+    && (Date.now() - articleAccess.grantedAt) < 24 * 60 * 60 * 1000
+  const showFullArticle = hasSubscription || hasSingleArticleAccess
+
+  // Calculate time remaining for single article access
+  let expiresLabel = ""
+  if (hasSingleArticleAccess) {
+    const remaining = Math.max(0, 24 * 60 * 60 * 1000 - (Date.now() - articleAccess.grantedAt))
+    const hours = Math.floor(remaining / (60 * 60 * 1000))
+    const minutes = Math.floor((remaining % (60 * 60 * 1000)) / (60 * 1000))
+    expiresLabel = hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`
+  }
 
   return (
     <div style={{ minHeight:"100vh", background:C.white }}>
@@ -165,8 +237,11 @@ export default function ArticlePage({ loggedIn, userEmail, onLogin, onSubscribe,
         <span className="category-label">{txt.category}</span>
         <h1 className="article-title">{txt.title}</h1>
         <ArticleImage />
-        {loggedIn ? (
+        {showFullArticle ? (
           <>
+            {hasSingleArticleAccess && (
+              <SingleArticleBanner expiresLabel={expiresLabel} txt={txt} />
+            )}
             <div className="article-body">
               <p>{txt.p1}</p>
               <p>{txt.p2}</p>
@@ -174,15 +249,32 @@ export default function ArticlePage({ loggedIn, userEmail, onLogin, onSubscribe,
               <p>{txt.p4}</p>
               <p>{txt.p5}</p>
             </div>
-            <div style={{ marginTop:"2rem", padding:"1.25rem 1.5rem", background:"#EDFBF4", borderRadius:8, borderLeft:`4px solid ${C.green}`, display:"flex", alignItems:"center", gap:"0.875rem" }}>
-              <div style={{ width:20, height:20, background:C.green, borderRadius:"50%", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
-                <svg width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4L4 7.5L10 1" stroke={C.navy} strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"/></svg>
+            {hasSubscription && (
+              <div style={{ marginTop:"2rem", padding:"1.25rem 1.5rem", background:"#EDFBF4", borderRadius:8, borderLeft:`4px solid ${C.green}`, display:"flex", alignItems:"center", gap:"0.875rem" }}>
+                <div style={{ width:20, height:20, background:C.green, borderRadius:"50%", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
+                  <svg width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4L4 7.5L10 1" stroke={C.navy} strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                </div>
+                <div>
+                  <div style={{ fontFamily:"var(--font-sans)", fontWeight:700, fontSize:"0.9rem", color:C.navy }}>{txt.logged_as} {userEmail}</div>
+                  <div style={{ fontFamily:"var(--font-sans)", fontSize:"0.85rem", color:C.gray500 }}>{txt.org_access}</div>
+                </div>
               </div>
-              <div>
-                <div style={{ fontFamily:"var(--font-sans)", fontWeight:700, fontSize:"0.9rem", color:C.navy }}>{txt.logged_as} {userEmail}</div>
-                <div style={{ fontFamily:"var(--font-sans)", fontSize:"0.85rem", color:C.gray500 }}>{txt.org_access}</div>
+            )}
+            {hasSingleArticleAccess && (
+              <ArticleUpsellBanner onUpgradeTrial={onUpgradeTrial} onUpgradeBusiness={onUpgradeBusiness} txt={txt} />
+            )}
+          </>
+        ) : loggedIn ? (
+          <>
+            {/* Logged in but no access (freemium without article unlock) */}
+            <div style={{ position:"relative" }}>
+              <div className="article-body">
+                <p>{txt.p1}</p>
+                <p>{txt.p2}</p>
               </div>
+              <div className="fade-overlay" />
             </div>
+            <PaywallBlock onLogin={onLogin} onSubscribe={onSubscribe} txt={txt} />
           </>
         ) : (
           <>
