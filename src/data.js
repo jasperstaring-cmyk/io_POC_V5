@@ -197,6 +197,10 @@ export const UPSELL_BANNERS = [
   },
 
   // ── Cross-sell hero banner ─────────────────────────────────────────────────
+  // NOTE: AccountPage currently uses a STATIC <img> for the Impact Investor banner
+  // (hardcoded in AccountPage.jsx). This dynamic banner is disabled and exists as
+  // a future replacement. When enabling, REMOVE the static <img> in AccountPage.jsx
+  // to avoid duplicate banners.
   {
     id: "crosssell_impact_investor",
     type: "crosssell",
@@ -206,7 +210,7 @@ export const UPSELL_BANNERS = [
     image: "account_crosssell_visual",
     i18n: { title: "acc_crosssell_title", body: "acc_crosssell_body", cta: "acc_crosssell_cta", badge: "acc_crosssell_badge" },
     action: "crosssell",
-    enabled: false,   // set to true when image is provided
+    enabled: false,   // set to true when image is provided — then remove static img from AccountPage.jsx
   },
 ]
 
@@ -225,6 +229,8 @@ export function getBannersForContext({ planType, category = "personal", scope = 
 
 // Alias used by AccountPage — maps section-based calls to position-based filtering
 export function getActiveBanners({ planType, section, variant = null, scope = "local" }) {
+  // Derive category from planType: "business" planType = business category, everything else = personal
+  const category = planType === "business" ? "business" : "personal"
   return UPSELL_BANNERS.filter(b => {
     if (b.enabled === false) return false
     if (!b.conditions.planType.includes(planType)) return false
@@ -235,9 +241,7 @@ export function getActiveBanners({ planType, section, variant = null, scope = "l
     }
     if (variant && b.conditions.variant && b.conditions.variant !== variant) return false
     if (b.conditions.scope && b.conditions.scope !== "any" && b.conditions.scope !== scope) return false
-    if (b.conditions.category && b.conditions.category !== "any") {
-      // Skip category check if not provided
-    }
+    if (b.conditions.category && b.conditions.category !== "any" && b.conditions.category !== category) return false
     return true
   })
 }

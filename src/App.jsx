@@ -157,9 +157,11 @@ export default function App() {
 
   function handleUpgrade() {
     // Build profileData from current logged-in user
-    const pd = { firstName: userData.firstName, lastName: userData.lastName, jobRole: userData.jobRole || "portfolio_manager", password: "********", email: userEmail }
+    // Use userData.email as fallback for deep-link scenarios where userEmail is not set
+    const effectiveEmail = userEmail || userData.email || ""
+    const pd = { firstName: userData.firstName, lastName: userData.lastName, jobRole: userData.jobRole || "portfolio_manager", password: "********", email: effectiveEmail }
     setProfileData(pd)
-    setGateEmail(userEmail)
+    setGateEmail(effectiveEmail)
     setCameFromAccount(true)
     setView("business")
   }

@@ -86,8 +86,8 @@ function PocGuide({ onClose }) {
         <div style={S.header}>
           <h1 style={S.h1}>Investment Officer — POC Guide</h1>
           <p style={S.subtitle}>
-            This prototype demonstrates the email-first subscription and onboarding flows for Investment Officer.
-            Below you'll find the flow architecture, all test scenarios and the complete product catalogue.
+            This prototype demonstrates the email-first, profile-first subscription and onboarding flows for Investment Officer.
+            Below you'll find the flow architecture, all test scenarios, the complete product catalogue, and account management features.
           </p>
           <button style={S.closeBtn} onClick={onClose}>
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M4.5 4.5l9 9M13.5 4.5l-9 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
@@ -98,24 +98,32 @@ function PocGuide({ onClose }) {
         <div style={S.body}>
 
           {/* ── 0. Flow architecture ── */}
-          <div style={S.sectionTitleFirst}>0. Flow architecture — Email-first</div>
+          <div style={S.sectionTitleFirst}>0. Flow architecture — Email-first, Profile-first</div>
           <div style={S.card}>
             <div style={S.cardTitle}>Email as universal entry point</div>
             <div style={S.cardBody}>
               All registration flows start with a single email input screen (<strong>EmailGate</strong>). The email address is classified automatically and routes the user to the correct flow. There is no manual account type choice upfront.<br/><br/>
-              <strong>Routing logic:</strong><br/>
+              <strong>Routing logic (order of checks):</strong><br/>
+              • Generic prefix (info@, team@, admin@…) → Blocked<br/>
+              • Private domain (@gmail.com, @hotmail.com…) → Warning → Profile → Personal only<br/>
               • Enterprise domain (e.g. @abnamro.com) → Enterprise profile creation<br/>
               • Whitelist domain (e.g. @wealthpro.com) → Enterprise fast-track<br/>
               • Existing account → "You already have an account" + login<br/>
-              • New business email → <strong>Intent question</strong> (Business recommended / Personal secondary)<br/>
-              • Private email (@gmail.com) → Warning + Personal only<br/>
-              • Generic address (info@...) → Blocked
+              • Trial-blocked domain → Profile → Paid Business flow (skip intent)<br/>
+              • New business email → <strong>Profile → Intent question</strong>
+            </div>
+          </div>
+          <div style={S.card}>
+            <div style={S.cardTitle}>Profile-first principle</div>
+            <div style={S.cardBody}>
+              After EmailGate, the user always creates a profile <strong>before</strong> being asked any commercial questions (intent, plan choice, etc.). This ensures a complete profile record (name, job role, email) is captured even if the user drops off during later steps.<br/><br/>
+              The <strong>ProfileIntent</strong> component handles this: Step 1 = profile form, Step 2 = intent question (business emails only). Private and trial-blocked emails skip the intent step automatically.
             </div>
           </div>
           <div style={S.card}>
             <div style={S.cardTitle}>Intent question (key conversion moment)</div>
             <div style={S.cardBody}>
-              For new business emails, users see an asymmetric choice:<br/>
+              For new business emails (after profile creation), users see an asymmetric choice:<br/>
               <strong>Option A (primary, recommended):</strong> "Activate a business plan" — with three value props: free for Wealth &amp; Institutional, 6 months free for others, shared user management.<br/>
               <strong>Option B (secondary):</strong> "Just for myself" — individual account.<br/>
               This is designed to maximise business registrations while keeping Personal accessible.
@@ -127,20 +135,20 @@ function PocGuide({ onClose }) {
           {/* ── 1. Account types ── */}
           <div style={S.sectionTitle}>1. Account types</div>
           <div style={S.card}>
-            <div style={S.cardTitle}>Personal (free)</div>
-            <div style={S.cardBody}>Individual account with access to a selection of articles, newsletters and profile management. Optionally upgradable to Premium (€648/yr).</div>
+            <div style={S.cardTitle}>Personal</div>
+            <div style={S.cardBody}>Individual account. Three tiers: <strong>Free</strong> (limited access), <strong>Premium Trial</strong> (10-day free trial, full access), <strong>Premium</strong> (€648/yr, full access to one edition). Upgradable to Premium All Editions (€774/yr) from the Account page.</div>
           </div>
           <div style={S.card}>
             <div style={S.cardTitle}>Business NL</div>
-            <div style={S.cardBody}>Business account for the Dutch edition. Shared environment with user management. Free for Wealth/Institutional segment, otherwise 6-month free trial.</div>
+            <div style={S.cardBody}>Business account for one edition. Shared environment with user management. Free for Wealth/Institutional segment (24 months), 6-month free trial for other segments. After trial or when trial-blocked: paid packages S/M/L/XL available.</div>
           </div>
           <div style={S.card}>
             <div style={S.cardTitle}>Business International</div>
-            <div style={S.cardBody}>Business account with access to all editions (NL, BE, DE, FR, LU, COM). Package choice S/M/L/XL. 50% discount for Wealth/Institutional. Only shown when user indicates multi-country presence within Business flow.</div>
+            <div style={S.cardBody}>Business account with access to all editions (NL, BE, DE, FR, LU, COM). Package choice S/M/L/XL. 50% discount for Wealth/Institutional. Only shown when user indicates multi-country presence within Business flow (international question).</div>
           </div>
           <div style={S.card}>
             <div style={S.cardTitle}>Enterprise</div>
-            <div style={S.cardBody}>Free access at organisation level, managed by Investment Officer. Two variants: Enterprise NL (1 edition) and Enterprise All (all editions). No payment, no subscription choice.</div>
+            <div style={S.cardBody}>Free access at organisation level, managed by Investment Officer. Two variants: Enterprise NL (1 edition) and Enterprise All (all editions). No payment, no subscription choice. Activated via domain or whitelist configuration.</div>
           </div>
 
           <hr style={S.divider} />
@@ -182,9 +190,9 @@ function PocGuide({ onClose }) {
             <div style={S.cardTitle}>🔵 New business email → Business (recommended path)</div>
             <div style={S.cardBody}>
               Use: <span style={S.email}>new@aegon.com</span> or any new business email<br/>
-              <strong>EmailGate:</strong> email → "Professional email detected" → intent question → choose "Activate business plan"<br/>
-              <strong>Business flow:</strong> profile → segment → type → company details → overview → invite colleagues → done<br/>
-              <span style={S.step}>8 steps</span><br/>
+              <strong>EmailGate → ProfileIntent:</strong> email → profile (name, job role, password) → intent question → choose "Activate business plan"<br/>
+              <strong>Business flow:</strong> segment+type → international question → company details → overview → invite colleagues → done<br/>
+              <span style={S.step}>8 steps</span> email → profile → intent → segment/type → intl question → company → overview → invite → done<br/>
               <span style={{ display:"inline-block", marginTop:"0.375rem", background:"#F0F0FF", border:"1px dashed #7B7BEE", borderRadius:4, padding:"0.15rem 0.5rem", fontSize:"0.75rem", color:"#4A4AB5" }}>CDP: Business Buy Side — .NL (Wealth/Institutional) or Business Sell Side — .NL (other)</span>
             </div>
           </div>
@@ -193,9 +201,9 @@ function PocGuide({ onClose }) {
             <div style={S.cardTitle}>🔵 New business email → Personal</div>
             <div style={S.cardBody}>
               Use: <span style={S.email}>new@aegon.com</span> or any new business email<br/>
-              <strong>EmailGate:</strong> email → intent question → choose "Just for myself"<br/>
-              <strong>Personal flow:</strong> profile → plan choice (Free / Premium Trial / Premium) → done<br/>
-              <span style={S.step}>4 steps</span> email → profile → plan → done<br/>
+              <strong>EmailGate → ProfileIntent:</strong> email → profile → intent question → choose "Just for myself"<br/>
+              <strong>Personal flow:</strong> plan choice (Free / Premium Trial / Premium) → done (Premium adds payment step)<br/>
+              <span style={S.step}>5 steps</span> email → profile → intent → plan → done<br/>
               <span style={{ display:"inline-block", marginTop:"0.375rem", background:"#F0F0FF", border:"1px dashed #7B7BEE", borderRadius:4, padding:"0.15rem 0.5rem", fontSize:"0.75rem", color:"#4A4AB5" }}>CDP: Personal Free / Trial / Premium — .NL</span>
             </div>
           </div>
@@ -203,15 +211,33 @@ function PocGuide({ onClose }) {
           <div style={S.card}>
             <div style={S.cardTitle}>🔵 Business International</div>
             <div style={S.cardBody}>
-              Accessible via Business plans page after choosing "Activate business plan" in the intent question.<br/>
-              <strong>Flow:</strong> email → intent → Business plans → choose International → profile → segment → type → package → company → overview → payment → invite → done<br/>
-              <span style={S.step}>10 steps</span><br/>
+              Triggered when a Business user answers "Yes" to the international question within the Business flow. User is routed to the ProductPicker for a side-by-side comparison of Business NL vs International, then continues in the International flow.<br/>
+              <strong>Full path:</strong> email → profile → intent → segment/type → intl question "Yes" → ProductPicker → package (S/M/L/XL) → company → overview → payment → invite → done<br/>
+              <span style={S.step}>9 steps</span> (from International flow entry, profile + segment/type are carried over)<br/>
               <span style={{ display:"inline-block", marginTop:"0.375rem", background:"#F0F0FF", border:"1px dashed #7B7BEE", borderRadius:4, padding:"0.15rem 0.5rem", fontSize:"0.75rem", color:"#4A4AB5" }}>CDP: Business International S/M/L/XL — All editions</span>
             </div>
           </div>
 
           <div style={S.card}>
-            <div style={S.cardTitle}>🟡 Existing account — Business admin</div>
+            <div style={S.cardTitle}>🟡 Private email</div>
+            <div style={S.cardBody}>
+              Use: <span style={S.email}>new@gmail.com</span><br/>
+              <strong>Via EmailGate:</strong> Warning "this is a private email address" with option to use a different address or continue.<br/>
+              <strong>If continue:</strong> profile creation → Personal flow directly (intent question is skipped, no Business option).<br/>
+              <span style={S.step}>4 steps</span> email → warning → profile → plan → done
+            </div>
+          </div>
+
+          <div style={S.card}>
+            <div style={S.cardTitle}>🟡 Generic address</div>
+            <div style={S.cardBody}>
+              Use: <span style={S.email}>info@company.com</span><br/>
+              Blocked: "Please use a personal email address." Dead end — user must go back.
+            </div>
+          </div>
+
+          <div style={S.card}>
+            <div style={S.cardTitle}>🟡 Existing account</div>
             <div style={S.cardBody}>
               Use: <span style={S.email}>demo@aegon.com</span><br/>
               <strong>Via EmailGate:</strong> email → "You already have an account" → log in or use different email<br/>
@@ -221,27 +247,22 @@ function PocGuide({ onClose }) {
           </div>
 
           <div style={S.card}>
-            <div style={S.cardTitle}>🟡 Private email</div>
-            <div style={S.cardBody}>
-              Use: <span style={S.email}>new@gmail.com</span><br/>
-              <strong>Via EmailGate:</strong> Warning "this is a private email address" with option to use a different address or continue to Personal flow only (no Business option).
-            </div>
-          </div>
-
-          <div style={S.card}>
-            <div style={S.cardTitle}>🟡 Generic address</div>
-            <div style={S.cardBody}>
-              Use: <span style={S.email}>info@company.com</span><br/>
-              Blocked: "Please use a personal email address."
-            </div>
-          </div>
-
-          <div style={S.card}>
             <div style={S.cardTitle}>🟡 Trial block (Business)</div>
             <div style={S.cardBody}>
-              Use: <span style={S.email}>trial@company.com</span> — go through EmailGate → intent → Business flow<br/>
-              Email → 2-year block notification → choice of paid packages S/M/L/XL.<br/>
+              Use: <span style={S.email}>trial@company.com</span><br/>
+              <strong>EmailGate:</strong> email → 24-month trial block notification<br/>
+              <strong>If continue:</strong> profile creation (intent question is skipped) → paid Business flow starting at size picker (S/M/L/XL) → segment/type → company → overview → payment → invite → done<br/>
+              <span style={S.step}>10 steps</span> (paid flow)<br/>
               <span style={{ display:"inline-block", marginTop:"0.375rem", background:"#F0F0FF", border:"1px dashed #7B7BEE", borderRadius:4, padding:"0.15rem 0.5rem", fontSize:"0.75rem", color:"#4A4AB5" }}>CDP: Business Sell Side Paid S/M/L/XL — .NL</span>
+            </div>
+          </div>
+
+          <div style={S.card}>
+            <div style={S.cardTitle}>🟡 Existing account + trial block (upgrade path)</div>
+            <div style={S.cardBody}>
+              Use: <span style={S.email}>demo@trial.com</span><br/>
+              Login → Account → upgrade → trial block detected → paid Business flow (size picker → payment).<br/>
+              Tests the upgrade-from-account path with trial restriction.
             </div>
           </div>
 
@@ -250,9 +271,19 @@ function PocGuide({ onClose }) {
             <div style={S.cardBody}>
               <strong>Option A:</strong> Deep link <span style={S.email}>#invited</span> (simulates colleague@aegon.com)<br/>
               <strong>Option B:</strong> Go to Account → Users → invite someone → click "Open as…"<br/>
-              Flow: create profile (email pre-filled, "invited" banner) → done<br/>
+              Flow: create profile (email pre-filled, "invited by [Company]" banner) → done<br/>
               <span style={S.step}>2 steps</span> profile → done<br/>
-              <em>Note: invited users bypass EmailGate entirely.</em>
+              <em>Note: invited users bypass EmailGate and intent entirely.</em>
+            </div>
+          </div>
+
+          <div style={S.card}>
+            <div style={S.cardTitle}>🟠 Single-article unlock (Personal Free)</div>
+            <div style={S.cardBody}>
+              Entry: non-logged-in visitor on a premium article → clicks "Register for free" in paywall<br/>
+              Flow: EmailGate → profile → plan choice (selects Free) → redirected back to article with 24-hour access<br/>
+              Article shows yellow timer banner (24h countdown) + upsell banner with two upgrade options.<br/>
+              <em>Note: skips onboarding. Only for Personal Free registrations from a premium article.</em>
             </div>
           </div>
 
@@ -263,12 +294,14 @@ function PocGuide({ onClose }) {
           <div style={S.card}>
             <div style={S.cardBody}>
               <strong>Personal Free:</strong> Free, limited access.<br/>
+              <strong>Personal Premium Trial:</strong> 10 days free, full access to one edition. Cooldown: 12 months.<br/>
               <strong>Personal Premium:</strong> €648/yr (€54/mo), full access to one edition.<br/>
+              <strong>Personal Premium All Editions:</strong> €774/yr (upgrade only, from Account page).<br/><br/>
               <strong>Business Buy Side:</strong> Wealth/Institutional segment → free 24-month access.<br/>
-              <strong>Business Sell Side:</strong> Other segments → 6-month free trial.<br/>
-              <strong>Business Sell Side Paid:</strong> After trial block → paid packages S/M/L/XL.<br/>
-              <strong>Business International:</strong> Wealth/Institutional → 50% discount on all packages. Other segments → standard rate.<br/>
-              <strong>Enterprise:</strong> Always free. Edition(s) determined by back-end configuration.
+              <strong>Business Sell Side:</strong> Other segments → 6-month free trial. Cooldown: 24 months.<br/>
+              <strong>Business Sell Side Paid:</strong> After trial or trial block → packages S (€79/mo) / M (€149/mo) / L (€199/mo) / XL (€12.50/user/mo).<br/><br/>
+              <strong>Business International:</strong> Always paid. Wealth/Institutional → 50% discount. Standard: S (€119/mo) / M (€219/mo) / L (€289/mo) / XL (€18.50/user/mo).<br/><br/>
+              <strong>Enterprise:</strong> Always free. Edition(s) determined by back-end configuration (domain/whitelist).
             </div>
           </div>
 
@@ -279,9 +312,10 @@ function PocGuide({ onClose }) {
           <div style={S.card}>
             <div style={S.cardBody}>
               The primary registration entry is <strong>#emailgate</strong> — this is where "Subscribe" and all registration CTAs lead.<br/>
-              Use the <strong>deep links</strong> in the test panel to jump to specific screens. The old account type choice is still accessible via <strong>#choice</strong> for reference.<br/>
+              Use the <strong>deep links</strong> in the test panel to jump to specific screens directly.<br/>
               Switch language via the language button in the top right (NL / EN / DE / FR).<br/>
-              After registration you can choose <strong>"Start introduction"</strong> (onboarding) or <strong>"Go directly to the website"</strong> (skip).
+              After registration you can choose <strong>"Start introduction"</strong> (onboarding) or <strong>"Go directly to the website"</strong> (skip).<br/><br/>
+              <em>Deep link <strong>#choice</strong> still works for the original account type choice screen (deprecated, kept as reference only).</em>
             </div>
           </div>
 
@@ -296,7 +330,8 @@ function PocGuide({ onClose }) {
               <span style={S.step}>1</span> Download the app — real QR code + App Store / Google Play badges<br/>
               <span style={S.step}>2</span> Newsletters — toggle subscriptions on/off<br/>
               <span style={S.step}>3</span> Follow on LinkedIn — simulated follow button<br/>
-              <span style={S.step}>4</span> All set — feature overview + "Go to Investment Officer" button
+              <span style={S.step}>4</span> All set — feature overview + "Go to Investment Officer" button<br/><br/>
+              <em>Note: single-article unlock registrations skip onboarding and return directly to the article.</em>
             </div>
           </div>
 
@@ -319,11 +354,26 @@ function PocGuide({ onClose }) {
 
           <hr style={S.divider} />
 
-          {/* ── 7. CDP Product matrix ── */}
-          <div style={S.sectionTitle}>7. CDP Product matrix (58 products)</div>
+          {/* ── 7. Segment + type selection ── */}
+          <div style={S.sectionTitle}>7. Segment &amp; organisation type</div>
           <div style={S.card}>
             <div style={S.cardBody}>
-              Each registration results in a specific CDP product. The edition is determined by the website domain (.nl, .be, .lu, .de, .fr, .com). Below is the complete product catalogue.
+              Business flows include a combined segment + organisation type selection step using the same accordion pattern as job roles. Segments and types are displayed in a two-level accordion:<br/><br/>
+              <strong>Segments:</strong> Wealth Management, Institutional, Asset Management, Asset Servicing, Other Organisations<br/>
+              Each segment contains its own list of organisation types.<br/><br/>
+              The selected segment determines pricing: Wealth/Institutional = Buy Side (free or 50% discount). All others = Sell Side (trial or standard rate).<br/>
+              <em>Note: Institutional is functionally identical to Wealth (same Buy Side mapping) but kept as a separate segment for CDP categorisation.</em>
+            </div>
+          </div>
+
+          <hr style={S.divider} />
+
+          {/* ── 8. CDP Product matrix ── */}
+          <div style={S.sectionTitle}>8. CDP Product matrix (58 products)</div>
+          <div style={S.card}>
+            <div style={S.cardBody}>
+              Each registration results in a specific CDP product. The edition is determined by the website domain (.nl, .be, .lu, .de, .fr, .com). Below is the complete product catalogue.<br/><br/>
+              <em>Note: "Personal Premium All Editions" (€774/yr) is an Account-page upgrade product, not offered during registration. Enterprise products are managed by IO and do not appear as self-service CDP products.</em>
             </div>
           </div>
 
@@ -423,23 +473,39 @@ function PocGuide({ onClose }) {
           <div style={S.card}>
             <div style={S.cardBody}>
               <strong>Note:</strong> Enterprise products are not self-service and are managed by Investment Officer via whitelist/domain configuration. They do not appear as CDP products.<br/><br/>
-              <strong>Total: 58 products</strong> = 18 Personal (3×6) + 36 Business NL (6×6) + 4 Business International
+              <strong>Total: 58 products</strong> = 18 Personal (3×6) + 36 Business NL (6×6) + 4 Business International<br/>
+              <em>+ 1 upgrade-only product: Personal Premium All Editions (not in registration flow)</em>
             </div>
           </div>
 
           <hr style={S.divider} />
 
-          {/* ── 8. Account management ── */}
-          <div style={S.sectionTitle}>8. Account management</div>
+          {/* ── 9. Account management ── */}
+          <div style={S.sectionTitle}>9. Account management</div>
           <div style={S.card}>
             <div style={S.cardBody}>
               After login or registration, click the avatar (top right) → "My account" to access:<br/>
-              <strong>My account</strong> — edit profile details<br/>
+              <strong>My account</strong> — edit profile details (name, initials, job role, language, phone)<br/>
               <strong>Newsletters</strong> — manage per edition (NL, BE, LU tabs)<br/>
               <strong>Subscriptions</strong> — view plan details and upgrade options<br/>
-              <strong>Users</strong> (Business/Enterprise) — invite colleagues, change roles, remove users<br/>
-              <strong>Billing</strong> (Business) — payment method (Stripe) + downloadable invoices<br/><br/>
+              <strong>Users</strong> (Business/Enterprise) — invite colleagues, change roles, remove users. Personal shows upsell to Business.<br/>
+              <strong>Billing</strong> (Business paid) — payment method (Stripe) + downloadable invoices<br/><br/>
+              The Account page displays context-sensitive <strong>upsell banners</strong> based on plan type. Test the five banner scenarios via the deep links in the test panel (Biz Trial, Biz Free, Personal Trial, Personal Free, Personal Premium).<br/><br/>
+              A static <strong>cross-sell banner</strong> (Impact Investor) appears at the top of the Account page.<br/><br/>
               Test with <span style={S.email}>demo@aegon.com</span> (login) to see the full Business admin view.
+            </div>
+          </div>
+
+          <hr style={S.divider} />
+
+          {/* ── 10. Article access levels ── */}
+          <div style={S.sectionTitle}>10. Article access levels</div>
+          <div style={S.card}>
+            <div style={S.cardBody}>
+              The article page (entry screen) has three access levels:<br/><br/>
+              <strong>1. Full access</strong> — logged in with a paid/active plan → full article + green status bar<br/>
+              <strong>2. Single-article access</strong> — Personal Free registered from this article → full article + yellow 24h timer banner + upsell banner (two upgrade buttons)<br/>
+              <strong>3. Paywall</strong> — not logged in or insufficient plan → 2 paragraphs + fade overlay + paywall card with registration CTA
             </div>
           </div>
 
@@ -473,40 +539,45 @@ export default function DemoBanner() {
     { label: "Business reg.",     hash: "#business" },
     { label: "Business Intl.",    hash: "#bizintl" },
     { label: "Enterprise",        hash: "#enterprise" },
+    { label: "Whitelist reg.",    hash: "#whitelistReg" },
+    { label: "Enterprise reg.",   hash: "#enterpriseReg" },
     { label: "Subscriptions",     hash: "#subscriptions" },
     { label: "Onboarding",        hash: "#onboarding" },
     { label: "Account",           hash: "#account" },
     { label: "Invited user",      hash: "#invited" },
+    { label: "Choice (old)",      hash: "#choice" },
   ]
 
   /* ── Banner scenario links (Account page variants) ── */
   const bannerScenarios = [
-    { label: "Biz Trial",    hash: "#account-biz-trial",   desc: "Business + 180d proef" },
-    { label: "Biz Free",     hash: "#account-biz-free",    desc: "Business + gratis (wealth)" },
-    { label: "Personal Trial",hash: "#account-trial",      desc: "Personal 10d trial" },
-    { label: "Personal Free", hash: "#account-freemium",   desc: "Personal Gratis" },
-    { label: "Personal Premium",  hash: "#account-pro",        desc: "Personal Premium (betaald)" },
+    { label: "Biz Trial",        hash: "#account-biz-trial",   desc: "Business + 180d trial" },
+    { label: "Biz Free",         hash: "#account-biz-free",    desc: "Business free (Wealth)" },
+    { label: "Personal Trial",   hash: "#account-trial",       desc: "Personal 10d trial" },
+    { label: "Personal Free",    hash: "#account-freemium",    desc: "Personal Free" },
+    { label: "Personal Premium", hash: "#account-pro",         desc: "Personal Premium (paid)" },
   ]
 
   /* ── Test accounts ── */
   const accounts = [
-    { email: "demo@aegon.com",      scenarios: "Login → password → logged in as Business admin (Account = user mgmt, billing, invoices)" },
-    { email: "new@aegon.com",       scenarios: "Register → normal flow (known domain, no special treatment)" },
-    { email: "Any @abnamro.com",    scenarios: "Login → SSO/Enterprise · Register → Enterprise detected → profile only" },
-    { email: "new@wealthpro.com",   scenarios: "Login / Register → Enterprise NL (1 editie, gratis)" },
-    { email: "new@globalfund.com",  scenarios: "Login / Register → Enterprise All (alle edities, gratis)" },
-    { email: "new@gmail.com",       scenarios: "Login → private email warning · Register → private email warning" },
-    { email: "info@company.com",    scenarios: "Register → generic address rejected" },
-    { email: "user@unknown.com",    scenarios: "Login → no account found" },
-    { email: "trial@company.com",   scenarios: "New user → 2-year block → profile → paid plans" },
-    { email: "demo@trial.com",     scenarios: "Existing user → login → Account → upgrade → trial block → paid plans" },
-    { email: "colleague@aegon.com", scenarios: "Invited user → profile-only registration (use deep link or invite from Account)" },
+    { email: "demo@aegon.com",      scenarios: "Login → password → Business admin (Account: users, billing, invoices)" },
+    { email: "new@aegon.com",       scenarios: "Register → profile → intent → Business or Personal" },
+    { email: "Any @abnamro.com",    scenarios: "Login → SSO/Enterprise · Register → Enterprise domain → profile only" },
+    { email: "new@wealthpro.com",   scenarios: "Login / Register → Enterprise NL (1 edition, free)" },
+    { email: "new@globalfund.com",  scenarios: "Login / Register → Enterprise All (all editions, free)" },
+    { email: "new@gmail.com",       scenarios: "Login → private warning · Register → warning → profile → Personal only (no intent)" },
+    { email: "info@company.com",    scenarios: "Login / Register → generic address blocked" },
+    { email: "user@unknown.com",    scenarios: "Login → no account found · Register → profile → intent → Business or Personal" },
+    { email: "trial@company.com",   scenarios: "Register → 24-month block → profile → paid Business (S/M/L/XL)" },
+    { email: "demo@trial.com",      scenarios: "Login → Account → upgrade → trial block → paid Business" },
+    { email: "colleague@aegon.com", scenarios: "Invited user → profile only (use #invited or invite from Account)" },
   ]
 
   /* ── Business rules ── */
   const rules = [
-    { rule: "Wealth / Institutional segment", effect: "Business NL → free ongoing access · Business Intl. → 50% discount" },
-    { rule: "Other segments",                 effect: "Business NL → 6 months free · Business Intl. → standard rate" },
+    { rule: "Wealth / Institutional segment", effect: "Business NL → free 24 months · Business Intl. → 50% discount" },
+    { rule: "Other segments",                 effect: "Business NL → 6 months free trial · Business Intl. → standard rate" },
+    { rule: "After trial block",              effect: "Paid packages S/M/L/XL (see POC Guide for prices)" },
+    { rule: "Trial cooldown",                 effect: "Personal: 12 months · Business: 24 months" },
   ]
 
   const pillStyle = {
@@ -571,13 +642,24 @@ export default function DemoBanner() {
                 Jump to screen
               </div>
               <div style={{ display:"flex", flexWrap:"wrap", gap:"0.3rem" }}>
-                {deepLinks.map((dl) => (
-                  <a key={dl.hash} href={dl.hash} style={pillStyle}
-                     onMouseEnter={e => { e.target.style.background="rgba(255,255,255,0.2)" }}
-                     onMouseLeave={e => { e.target.style.background="rgba(255,255,255,0.1)" }}>
-                    {dl.label}
-                  </a>
-                ))}
+                {deepLinks.map((dl) => {
+                  const isDeprecated = dl.hash === "#choice"
+                  const isEnterprise = dl.hash === "#whitelistReg" || dl.hash === "#enterpriseReg"
+                  const style = isDeprecated
+                    ? { ...pillStyle, opacity:0.45, textDecoration:"line-through" }
+                    : isEnterprise
+                    ? { ...pillStyle, border:"1px solid rgba(78,213,150,0.3)", background:"rgba(78,213,150,0.1)" }
+                    : pillStyle
+                  const hoverBg = isEnterprise ? "rgba(78,213,150,0.2)" : "rgba(255,255,255,0.2)"
+                  const leaveBg = isEnterprise ? "rgba(78,213,150,0.1)" : "rgba(255,255,255,0.1)"
+                  return (
+                    <a key={dl.hash} href={dl.hash} style={style}
+                       onMouseEnter={e => { if (!isDeprecated) e.target.style.background=hoverBg }}
+                       onMouseLeave={e => { if (!isDeprecated) e.target.style.background=leaveBg }}>
+                      {dl.label}
+                    </a>
+                  )
+                })}
               </div>
             </div>
 
@@ -651,7 +733,7 @@ export default function DemoBanner() {
             </div>
 
             <div style={{ marginTop:"0.75rem", paddingTop:"0.625rem", borderTop:"1px solid rgba(255,255,255,0.1)", color:"rgba(255,255,255,0.4)", fontSize:"0.65rem" }}>
-              Stripe payment screens are simulations. Passwords are not validated. All data is fictional.
+              Stripe payment screens are simulations. Passwords are not validated. All data is fictional. KvK numbers starting with "99" trigger data degradation.
             </div>
           </div>
         )}
