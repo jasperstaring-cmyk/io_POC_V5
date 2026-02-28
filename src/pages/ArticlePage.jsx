@@ -14,9 +14,9 @@ const ARTICLE = {
     p5: "Voor portefeuillebeheerders die overwogen zijn in Amerikaanse financials blijft het sentiment nerveus. De onzekerheid over de regelgevende koers weegt zwaarder dan de directe impact van dit voorstel.",
     paywall_title: "Lees verder met Investment Officer",
     paywall_sub: "Dit artikel is onderdeel van onze premium content.\nAfhankelijk van je sector en organisatie heb je mogelijk gratis toegang.",
-    paywall_badge: "Gratis toegang\nvoor Wealth\nprofessionals",
+    paywall_badge: "Gratis toegang\nvoor Wealth professionals\n+ 6 mnd gratis voor\nandere organisaties",
     paywall_login: "Inloggen",
-    paywall_subscribe: "Abonneren",
+    paywall_subscribe: "Toegang activeren",
     paywall_items: [
       "Onbeperkt online toegang tot alle premium artikelen",
       "Toegang tot research databases en marktrapporten",
@@ -33,6 +33,8 @@ const ARTICLE = {
     upsell_body: "U heeft dit artikel gratis gelezen met uw gratis account. Wilt u onbeperkt toegang? Start een gratis proefperiode of kies een abonnement. Of regel toegang voor uw hele team.",
     upsell_cta_trial: "Start 10 dagen gratis Premium",
     upsell_cta_business: "Toegang voor mijn organisatie",
+    freemium_logged_as: "Ingelogd als",
+    freemium_no_access: "Uw gratis account geeft geen toegang tot dit artikel. Upgrade naar Premium of regel toegang voor uw organisatie.",
   },
   en: {
     category: "Investing",
@@ -44,9 +46,9 @@ const ARTICLE = {
     p5: "For portfolio managers who are overweight in American financials, sentiment remains nervous. Uncertainty about the regulatory direction weighs more heavily than the direct impact of this proposal.",
     paywall_title: "Continue reading with Investment Officer",
     paywall_sub: "This article is part of our premium content.\nDepending on your sector and organisation you may have free access.",
-    paywall_badge: "Free access\nfor Wealth\nprofessionals",
+    paywall_badge: "Free access\nfor Wealth professionals\n+ 6 months free for\nother organisations",
     paywall_login: "Log in",
-    paywall_subscribe: "Subscribe",
+    paywall_subscribe: "Activate access",
     paywall_items: [
       "Unlimited online access to all premium articles",
       "Access to research databases and market reports",
@@ -63,6 +65,8 @@ const ARTICLE = {
     upsell_body: "You read this article for free with your free account. Want unlimited access? Start a free trial or choose a subscription. Or get access for your entire team.",
     upsell_cta_trial: "Start 10-day free Premium",
     upsell_cta_business: "Access for my organisation",
+    freemium_logged_as: "Logged in as",
+    freemium_no_access: "Your free account does not include access to this article. Upgrade to Premium or get access for your organisation.",
   },
   de: {
     category: "Geldanlage",
@@ -74,9 +78,9 @@ const ARTICLE = {
     p5: "Für Portfoliomanager, die in amerikanischen Finanzwerten übergewichtet sind, bleibt die Stimmung nervös. Die Unsicherheit über den regulatorischen Kurs wiegt schwerer als die direkten Auswirkungen dieses Vorschlags.",
     paywall_title: "Weiterlesen mit Investment Officer",
     paywall_sub: "Dieser Artikel ist Teil unserer Premium-Inhalte.\nJe nach Branche und Organisation haben Sie möglicherweise kostenlosen Zugang.",
-    paywall_badge: "Kostenloser Zugang\nfür Wealth-\nProfessionals",
+    paywall_badge: "Kostenloser Zugang\nfür Wealth-Professionals\n+ 6 Monate gratis für\nandere Organisationen",
     paywall_login: "Anmelden",
-    paywall_subscribe: "Abonnieren",
+    paywall_subscribe: "Zugang aktivieren",
     paywall_items: [
       "Unbegrenzter Online-Zugang zu allen Premium-Artikeln",
       "Zugang zu Research-Datenbanken und Marktberichten",
@@ -93,6 +97,8 @@ const ARTICLE = {
     upsell_body: "Sie haben diesen Artikel kostenlos mit Ihrem kostenlosen Konto gelesen. Möchten Sie unbegrenzten Zugang? Starten Sie eine kostenlose Testphase oder wählen Sie ein Abonnement. Oder erhalten Sie Zugang für Ihr gesamtes Team.",
     upsell_cta_trial: "10 Tage kostenlos Premium starten",
     upsell_cta_business: "Zugang für meine Organisation",
+    freemium_logged_as: "Angemeldet als",
+    freemium_no_access: "Ihr kostenloses Konto enthält keinen Zugang zu diesem Artikel. Upgraden Sie auf Premium oder erhalten Sie Zugang für Ihre Organisation.",
   },
   fr: {
     category: "Investissement",
@@ -104,9 +110,9 @@ const ARTICLE = {
     p5: "Pour les gestionnaires de portefeuille surpondérés en valeurs financières américaines, le sentiment reste nerveux. L'incertitude quant à la direction réglementaire pèse plus lourd que l'impact direct de cette proposition.",
     paywall_title: "Continuez à lire avec Investment Officer",
     paywall_sub: "Cet article fait partie de notre contenu premium.\nSelon votre secteur et votre organisation, vous pouvez bénéficier d'un accès gratuit.",
-    paywall_badge: "Accès gratuit\npour les professionnels\ndu Wealth",
+    paywall_badge: "Accès gratuit\npour les professionnels Wealth\n+ 6 mois gratuits pour\nles autres organisations",
     paywall_login: "Se connecter",
-    paywall_subscribe: "S'abonner",
+    paywall_subscribe: "Activer l'accès",
     paywall_items: [
       "Accès en ligne illimité à tous les articles premium",
       "Accès aux bases de données de recherche et aux rapports de marché",
@@ -123,6 +129,8 @@ const ARTICLE = {
     upsell_body: "Vous avez lu cet article gratuitement avec votre compte gratuit. Vous souhaitez un accès illimité ? Commencez un essai gratuit ou choisissez un abonnement. Ou obtenez un accès pour toute votre équipe.",
     upsell_cta_trial: "Démarrer 10 jours Premium gratuits",
     upsell_cta_business: "Accès pour mon organisation",
+    freemium_logged_as: "Connecté en tant que",
+    freemium_no_access: "Votre compte gratuit ne donne pas accès à cet article. Passez à Premium ou obtenez un accès pour votre organisation.",
   },
 }
 
@@ -170,6 +178,35 @@ function PaywallBlock({ onLogin, onSubscribe, txt }) {
           <span>{b}</span>
         </div>
       ))}
+    </div>
+  )
+}
+
+function FreemiumPaywallBlock({ userEmail, onUpgradeTrial, onUpgradeBusiness, txt }) {
+  return (
+    <div className="paywall-card" style={{ marginTop:"2rem", border:`1px solid ${C.gray100}`, borderRadius:8, padding:"2rem", background:C.white, boxShadow:"0 2px 16px rgba(12,24,46,0.07)", position:"relative", overflow:"visible" }}>
+      <div className="good-news-badge" style={{ whiteSpace:"pre-line" }}>{txt.paywall_badge}</div>
+      {/* Logged-in acknowledgement */}
+      <div style={{ display:"flex", alignItems:"center", gap:"0.625rem", background:"rgba(78,213,150,0.08)", border:"1px solid rgba(78,213,150,0.25)", borderRadius:8, padding:"0.75rem 1rem", marginBottom:"1.25rem" }}>
+        <svg width="16" height="16" viewBox="0 0 18 18" fill="none">
+          <circle cx="9" cy="9" r="8" stroke={C.green} strokeWidth="1.5"/>
+          <path d="M5.5 9l2 2L12.5 7" stroke={C.green} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+        <span style={{ fontFamily:"var(--font-sans)", fontSize:"0.85rem", color:C.navy }}>
+          {txt.freemium_logged_as} <strong>{userEmail}</strong>
+        </span>
+      </div>
+      <div style={{ fontFamily:"var(--font-sans)", fontSize:"0.9375rem", color:C.gray700, lineHeight:"var(--lh-body)", marginBottom:"1.25rem" }}>
+        {txt.freemium_no_access}
+      </div>
+      <div style={{ display:"flex", gap:"0.75rem", flexWrap:"wrap" }}>
+        <button className="btn-primary" onClick={onUpgradeTrial} style={{ flex:1, minWidth:200 }}>
+          {txt.upsell_cta_trial}
+        </button>
+        <button className="btn-secondary" onClick={onUpgradeBusiness} style={{ flex:1, minWidth:200 }}>
+          {txt.upsell_cta_business}
+        </button>
+      </div>
     </div>
   )
 }
@@ -274,7 +311,7 @@ export default function ArticlePage({ loggedIn, userEmail, activePlanType, artic
               </div>
               <div className="fade-overlay" />
             </div>
-            <PaywallBlock onLogin={onLogin} onSubscribe={onSubscribe} txt={txt} />
+            <FreemiumPaywallBlock userEmail={userEmail} onUpgradeTrial={onUpgradeTrial} onUpgradeBusiness={onUpgradeBusiness} txt={txt} />
           </>
         ) : (
           <>

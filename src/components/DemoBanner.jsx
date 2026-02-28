@@ -287,6 +287,16 @@ function PocGuide({ onClose }) {
             </div>
           </div>
 
+          <div style={S.card}>
+            <div style={S.cardTitle}>🟠 Freemium paywall (logged-in Free user)</div>
+            <div style={S.cardBody}>
+              Use: <span style={S.email}>demo@freemium.com</span> (login)<br/>
+              <strong>Scenario:</strong> User is already logged in with a Free account but visits a premium article they don't have access to.<br/>
+              <strong>Paywall:</strong> Contextual paywall that acknowledges the user is logged in ("Logged in as [email]") and shows that their free account doesn't include access. Two upgrade buttons: "Start 10-day free Premium" and "Access for my organisation".<br/>
+              <em>Note: this replaces the generic paywall for logged-in freemium users. No "Log in" button is shown since the user is already authenticated.</em>
+            </div>
+          </div>
+
           <hr style={S.divider} />
 
           {/* ── 3. Pricing rules ── */}
@@ -311,7 +321,7 @@ function PocGuide({ onClose }) {
           <div style={S.sectionTitle}>4. Navigation</div>
           <div style={S.card}>
             <div style={S.cardBody}>
-              The primary registration entry is <strong>#emailgate</strong> — this is where "Subscribe" and all registration CTAs lead.<br/>
+              The primary registration entry is <strong>#emailgate</strong> — this is where "Activate access" and all registration CTAs lead.<br/>
               Use the <strong>deep links</strong> in the test panel to jump to specific screens directly.<br/>
               Switch language via the language button in the top right (NL / EN / DE / FR).<br/>
               After registration you can choose <strong>"Start introduction"</strong> (onboarding) or <strong>"Go directly to the website"</strong> (skip).<br/><br/>
@@ -502,10 +512,12 @@ function PocGuide({ onClose }) {
           <div style={S.sectionTitle}>10. Article access levels</div>
           <div style={S.card}>
             <div style={S.cardBody}>
-              The article page (entry screen) has three access levels:<br/><br/>
+              The article page (entry screen) has four access levels:<br/><br/>
               <strong>1. Full access</strong> — logged in with a paid/active plan → full article + green status bar<br/>
               <strong>2. Single-article access</strong> — Personal Free registered from this article → full article + yellow 24h timer banner + upsell banner (two upgrade buttons)<br/>
-              <strong>3. Paywall</strong> — not logged in or insufficient plan → 2 paragraphs + fade overlay + paywall card with registration CTA
+              <strong>3. Freemium paywall</strong> — logged in as Free user without article access → 2 paragraphs + fade overlay + contextual paywall ("You are logged in, your free account does not include access" + two upgrade buttons: Premium trial &amp; Business)<br/>
+              <strong>4. Paywall</strong> — not logged in → 2 paragraphs + fade overlay + paywall card with "Log in" and "Activate access" buttons<br/><br/>
+              Test with <span style={S.email}>demo@freemium.com</span> (login) to see the freemium paywall (level 3).
             </div>
           </div>
 
@@ -560,6 +572,7 @@ export default function DemoBanner() {
   /* ── Test accounts ── */
   const accounts = [
     { email: "demo@aegon.com",      scenarios: "Login → password → Business admin (Account: users, billing, invoices)" },
+    { email: "demo@freemium.com",   scenarios: "Login → password → Freemium user (Article: contextual paywall with upgrade options)" },
     { email: "new@aegon.com",       scenarios: "Register → profile → intent → Business or Personal" },
     { email: "Any @abnamro.com",    scenarios: "Login → SSO/Enterprise · Register → Enterprise domain → profile only" },
     { email: "new@wealthpro.com",   scenarios: "Login / Register → Enterprise NL (1 edition, free)" },

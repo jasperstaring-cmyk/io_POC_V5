@@ -329,9 +329,12 @@ export function AuthNav({ onBack }) {
 }
 
 // ─── RegSidebar ───────────────────────────────────────────────────────────────
-export function RegSidebar({ planName, planPrice, planPriceSuffix, planFeatures, planCta, savingsPerYear }) {
+// sidebarContext: "default" | "personal_free" | "personal_trial" | "personal_pro" | "business_buyside" | "business_trial" | "business_paid"
+export function RegSidebar({ planName, planPrice, planPriceSuffix, planFeatures, planCta, savingsPerYear, sidebarContext }) {
   const { t } = useLang()
-  const usps = t("sidebar_usps")
+  // Dynamic USPs based on context — falls back to context-specific keys, then default
+  const contextUsps = sidebarContext ? t(`sidebar_usps_${sidebarContext}`) : null
+  const usps = (Array.isArray(contextUsps) && contextUsps.length > 0) ? contextUsps : t("sidebar_usps")
   const showPlan = planName && planName.length > 0
   const features = planFeatures || (Array.isArray(usps) ? usps : [])
 
@@ -359,6 +362,23 @@ export function RegSidebar({ planName, planPrice, planPriceSuffix, planFeatures,
         )}
       </div>
 
+      {/* Savings block — direct under visual */}
+      {savingsPerYear > 0 && (
+        <div className="reg-sidebar-card" style={{ background:"rgba(78,213,150,0.08)", border:`1.5px solid ${C.green}` }}>
+          <div style={{ fontFamily:"var(--font-sans)", fontSize:"0.65rem", fontWeight:700, letterSpacing:"0.08em", textTransform:"uppercase", color:C.green, marginBottom:"0.5rem" }}>
+            {t("sidebar_savings_label")}
+          </div>
+          <div style={{ display:"flex", alignItems:"baseline", gap:"0.375rem" }}>
+            <span style={{ fontFamily:"var(--font-sans)", fontSize:"1.5rem", fontWeight:800, color:C.green, lineHeight:1 }}>
+              € {savingsPerYear.toLocaleString("nl-NL")},–
+            </span>
+            <span style={{ fontFamily:"var(--font-sans)", fontSize:"0.8rem", color:C.gray700 }}>
+              {t("sidebar_savings_suffix")}
+            </span>
+          </div>
+        </div>
+      )}
+
       {/* Plan info / USPs */}
       <div className="reg-sidebar-card">
         {showPlan ? (
@@ -380,16 +400,14 @@ export function RegSidebar({ planName, planPrice, planPriceSuffix, planFeatures,
                 <div style={{ fontFamily:"var(--font-sans)", fontSize:"0.65rem", fontWeight:700, letterSpacing:"0.08em", textTransform:"uppercase", color:C.gray500, marginBottom:"0.25rem" }}>
                   {t("sidebar_price_label")}
                 </div>
-                <div style={{ display:"flex", alignItems:"baseline", gap:"0.5rem" }}>
-                  <span style={{ fontFamily:"var(--font-sans)", fontSize:"1.75rem", fontWeight:700, color:C.navy, lineHeight:1 }}>
-                    {planPrice}
-                  </span>
-                  {planPriceSuffix && (
-                    <span style={{ fontFamily:"var(--font-sans)", fontSize:"0.875rem", color:C.gray500 }}>
-                      {planPriceSuffix}
-                    </span>
-                  )}
+                <div style={{ fontFamily:"var(--font-sans)", fontSize:"1.75rem", fontWeight:700, color:C.navy, lineHeight:1 }}>
+                  {planPrice}
                 </div>
+                {planPriceSuffix && (
+                  <div style={{ fontFamily:"var(--font-sans)", fontSize:"0.875rem", color:C.gray500, marginTop:"0.25rem" }}>
+                    {planPriceSuffix}
+                  </div>
+                )}
               </div>
             )}
 
@@ -417,23 +435,6 @@ export function RegSidebar({ planName, planPrice, planPriceSuffix, planFeatures,
           </div>
         ))}
       </div>
-
-      {/* Savings block */}
-      {savingsPerYear > 0 && (
-        <div className="reg-sidebar-card" style={{ background:"rgba(78,213,150,0.08)", border:`1.5px solid ${C.green}` }}>
-          <div style={{ fontFamily:"var(--font-sans)", fontSize:"0.65rem", fontWeight:700, letterSpacing:"0.08em", textTransform:"uppercase", color:C.green, marginBottom:"0.5rem" }}>
-            {t("sidebar_savings_label")}
-          </div>
-          <div style={{ display:"flex", alignItems:"baseline", gap:"0.375rem" }}>
-            <span style={{ fontFamily:"var(--font-sans)", fontSize:"1.5rem", fontWeight:800, color:C.green, lineHeight:1 }}>
-              € {savingsPerYear.toLocaleString("nl-NL")},–
-            </span>
-            <span style={{ fontFamily:"var(--font-sans)", fontSize:"0.8rem", color:C.gray700 }}>
-              {t("sidebar_savings_suffix")}
-            </span>
-          </div>
-        </div>
-      )}
 
       {/* Kom je er niet uit */}
       <div className="reg-sidebar-card" style={{ background:C.gray50 }}>

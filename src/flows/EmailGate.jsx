@@ -126,12 +126,15 @@ export default function EmailGate({ onRoute, onBack, onGoLogin }) {
                 <button className="btn-green btn-full" onClick={() => onRoute("business_paid", email)}>{t("bf_trial_blocked_cta")}</button>
                 <button className="btn-secondary btn-full" onClick={() => setStep("email")}>{t("bf_trial_blocked_other")}</button>
               </div>
+              <p style={{ fontFamily:"var(--font-sans)", fontSize:"0.8125rem", color:C.gray500, lineHeight:"var(--lh-body)", marginTop:"1rem", textAlign:"center" }}>
+                {t("bf_trial_blocked_contact")}
+              </p>
             </>
           )}
 
         </div>
         <div className="reg-sidebar">
-          <RegSidebar />
+          <RegSidebar sidebarContext="default" />
         </div>
       </div>
     </div>

@@ -6,7 +6,7 @@ export const translations = {
 
     // ── Nav ──
     nav_login:        "Inloggen",
-    nav_subscribe:    "Abonneren",
+    nav_subscribe:    "Toegang activeren",
     nav_logout:       "Uitloggen",
     nav_help:         "Help",
 
@@ -22,11 +22,52 @@ export const translations = {
     sidebar_help_sub:    "We helpen je graag verder",
     sidebar_help_cta:    "Neem contact met ons op",
     sidebar_usps: [
-      "Papers van marktpartijen",
+      "Toegang tot vaknieuws en analyses",
       "Research database Morningstar",
-      "Publicaties van partners",
+      "Papers van marktpartijen",
       "E-mail nieuwsbrieven",
-      "1 redactioneel artikel per maand",
+    ],
+    sidebar_usps_default: [
+      "Toegang tot vaknieuws en analyses",
+      "Research database Morningstar",
+      "Papers van marktpartijen",
+      "E-mail nieuwsbrieven",
+    ],
+    sidebar_usps_personal_free: [
+      "Toegang tot gratis content en nieuwsbrieven",
+      "Research database Morningstar",
+      "Papers van marktpartijen",
+      "Eenmalig artikeltoegang bij registratie via artikel",
+    ],
+    sidebar_usps_personal_trial: [
+      "10 dagen onbeperkt toegang tot alle premium content",
+      "Volledige redactionele dekking",
+      "Research database Morningstar",
+      "Stopt automatisch — geen verplichtingen",
+    ],
+    sidebar_usps_personal_pro: [
+      "Onbeperkt toegang tot alle premium artikelen",
+      "Volledige redactionele dekking van editie Nederland",
+      "Alle columns, analyses en expertbijdragen",
+      "Persoonlijk account op web en app",
+    ],
+    sidebar_usps_business_buyside: [
+      "Onbeperkt toegang voor alle medewerkers",
+      "Volledige redactionele dekking",
+      "Admin-beheerpaneel met gebruikersbeheer",
+      "Collega's uitnodigen per e-mail",
+    ],
+    sidebar_usps_business_trial: [
+      "6 maanden gratis toegang voor uw hele team",
+      "Volledige redactionele dekking",
+      "Admin-beheerpaneel met gebruikersbeheer",
+      "Na de proefperiode een passend betaald aanbod",
+    ],
+    sidebar_usps_business_paid: [
+      "Direct toegang voor uw hele team",
+      "Volledige redactionele dekking",
+      "Admin-beheerpaneel met gebruikersbeheer",
+      "Aantrekkelijke groepstarieven",
     ],
 
     // ── AccountTypeChoice ──
@@ -68,7 +109,7 @@ export const translations = {
 
     // ── PersonalFlow ──
     pf_back:          "Terug",
-    pf_email_title:   "Maak een gratis account en kies daarna jouw abonnement",
+    pf_email_title:   "Maak een gratis account aan",
     pf_email_sub:     "Vul uw persoonlijke gegevens in zodat we uw account kunnen aanmaken.",
     pf_email_label:   "Jouw zakelijk e-mailadres",
     pf_email_placeholder: "Gebruik uw zakelijke email",
@@ -87,8 +128,9 @@ export const translations = {
 
     pf_private_title: "Zakelijk e-mailadres aanbevolen",
     pf_private_alert: "Dit lijkt een privé e-mailadres.",
+    pf_private_confirmed: "E-mailadres bevestigd",
     pf_private_body1: "Investment Officer is bedoeld voor zakelijke professionals. Met een zakelijk e-mailadres krijgt u mogelijk gratis toegang via uw organisatie.",
-    pf_private_body2: "Gebruikt u dit adres toch zakelijk? Dan kunt u doorgaan, maar uw toegang tot premium content is dan afhankelijk van een persoonlijk abonnement.",
+    pf_private_body2: "Werkt u zelfstandig of heeft u geen zakelijk adres? Geen probleem — u kunt doorgaan met uw persoonlijke e-mailadres en een individueel abonnement kiezen.",
     pf_private_continue: "Dit is mijn zakelijke adres, ga door",
     pf_private_other: "Ander e-mailadres gebruiken",
 
@@ -114,6 +156,7 @@ export const translations = {
     inv_profile_sub:     "U bent uitgenodigd om deel te nemen aan een bedrijfsregeling. Vul uw gegevens in om toegang te krijgen.",
     inv_banner_pre:      "U bent uitgenodigd voor de bedrijfsregeling van",
     inv_banner_post:     "Na het aanmaken van uw profiel heeft u direct toegang.",
+    inv_banner_access_info: "U krijgt volledige toegang tot Investment Officer via de bedrijfsregeling van uw organisatie.",
     inv_create_profile:  "Profiel aanmaken en deelnemen",
 
     pf_whitelist_title: "Gefeliciteerd! Gratis toegang beschikbaar",
@@ -327,7 +370,7 @@ export const translations = {
     bf_next:          "Verder",
 
     bf_segment_title: "Kies in welke sector je werkt",
-    bf_segment_sub:   "Afhankelijk van je sector en organisatie heb je mogelijk gratis toegang.",
+    bf_segment_sub:   "Op basis van uw sector bepalen wij de meest passende regeling voor uw organisatie.",
     bf_segment_selected: "Uw keuze:",
     bf_segment_change:   "Wijzigen",
 
@@ -460,6 +503,7 @@ export const translations = {
     ob_to_website:      "Naar de website",
     ob_start_intro:     "Start introductie",
     ob_go_to_site:      "Ga direct naar de website",
+    ob_back_to_article: "Terug naar het artikel",
     cdp_product_label:  "CDP Product",
     cdp_edition_label:  "Editie",
     ob_to_dashboard:    "Ga naar je dashboard",
@@ -686,6 +730,7 @@ export const translations = {
     // ── Plan picker toggle ──
     toggle_personal: "Persoonlijk",
     toggle_business: "Zakelijk",
+    pp_private_hint: "Heeft uw organisatie een zakelijk e-mailadres? Registreer daarmee voor mogelijk gratis zakelijke toegang.",
 
     // ── Subscription page trust footer ──
     sp_trust_title: "Vertrouwd door professionals in de beleggingsindustrie",
@@ -759,11 +804,12 @@ export const translations = {
     bf_demo_hint:        "Gebruik trial@bedrijf.nl om de 2-jaar blokkade te testen. Wealth / Institutional → gratis doorlopend · Overige segmenten → 6 maanden gratis.",
     bf_trial_blocked_title:      "Geen gratis proefperiode beschikbaar",
     bf_trial_blocked_alert:      "Uw organisatie heeft in de afgelopen 2 jaar al een gratis proefperiode gehad.",
-    bf_trial_blocked_body:       "Een nieuwe gratis Business regeling is helaas niet mogelijk.",
+    bf_trial_blocked_body:       "De gratis proefperiode voor uw organisatie is afgelopen. U kunt direct doorgaan met een betaald abonnement — uw team behoudt toegang.",
     bf_trial_blocked_avail_title:"Wel beschikbaar: betaalde Business regelingen",
     bf_trial_blocked_avail_body: "Met een betaald Business abonnement krijgt uw team direct toegang tot Investment Officer. Kies het pakket dat past bij de omvang van uw team.",
     bf_trial_blocked_cta:        "Bekijk betaalde regelingen",
     bf_trial_blocked_other:      "Probeer een ander e-mailadres",
+    bf_trial_blocked_contact:    "Voor organisaties met meer dan 15 medewerkers bieden wij maatwerk. Neem contact op.",
     bf_size_title:       "Kies een Business pakket",
     bf_size_sub:         "Selecteer het pakket dat past bij de omvang van uw team. Alle pakketten geven volledige toegang tot Investment Officer.",
     bf_size_anchor:      "Een individueel Premium abonnement kost € 54,– per persoon per maand. Met een zakelijke regeling bespaart uw team direct.",
@@ -1017,7 +1063,7 @@ export const translations = {
 
     // ── Nav ──
     nav_login:        "Log in",
-    nav_subscribe:    "Subscribe",
+    nav_subscribe:    "Activate access",
     nav_logout:       "Log out",
     nav_help:         "Help",
 
@@ -1033,11 +1079,52 @@ export const translations = {
     sidebar_help_sub:    "We are happy to assist you",
     sidebar_help_cta:    "Contact us",
     sidebar_usps: [
-      "Market party white papers",
+      "Access to industry news and analyses",
       "Morningstar research database",
-      "Partner publications",
+      "Market party white papers",
       "Email newsletters",
-      "1 editorial article per month",
+    ],
+    sidebar_usps_default: [
+      "Access to industry news and analyses",
+      "Morningstar research database",
+      "Market party white papers",
+      "Email newsletters",
+    ],
+    sidebar_usps_personal_free: [
+      "Access to free content and newsletters",
+      "Morningstar research database",
+      "Market party white papers",
+      "One-time article access when registering via article",
+    ],
+    sidebar_usps_personal_trial: [
+      "10 days unlimited access to all premium content",
+      "Full editorial coverage",
+      "Morningstar research database",
+      "Stops automatically — no obligations",
+    ],
+    sidebar_usps_personal_pro: [
+      "Unlimited access to all premium articles",
+      "Full editorial coverage of your edition",
+      "All columns, analyses and expert contributions",
+      "Personal account on web and app",
+    ],
+    sidebar_usps_business_buyside: [
+      "Unlimited access for all employees",
+      "Full editorial coverage",
+      "Admin management portal",
+      "Invite colleagues via email",
+    ],
+    sidebar_usps_business_trial: [
+      "6 months free access for your entire team",
+      "Full editorial coverage",
+      "Admin management portal",
+      "Tailored paid offer after the trial period",
+    ],
+    sidebar_usps_business_paid: [
+      "Immediate access for your entire team",
+      "Full editorial coverage",
+      "Admin management portal",
+      "Attractive group rates",
     ],
 
     // ── AccountTypeChoice ──
@@ -1079,7 +1166,7 @@ export const translations = {
 
     // ── PersonalFlow ──
     pf_back:          "Back",
-    pf_email_title:   "Create a free account and then choose your subscription",
+    pf_email_title:   "Create a free account",
     pf_email_sub:     "Fill in your personal details so we can create your account.",
     pf_email_label:   "Your business email address",
     pf_email_placeholder: "Use your business email",
@@ -1098,8 +1185,9 @@ export const translations = {
 
     pf_private_title: "Business email address recommended",
     pf_private_alert: "This appears to be a personal email address.",
+    pf_private_confirmed: "Email address confirmed",
     pf_private_body1: "Investment Officer is intended for business professionals. With a business email address you may get free access through your organisation.",
-    pf_private_body2: "Do you use this address for business? You can continue, but your access to premium content will depend on a personal subscription.",
+    pf_private_body2: "Working independently or don't have a business email? No problem — you can continue with your personal email address and choose an individual plan.",
     pf_private_continue: "This is my business address, continue",
     pf_private_other: "Use a different email address",
 
@@ -1125,6 +1213,7 @@ export const translations = {
     inv_profile_sub:     "You have been invited to join a company subscription. Fill in your details to get access.",
     inv_banner_pre:      "You have been invited to the company subscription of",
     inv_banner_post:     "After creating your profile, you will have immediate access.",
+    inv_banner_access_info: "You will receive full access to Investment Officer through your organisation's business plan.",
     inv_create_profile:  "Create profile and join",
 
     pf_whitelist_title: "Congratulations! Free access available",
@@ -1338,7 +1427,7 @@ export const translations = {
     bf_next:          "Continue",
 
     bf_segment_title: "Choose which sector you work in",
-    bf_segment_sub:   "Depending on your sector and organisation you may have free access.",
+    bf_segment_sub:   "Based on your sector we determine the most suitable plan for your organisation.",
     bf_segment_selected: "Your selection:",
     bf_segment_change:   "Change",
 
@@ -1471,6 +1560,7 @@ export const translations = {
     ob_to_website:      "Go to the website",
     ob_start_intro:     "Start introduction",
     ob_go_to_site:      "Go directly to the website",
+    ob_back_to_article: "Back to the article",
     cdp_product_label:  "CDP Product",
     cdp_edition_label:  "Edition",
     ob_to_dashboard:    "Go to your dashboard",
@@ -1685,6 +1775,7 @@ export const translations = {
     // ── Plan picker toggle ──
     toggle_personal: "Personal",
     toggle_business: "Business",
+    pp_private_hint: "Does your organisation have a business email address? Register with it for potentially free business access.",
 
     // ── Subscription page trust footer ──
     sp_trust_title: "Trusted by professionals in the investment industry",
@@ -1758,11 +1849,12 @@ export const translations = {
     bf_demo_hint:        "Use trial@company.com to test the 2-year block. Wealth / Institutional → free ongoing · Other segments → 6 months free.",
     bf_trial_blocked_title:      "No free trial available",
     bf_trial_blocked_alert:      "Your organisation has already had a free trial in the past 2 years.",
-    bf_trial_blocked_body:       "A new free Business plan is unfortunately not available.",
+    bf_trial_blocked_body:       "The free trial period for your organisation has ended. You can continue directly with a paid subscription — your team keeps their access.",
     bf_trial_blocked_avail_title:"Available: paid Business plans",
     bf_trial_blocked_avail_body: "With a paid Business subscription your team gets immediate access to Investment Officer. Choose the plan that fits your team size.",
     bf_trial_blocked_cta:        "View paid plans",
     bf_trial_blocked_other:      "Try a different email address",
+    bf_trial_blocked_contact:    "For organisations with more than 15 employees we offer custom solutions. Get in touch.",
     bf_size_title:       "Choose a Business plan",
     bf_size_sub:         "Select the plan that fits your team size. All plans provide full access to Investment Officer.",
     bf_size_anchor:      "An individual Premium subscription costs € 54 per person per month. With a business plan your team saves immediately.",
@@ -2016,7 +2108,7 @@ export const translations = {
 
     // ── Nav ──
     nav_login:        "Anmelden",
-    nav_subscribe:    "Abonnieren",
+    nav_subscribe:    "Zugang aktivieren",
     nav_logout:       "Abmelden",
     nav_help:         "Hilfe",
 
@@ -2032,11 +2124,52 @@ export const translations = {
     sidebar_help_sub:    "Wir helfen Ihnen gerne weiter",
     sidebar_help_cta:    "Kontaktieren Sie uns",
     sidebar_usps: [
-      "Research-Papers von Marktakteuren",
+      "Zugang zu Fachnachrichten und Analysen",
       "Morningstar Research-Datenbank",
-      "Partnerpublikationen",
+      "Research-Papers von Marktakteuren",
       "E-Mail-Newsletter",
-      "1 redaktioneller Artikel pro Monat",
+    ],
+    sidebar_usps_default: [
+      "Zugang zu Fachnachrichten und Analysen",
+      "Morningstar Research-Datenbank",
+      "Research-Papers von Marktakteuren",
+      "E-Mail-Newsletter",
+    ],
+    sidebar_usps_personal_free: [
+      "Zugang zu kostenlosen Inhalten und Newslettern",
+      "Morningstar Research-Datenbank",
+      "Research-Papers von Marktakteuren",
+      "Einmaliger Artikelzugang bei Registrierung über Artikel",
+    ],
+    sidebar_usps_personal_trial: [
+      "10 Tage unbegrenzter Zugang zu allen Premium-Inhalten",
+      "Vollständige redaktionelle Abdeckung",
+      "Morningstar Research-Datenbank",
+      "Endet automatisch — keine Verpflichtungen",
+    ],
+    sidebar_usps_personal_pro: [
+      "Unbegrenzter Zugang zu allen Premium-Artikeln",
+      "Vollständige redaktionelle Abdeckung Ihrer Ausgabe",
+      "Alle Kolumnen, Analysen und Expertenbeiträge",
+      "Persönliches Konto auf Web und App",
+    ],
+    sidebar_usps_business_buyside: [
+      "Unbegrenzter Zugang für alle Mitarbeiter",
+      "Vollständige redaktionelle Abdeckung",
+      "Admin-Verwaltungsportal",
+      "Kollegen per E-Mail einladen",
+    ],
+    sidebar_usps_business_trial: [
+      "6 Monate kostenloser Zugang für Ihr gesamtes Team",
+      "Vollständige redaktionelle Abdeckung",
+      "Admin-Verwaltungsportal",
+      "Nach der Testphase ein maßgeschneidertes Angebot",
+    ],
+    sidebar_usps_business_paid: [
+      "Sofortiger Zugang für Ihr gesamtes Team",
+      "Vollständige redaktionelle Abdeckung",
+      "Admin-Verwaltungsportal",
+      "Attraktive Gruppentarife",
     ],
 
     // ── AccountTypeChoice ──
@@ -2078,7 +2211,7 @@ export const translations = {
 
     // ── PersonalFlow ──
     pf_back:          "Zurück",
-    pf_email_title:   "Erstellen Sie ein kostenloses Konto und wählen Sie dann Ihr Abonnement",
+    pf_email_title:   "Erstellen Sie ein kostenloses Konto",
     pf_email_sub:     "Geben Sie Ihre persönlichen Daten ein, damit wir Ihr Konto erstellen können.",
     pf_email_label:   "Ihre geschäftliche E-Mail-Adresse",
     pf_email_placeholder: "Verwenden Sie Ihre geschäftliche E-Mail",
@@ -2097,8 +2230,9 @@ export const translations = {
 
     pf_private_title: "Geschäftliche E-Mail-Adresse empfohlen",
     pf_private_alert: "Dies scheint eine private E-Mail-Adresse zu sein.",
+    pf_private_confirmed: "E-Mail-Adresse bestätigt",
     pf_private_body1: "Investment Officer richtet sich an Fachleute. Mit einer geschäftlichen E-Mail-Adresse erhalten Sie möglicherweise kostenlosen Zugang über Ihre Organisation.",
-    pf_private_body2: "Verwenden Sie diese Adresse geschäftlich? Sie können fortfahren, aber Ihr Zugang zu Premium-Inhalten hängt dann von einem persönlichen Abonnement ab.",
+    pf_private_body2: "Arbeiten Sie selbständig oder haben Sie keine geschäftliche E-Mail? Kein Problem — Sie können mit Ihrer persönlichen E-Mail-Adresse fortfahren und ein individuelles Abonnement wählen.",
     pf_private_continue: "Dies ist meine geschäftliche Adresse, weiter",
     pf_private_other: "Andere E-Mail-Adresse verwenden",
 
@@ -2124,6 +2258,7 @@ export const translations = {
     inv_profile_sub:     "Sie wurden eingeladen, an einem Firmenabonnement teilzunehmen. Füllen Sie Ihre Daten aus, um Zugang zu erhalten.",
     inv_banner_pre:      "Sie wurden zum Firmenabonnement von",
     inv_banner_post:     "eingeladen. Nach der Profilerstellung haben Sie sofortigen Zugang.",
+    inv_banner_access_info: "Sie erhalten vollen Zugang zu Investment Officer über die Geschäftsregelung Ihrer Organisation.",
     inv_create_profile:  "Profil erstellen und teilnehmen",
 
     pf_whitelist_title: "Herzlichen Glückwunsch! Kostenloser Zugang verfügbar",
@@ -2337,7 +2472,7 @@ export const translations = {
     bf_next:          "Weiter",
 
     bf_segment_title: "Wählen Sie Ihre Branche",
-    bf_segment_sub:   "Abhängig von Ihrer Branche und Organisation haben Sie möglicherweise kostenlosen Zugang.",
+    bf_segment_sub:   "Auf Grundlage Ihrer Branche bestimmen wir die am besten passende Regelung für Ihre Organisation.",
     bf_segment_selected: "Ihre Auswahl:",
     bf_segment_change:   "Ändern",
 
@@ -2470,6 +2605,7 @@ export const translations = {
     ob_to_website:      "Zur Website",
     ob_start_intro:     "Einführung starten",
     ob_go_to_site:      "Direkt zur Website",
+    ob_back_to_article: "Zurück zum Artikel",
     cdp_product_label:  "CDP Produkt",
     cdp_edition_label:  "Edition",
     ob_to_dashboard:    "Zu Ihrem Dashboard",
@@ -2696,6 +2832,7 @@ export const translations = {
     // ── Plan picker toggle ──
     toggle_personal: "Persönlich",
     toggle_business: "Geschäftlich",
+    pp_private_hint: "Hat Ihre Organisation eine geschäftliche E-Mail-Adresse? Registrieren Sie sich damit für möglicherweise kostenlosen geschäftlichen Zugang.",
 
     // ── Business Plan Picker Page ──
     bpp_title:            "Geschäftliche Regelungen",
@@ -2758,11 +2895,12 @@ export const translations = {
     bf_demo_hint:        "Use trial@company.com to test the 2-year block. Wealth / Institutional → free ongoing · Other segments → 6 months free.",
     bf_trial_blocked_title:      "Keine kostenlose Testphase verfügbar",
     bf_trial_blocked_alert:      "Ihre Organisation hatte in den letzten 2 Jahren bereits eine kostenlose Testphase.",
-    bf_trial_blocked_body:       "Eine neue kostenlose Business-Regelung ist leider nicht möglich.",
+    bf_trial_blocked_body:       "Die kostenlose Testphase für Ihre Organisation ist abgelaufen. Sie können direkt mit einem bezahlten Abonnement fortfahren — Ihr Team behält den Zugang.",
     bf_trial_blocked_avail_title:"Verfügbar: kostenpflichtige Business-Regelungen",
     bf_trial_blocked_avail_body: "Mit einem kostenpflichtigen Business-Abonnement erhält Ihr Team sofortigen Zugang zu Investment Officer. Wählen Sie das Paket, das zur Größe Ihres Teams passt.",
     bf_trial_blocked_cta:        "Kostenpflichtige Regelungen ansehen",
     bf_trial_blocked_other:      "Andere E-Mail-Adresse versuchen",
+    bf_trial_blocked_contact:    "Für Organisationen mit mehr als 15 Mitarbeitern bieten wir maßgeschneiderte Lösungen. Kontaktieren Sie uns.",
     bf_size_title:       "Wählen Sie ein Business-Paket",
     bf_size_sub:         "Wählen Sie das Paket, das zur Größe Ihres Teams passt. Alle Pakete bieten vollen Zugang zu Investment Officer.",
     bf_size_anchor:      "Ein individuelles Premium-Abonnement kostet € 54,– pro Person pro Monat. Mit einer Business-Regelung spart Ihr Team sofort.",
@@ -3016,7 +3154,7 @@ export const translations = {
 
     // ── Nav ──
     nav_login:        "Se connecter",
-    nav_subscribe:    "S'abonner",
+    nav_subscribe:    "Activer l'accès",
     nav_logout:       "Se déconnecter",
     nav_help:         "Aide",
 
@@ -3032,11 +3170,52 @@ export const translations = {
     sidebar_help_sub:    "Nous sommes là pour vous aider",
     sidebar_help_cta:    "Contactez-nous",
     sidebar_usps: [
-      "Papers des acteurs du marché",
+      "Accès aux actualités et analyses sectorielles",
       "Base de données Morningstar Research",
-      "Publications des partenaires",
+      "Papers des acteurs du marché",
       "Newsletters par e-mail",
-      "1 article éditorial par mois",
+    ],
+    sidebar_usps_default: [
+      "Accès aux actualités et analyses sectorielles",
+      "Base de données Morningstar Research",
+      "Papers des acteurs du marché",
+      "Newsletters par e-mail",
+    ],
+    sidebar_usps_personal_free: [
+      "Accès au contenu gratuit et aux newsletters",
+      "Base de données Morningstar Research",
+      "Papers des acteurs du marché",
+      "Accès unique à un article lors de l'inscription via un article",
+    ],
+    sidebar_usps_personal_trial: [
+      "10 jours d'accès illimité à tout le contenu premium",
+      "Couverture éditoriale complète",
+      "Base de données Morningstar Research",
+      "S'arrête automatiquement — sans engagement",
+    ],
+    sidebar_usps_personal_pro: [
+      "Accès illimité à tous les articles premium",
+      "Couverture éditoriale complète de votre édition",
+      "Toutes les chroniques, analyses et contributions d'experts",
+      "Compte personnel sur web et application",
+    ],
+    sidebar_usps_business_buyside: [
+      "Accès illimité pour tous les employés",
+      "Couverture éditoriale complète",
+      "Portail d'administration",
+      "Inviter des collègues par e-mail",
+    ],
+    sidebar_usps_business_trial: [
+      "6 mois d'accès gratuit pour toute votre équipe",
+      "Couverture éditoriale complète",
+      "Portail d'administration",
+      "Offre payante adaptée après la période d'essai",
+    ],
+    sidebar_usps_business_paid: [
+      "Accès immédiat pour toute votre équipe",
+      "Couverture éditoriale complète",
+      "Portail d'administration",
+      "Tarifs de groupe attractifs",
     ],
 
     // ── AccountTypeChoice ──
@@ -3078,7 +3257,7 @@ export const translations = {
 
     // ── PersonalFlow ──
     pf_back:          "Retour",
-    pf_email_title:   "Créez un compte gratuit puis choisissez votre abonnement",
+    pf_email_title:   "Créez un compte gratuit",
     pf_email_sub:     "Remplissez vos données personnelles pour que nous puissions créer votre compte.",
     pf_email_label:   "Votre adresse e-mail professionnelle",
     pf_email_placeholder: "Utilisez votre e-mail professionnel",
@@ -3097,8 +3276,9 @@ export const translations = {
 
     pf_private_title: "Adresse e-mail professionnelle recommandée",
     pf_private_alert: "Ceci semble être une adresse e-mail privée.",
+    pf_private_confirmed: "Adresse e-mail confirmée",
     pf_private_body1: "Investment Officer est destiné aux professionnels. Avec une adresse e-mail professionnelle, vous pourriez obtenir un accès gratuit via votre organisation.",
-    pf_private_body2: "Utilisez-vous cette adresse à des fins professionnelles ? Vous pouvez continuer, mais votre accès au contenu premium dépendra d'un abonnement personnel.",
+    pf_private_body2: "Vous travaillez de manière indépendante ou n'avez pas d'adresse professionnelle ? Pas de problème — vous pouvez continuer avec votre adresse personnelle et choisir un abonnement individuel.",
     pf_private_continue: "C'est mon adresse professionnelle, continuer",
     pf_private_other: "Utiliser une autre adresse e-mail",
 
@@ -3124,6 +3304,7 @@ export const translations = {
     inv_profile_sub:     "Vous avez été invité à rejoindre un abonnement entreprise. Remplissez vos coordonnées pour obtenir l'accès.",
     inv_banner_pre:      "Vous avez été invité à l'abonnement entreprise de",
     inv_banner_post:     "Après la création de votre profil, vous aurez un accès immédiat.",
+    inv_banner_access_info: "Vous bénéficierez d'un accès complet à Investment Officer via la formule d'entreprise de votre organisation.",
     inv_create_profile:  "Créer un profil et rejoindre",
 
     pf_whitelist_title: "Félicitations ! Accès gratuit disponible",
@@ -3337,7 +3518,7 @@ export const translations = {
     bf_next:          "Continuer",
 
     bf_segment_title: "Choisissez votre secteur d'activité",
-    bf_segment_sub:   "Selon votre secteur et votre organisation, vous pouvez bénéficier d'un accès gratuit.",
+    bf_segment_sub:   "Sur la base de votre secteur, nous déterminons la formule la plus adaptée à votre organisation.",
     bf_segment_selected: "Votre choix :",
     bf_segment_change:   "Modifier",
 
@@ -3470,6 +3651,7 @@ export const translations = {
     ob_to_website:      "Aller au site web",
     ob_start_intro:     "Commencer l'introduction",
     ob_go_to_site:      "Aller directement au site",
+    ob_back_to_article: "Retour à l'article",
     cdp_product_label:  "CDP Produit",
     cdp_edition_label:  "Édition",
     ob_to_dashboard:    "Aller à votre tableau de bord",
@@ -3696,6 +3878,7 @@ export const translations = {
     // ── Plan picker toggle ──
     toggle_personal: "Personnel",
     toggle_business: "Professionnel",
+    pp_private_hint: "Votre organisation dispose-t-elle d'une adresse e-mail professionnelle ? Inscrivez-vous avec celle-ci pour un éventuel accès professionnel gratuit.",
 
     // ── Business Plan Picker Page ──
     bpp_title:            "Formules professionnelles",
@@ -3758,11 +3941,12 @@ export const translations = {
     bf_demo_hint:        "Use trial@company.com to test the 2-year block. Wealth / Institutional → free ongoing · Other segments → 6 months free.",
     bf_trial_blocked_title:      "Pas d'essai gratuit disponible",
     bf_trial_blocked_alert:      "Votre organisation a déjà bénéficié d'un essai gratuit au cours des 2 dernières années.",
-    bf_trial_blocked_body:       "Une nouvelle formule Business gratuite n'est malheureusement pas possible.",
+    bf_trial_blocked_body:       "La période d'essai gratuite de votre organisation est terminée. Vous pouvez continuer directement avec un abonnement payant — votre équipe conserve son accès.",
     bf_trial_blocked_avail_title:"Disponible : formules Business payantes",
     bf_trial_blocked_avail_body: "Avec un abonnement Business payant, votre équipe obtient un accès immédiat à Investment Officer. Choisissez le forfait adapté à la taille de votre équipe.",
     bf_trial_blocked_cta:        "Voir les formules payantes",
     bf_trial_blocked_other:      "Essayer une autre adresse e-mail",
+    bf_trial_blocked_contact:    "Pour les organisations de plus de 15 employés, nous proposons des solutions sur mesure. Contactez-nous.",
     bf_size_title:       "Choisissez un forfait Business",
     bf_size_sub:         "Sélectionnez le forfait adapté à la taille de votre équipe. Tous les forfaits offrent un accès complet à Investment Officer.",
     bf_size_anchor:      "Un abonnement Premium individuel coûte 54 € par personne par mois. Avec une formule Business, votre équipe économise immédiatement.",

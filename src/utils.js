@@ -2,7 +2,7 @@
 const PRIVATE_DOMAINS    = ["gmail.com","hotmail.com","yahoo.com","outlook.com","icloud.com","live.com","me.com","hotmail.nl","ziggo.nl","kpnmail.nl"]
 const GENERIC_PREFIXES   = ["info","team","admin","service","subscriptions","contact","support","sales","hello","noreply","no-reply","office","mail","post","help","reception","secretariat","redactie","bestuur","algemeen"]
 const ENTERPRISE_DOMAINS = ["abnamro.com"]
-const EXISTING_ACCOUNTS  = ["demo@aegon.com", "demo@trial.com"]
+const EXISTING_ACCOUNTS  = ["demo@aegon.com", "demo@trial.com", "demo@freemium.com"]
 
 // Domains/prefixes that had a trial in the past 2 years (in production: backend lookup)
 const TRIAL_BLOCKED_PREFIXES = ["trial"]
@@ -23,10 +23,10 @@ const COMPANY_NAMES = { "abnamro.com":"ABN AMRO" }
 
 const PRIVATE_DOMAINS_LOGIN = ["gmail.com","hotmail.com","yahoo.com","outlook.com","icloud.com","live.com","me.com"]
 const SSO_DOMAINS           = ["abnamro.com"]
-const KNOWN_ACCOUNTS_LOGIN  = ["demo@aegon.com", "demo@trial.com"]
+const KNOWN_ACCOUNTS_LOGIN  = ["demo@aegon.com", "demo@trial.com", "demo@freemium.com"]
 
-// SSO domain → company name
-const SSO_COMPANY_NAMES = { "abnamro.com":"ABN AMRO" }
+// SSO domain → company name (POC only; in production from CDP)
+const SSO_COMPANY_NAMES = { "abnamro.com":"ABN AMRO", "aegon.com":"Aegon", "ingim.com":"ING Investment Management", "robeco.nl":"Robeco" }
 
 /**
  * Whitelist domains — pre-approved organisations for Enterprise access.

@@ -283,8 +283,8 @@ function PlanCard({ plan, onSelect, t }) {
       <div className="sub-card-zone-price">
         {plan.priceLines.map((line, i) => (
           line.style === "big"
-            ? <span key={i} className="sub-card-price">{line.text}</span>
-            : <span key={i} className="sub-card-price-suffix"> {line.text}</span>
+            ? <div key={i} className="sub-card-price">{line.text}</div>
+            : <div key={i} className="sub-card-price-suffix">{line.text}</div>
         ))}
         {plan.priceNote && (
           <div style={{ fontFamily:"var(--font-sans)", fontSize:"0.8rem", color:C.gray500, marginTop:"0.375rem", lineHeight:"var(--lh-body)" }}>
@@ -321,6 +321,7 @@ export default function ProductPicker({
   onBack,
   progressTotal,
   progressCurrent,
+  isPrivateEmail,
 }) {
   const { t } = useLang()
   const plans = getPlansForMode(mode, context, t)
@@ -380,6 +381,15 @@ export default function ProductPicker({
             <PlanCard key={p.id} plan={p} onSelect={onSelectPlan} t={t} />
           ))}
         </div>
+
+        {/* Private email hint (A5) */}
+        {mode === "personal" && isPrivateEmail && (
+          <div style={{ maxWidth:640, margin:"1.5rem auto 0", textAlign:"center", padding:"1rem 1.25rem", background:"rgba(78,213,150,0.06)", border:"1px solid rgba(78,213,150,0.2)", borderRadius:8 }}>
+            <p style={{ fontFamily:"var(--font-sans)", fontSize:"0.85rem", color:C.gray700, lineHeight:"var(--lh-body)", margin:0 }}>
+              {t("pp_private_hint")}
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Trust footer */}

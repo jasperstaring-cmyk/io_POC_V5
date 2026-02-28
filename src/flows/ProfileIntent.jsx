@@ -61,7 +61,7 @@ export default function ProfileIntent({ email, isPrivate, forceBusinessPaid, onC
                 </svg>
                 <div>
                   <div style={{ fontFamily:"var(--font-sans)", fontSize:"0.8125rem", fontWeight:700, color:C.navy }}>
-                    {isPrivate ? t("pf_private_alert") : t("eg_detected")}
+                    {isPrivate ? t("pf_private_confirmed") : t("eg_detected")}
                   </div>
                   <div style={{ fontFamily:"var(--font-sans)", fontSize:"0.75rem", color:C.gray500 }}>{email}</div>
                 </div>
@@ -150,7 +150,7 @@ export default function ProfileIntent({ email, isPrivate, forceBusinessPaid, onC
 
         </div>
         <div className="reg-sidebar">
-          <RegSidebar />
+          <RegSidebar sidebarContext="default" />
         </div>
       </div>
     </div>

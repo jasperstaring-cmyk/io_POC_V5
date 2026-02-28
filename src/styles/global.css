@@ -167,14 +167,14 @@ select.input-field { appearance: none; background-image: url("data:image/svg+xml
 .sub-card       { border: 1.5px solid var(--gray-200); border-radius: 8px; padding: 1.75rem; background: #fff; display: grid; grid-row: span 5; grid-template-rows: subgrid; transition: border-color 0.2s, box-shadow 0.2s; }
 .sub-card:hover { border-color: var(--gray-500); box-shadow: 0 4px 20px rgba(12,24,46,0.08); }
 .sub-card-zone-name     { }
-.sub-card-zone-price    { padding-top: 0.25rem; }
+.sub-card-zone-price    { padding-top: 0.25rem; min-height: 5rem; }
 .sub-card-zone-cta      { padding-top: 0.75rem; }
 .sub-card-zone-features { padding-top: 0.5rem; }
 .sub-card-zone-bottom   { align-self: end; }
 .sub-card-name  { font-family: var(--font-serif); font-size: 1.5rem; font-weight: 700; line-height: var(--lh-heading); letter-spacing: var(--tracking-heading); color: var(--navy); }
 .sub-card-sub   { font-family: var(--font-sans); font-size: 0.875rem; color: var(--gray-500); margin-top: 0.2rem; }
 .sub-card-price { font-family: var(--font-sans); font-size: 2rem; font-weight: 700; color: var(--navy); line-height: 1; }
-.sub-card-price-suffix { font-size: 0.875rem; font-weight: 400; color: var(--gray-500); margin-left: 0.3rem; }
+.sub-card-price-suffix { display: block; font-size: 0.875rem; font-weight: 400; color: var(--gray-500); margin-top: 0.25rem; }
 .sub-card-note  { font-family: var(--font-sans); font-size: 0.75rem; color: var(--gray-500); margin-top: 0.5rem; font-style: italic; line-height: var(--lh-body); }
 .sub-card-features-title { font-family: var(--font-sans); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gray-500); margin-bottom: 0.75rem; }
 .sub-check      { display: flex; align-items: flex-start; gap: 0.5rem; font-family: var(--font-sans); font-size: 0.875rem; color: var(--navy); margin-bottom: 0.5rem; line-height: var(--lh-body); }

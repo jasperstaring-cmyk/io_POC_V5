@@ -291,6 +291,7 @@ export default function App() {
           onBack={() => profileData ? setView("profileintent") : gateEmail ? setView("emailgate") : setView("choice")}
           progressTotal={4}
           progressCurrent={1}
+          isPrivateEmail={isPrivateEmail}
         />
       )}
       {view === "bizplans" && (
@@ -310,10 +311,10 @@ export default function App() {
         />
       )}
       {view === "personal" && (
-        <PersonalFlow selectedPlan={selectedPlan} onComplete={handleRegComplete} onSkipToSite={handleSkipToSite} onBack={() => setView("plans")} onGoLogin={handleGoLogin} onGoWhitelist={handleGoWhitelist} gateEmail={gateEmail} profileData={profileData} />
+        <PersonalFlow selectedPlan={selectedPlan} onComplete={handleRegComplete} onSkipToSite={handleSkipToSite} onBack={() => setView("plans")} onGoLogin={handleGoLogin} onGoWhitelist={handleGoWhitelist} gateEmail={gateEmail} profileData={profileData} cameFromArticle={cameFromArticle} />
       )}
       {view === "business" && (
-        <BusinessFlow onComplete={() => handleRegComplete(true)} onSkipToSite={handleSkipToSite} onBack={() => { if (cameFromAccount) { setCameFromAccount(false); setView("account") } else if (cameFromPicker) { setCameFromPicker(false); setView("bizplans") } else if (profileData) { setView("profileintent") } else if (gateEmail) { setView("emailgate") } else { setView("bizplans") } }} onGoLogin={handleGoLogin} onGoEnterprise={handleGoEnterprise} gateEmail={gateEmail} profileData={profileData} onGoIntl={(ctx) => { setBusinessContext(ctx); setPickerMode("business_intl"); setView("bizplans") }} />
+        <BusinessFlow onComplete={() => handleRegComplete(true)} onSkipToSite={handleSkipToSite} onBack={() => { if (cameFromAccount) { setCameFromAccount(false); setView("account") } else if (cameFromPicker) { setCameFromPicker(false); setView("bizplans") } else if (profileData) { setView("profileintent") } else if (gateEmail) { setView("emailgate") } else { setView("bizplans") } }} onGoLogin={handleGoLogin} onGoEnterprise={handleGoEnterprise} gateEmail={gateEmail} profileData={profileData} onGoIntl={(ctx) => { setBusinessContext(ctx); setPickerMode("business_intl"); setView("bizplans") }} cameFromArticle={cameFromArticle} />
       )}
       {view === "bizintl" && (
         <BusinessInternationalFlow onComplete={() => handleRegComplete(true)} onSkipToSite={handleSkipToSite} onBack={() => { if (cameFromPicker) { setCameFromPicker(false); setView("bizplans") } else if (profileData) { setView("business") } else { setView("bizplans") } }} onGoEnterprise={handleGoEnterprise} gateEmail={gateEmail} profileData={profileData} businessContext={businessContext} />

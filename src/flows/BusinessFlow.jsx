@@ -43,7 +43,7 @@ function getSidebarMeta(segId, isPaid, chosenSize, xlCount, t, tBiz) {
 }
 
 /* ─── Component ────────────────────────────────────────────────────────── */
-export default function BusinessFlow({ onComplete, onSkipToSite, onBack, onGoLogin, onGoEnterprise, gateEmail, profileData, onGoIntl }) {
+export default function BusinessFlow({ onComplete, onSkipToSite, onBack, onGoLogin, onGoEnterprise, gateEmail, profileData, onGoIntl, cameFromArticle }) {
   const { t, tSeg, tType, tBiz } = useLang()
   const hasProfile = !!(profileData)
   const initialTrialBlocked = hasProfile && hadRecentTrial(profileData.email)
@@ -125,7 +125,7 @@ export default function BusinessFlow({ onComplete, onSkipToSite, onBack, onGoLog
             </p>
             <div style={{ display:"flex", gap:"1rem" }}>
               <button className="btn-navy" style={{ padding:"0.875rem 2rem", fontSize:"1rem" }} onClick={onComplete}>{t("ob_start_intro")} →</button>
-              <button className="btn-secondary" style={{ padding:"0.875rem 2rem", fontSize:"1rem" }} onClick={onSkipToSite || onComplete}>{t("ob_go_to_site")}</button>
+              <button className="btn-secondary" style={{ padding:"0.875rem 2rem", fontSize:"1rem" }} onClick={onSkipToSite || onComplete}>{cameFromArticle ? t("ob_back_to_article") : t("ob_go_to_site")}</button>
             </div>
             <CdpProductLabel
               productName={
@@ -641,7 +641,7 @@ export default function BusinessFlow({ onComplete, onSkipToSite, onBack, onGoLog
 
         </div>
         <div className="reg-sidebar">
-          <RegSidebar planName={sidebar.name} planPrice={sidebar.price} planPriceSuffix={sidebar.priceSuffix} planFeatures={sidebar.features} planCta={sidebar.cta} savingsPerYear={sidebar.savings || 0} />
+          <RegSidebar planName={sidebar.name} planPrice={sidebar.price} planPriceSuffix={sidebar.priceSuffix} planFeatures={sidebar.features} planCta={sidebar.cta} savingsPerYear={sidebar.savings || 0} sidebarContext={isPaidFlow ? "business_paid" : isFreePermanent(segment?.id) ? "business_buyside" : "business_trial"} />
         </div>
       </div>
     </div>
