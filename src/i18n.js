@@ -73,7 +73,9 @@ export const translations = {
     // ── AccountTypeChoice ──
     // ── EmailGate ──
     eg_title:            "Toegang activeren",
-    eg_sub:              "Investment Officer is het onafhankelijke nieuwsplatform voor professionals in de beleggingssector. Registratie is vereist voor toegang tot onze redactionele content.",
+    eg_sub:              "Investment Officer is het onafhankelijke nieuwsplatform voor beleggingsprofessionals. Maak een gratis account aan en krijg direct 10 dagen volledige toegang.",
+    eg_hint_title:       "Werkzaam bij een wealth manager of institutionele belegger?",
+    eg_hint_sub:         "Wij bieden gratis bedrijfsregelingen voor organisaties in wealth management.",
     eg_email_label:      "Uw zakelijk e-mailadres",
     eg_email_placeholder:"u@organisatie.nl",
     eg_cta:              "Doorgaan",
@@ -1142,7 +1144,9 @@ export const translations = {
     // ── AccountTypeChoice ──
     // ── EmailGate ──
     eg_title:            "Activate access",
-    eg_sub:              "Investment Officer is the independent news platform for investment professionals. Registration is required for access to our editorial content.",
+    eg_sub:              "Investment Officer is the independent news platform for investment professionals. Create a free account and get 10 days of full access.",
+    eg_hint_title:       "Working at a wealth manager or institutional investor?",
+    eg_hint_sub:         "We offer free corporate plans for organisations in wealth management.",
     eg_email_label:      "Your business email address",
     eg_email_placeholder:"you@organisation.com",
     eg_cta:              "Continue",
@@ -2199,7 +2203,9 @@ export const translations = {
     // ── AccountTypeChoice ──
     // ── EmailGate ──
     eg_title:            "Zugang aktivieren",
-    eg_sub:              "Investment Officer ist die unabhängige Nachrichtenplattform für Anlageprofis. Für den Zugang zu unseren redaktionellen Inhalten ist eine Registrierung erforderlich.",
+    eg_sub:              "Investment Officer ist die unabhängige Nachrichtenplattform für Anlageexperten. Erstellen Sie ein kostenloses Konto und erhalten Sie 10 Tage vollen Zugang.",
+    eg_hint_title:       "Tätig bei einem Wealth Manager oder institutionellen Anleger?",
+    eg_hint_sub:         "Wir bieten kostenlose Firmenregelungen für Organisationen im Wealth Management.",
     eg_email_label:      "Ihre geschäftliche E-Mail-Adresse",
     eg_email_placeholder:"sie@organisation.de",
     eg_cta:              "Weiter",
@@ -3257,7 +3263,9 @@ export const translations = {
     // ── AccountTypeChoice ──
     // ── EmailGate ──
     eg_title:            "Activer l'accès",
-    eg_sub:              "Investment Officer est la plateforme d'information indépendante pour les professionnels de l'investissement. L'inscription est requise pour accéder à notre contenu éditorial.",
+    eg_sub:              "Investment Officer est la plateforme d'information indépendante pour les professionnels de l'investissement. Créez un compte gratuit et bénéficiez de 10 jours d'accès complet.",
+    eg_hint_title:       "Vous travaillez chez un wealth manager ou investisseur institutionnel ?",
+    eg_hint_sub:         "Nous proposons des accès gratuits aux organisations en wealth management.",
     eg_email_label:      "Votre adresse e-mail professionnelle",
     eg_email_placeholder:"vous@organisation.com",
     eg_cta:              "Continuer",

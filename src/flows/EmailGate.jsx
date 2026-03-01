@@ -55,14 +55,20 @@ export default function EmailGate({ onRoute, onBack, onGoLogin }) {
                   <label className="input-label">{t("eg_email_label")}</label>
                   <input className="input-field" type="text" inputMode="email" placeholder={t("eg_email_placeholder")} value={email} onChange={e => setEmail(e.target.value)} autoFocus required />
                 </div>
-                <p style={{ fontFamily:"var(--font-sans)", fontSize:"0.85rem", color:C.gray500, lineHeight:"var(--lh-body)", marginBottom:"1.25rem" }}>
-                  {t("eg_terms")}{" "}
-                  <button className="link-btn" style={{ fontSize:"0.85rem" }} type="button">{t("pf_terms_link")}</button>{" "}
-                  {t("pf_privacy_and")}{" "}
-                  <button className="link-btn" style={{ fontSize:"0.85rem" }} type="button">{t("pf_privacy_link")}.</button>
-                </p>
                 <button className="btn-green btn-full" type="submit">{t("eg_cta")}</button>
               </form>
+              {/* Hint banner — wealth/institutional organisatieregeling */}
+              <div className="paywall-hint-banner" style={{ marginTop:"1.5rem" }}>
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" style={{ flexShrink:0, marginTop:1 }}>
+                  <circle cx="9" cy="9" r="8" stroke={C.red} strokeWidth="1.5"/>
+                  <path d="M9 8v4" stroke={C.red} strokeWidth="1.5" strokeLinecap="round"/>
+                  <circle cx="9" cy="5.5" r="0.75" fill={C.red}/>
+                </svg>
+                <div>
+                  <strong style={{ color:C.red }}>{t("eg_hint_title")}</strong>
+                  <div style={{ color:C.red, opacity:0.8, fontSize:"0.8125rem", marginTop:2 }}>{t("eg_hint_sub")}</div>
+                </div>
+              </div>
             </>
           )}
 

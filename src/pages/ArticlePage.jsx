@@ -14,7 +14,8 @@ const ARTICLE = {
     p5: "Voor portefeuillebeheerders die overwogen zijn in Amerikaanse financials blijft het sentiment nerveus. De onzekerheid over de regelgevende koers weegt zwaarder dan de directe impact van dit voorstel.",
     paywall_title: "Lees verder met Investment Officer",
     paywall_sub: "Dit artikel is onderdeel van onze premium content.\nAfhankelijk van je sector en organisatie heb je mogelijk gratis toegang.",
-    paywall_badge: "Gratis toegang\nvoor Wealth professionals\n+ 6 mnd gratis voor\nandere organisaties",
+    paywall_badge_title: "Werkzaam bij een wealth manager of institutionele belegger?",
+    paywall_badge_sub: "Wij bieden gratis bedrijfsregelingen voor organisaties in wealth management. Andere organisaties krijgen 6 maanden gratis.",
     paywall_login: "Inloggen",
     paywall_subscribe: "Toegang activeren",
     paywall_items: [
@@ -46,7 +47,8 @@ const ARTICLE = {
     p5: "For portfolio managers who are overweight in American financials, sentiment remains nervous. Uncertainty about the regulatory direction weighs more heavily than the direct impact of this proposal.",
     paywall_title: "Continue reading with Investment Officer",
     paywall_sub: "This article is part of our premium content.\nDepending on your sector and organisation you may have free access.",
-    paywall_badge: "Free access\nfor Wealth professionals\n+ 6 months free for\nother organisations",
+    paywall_badge_title: "Working at a wealth manager or institutional investor?",
+    paywall_badge_sub: "We offer free corporate plans for organisations in wealth management. Other organisations get 6 months free.",
     paywall_login: "Log in",
     paywall_subscribe: "Activate access",
     paywall_items: [
@@ -78,7 +80,8 @@ const ARTICLE = {
     p5: "Für Portfoliomanager, die in amerikanischen Finanzwerten übergewichtet sind, bleibt die Stimmung nervös. Die Unsicherheit über den regulatorischen Kurs wiegt schwerer als die direkten Auswirkungen dieses Vorschlags.",
     paywall_title: "Weiterlesen mit Investment Officer",
     paywall_sub: "Dieser Artikel ist Teil unserer Premium-Inhalte.\nJe nach Branche und Organisation haben Sie möglicherweise kostenlosen Zugang.",
-    paywall_badge: "Kostenloser Zugang\nfür Wealth-Professionals\n+ 6 Monate gratis für\nandere Organisationen",
+    paywall_badge_title: "Tätig bei einem Wealth Manager oder institutionellen Anleger?",
+    paywall_badge_sub: "Wir bieten kostenlose Firmenregelungen für Organisationen im Wealth Management. Andere Organisationen erhalten 6 Monate gratis.",
     paywall_login: "Anmelden",
     paywall_subscribe: "Zugang aktivieren",
     paywall_items: [
@@ -110,7 +113,8 @@ const ARTICLE = {
     p5: "Pour les gestionnaires de portefeuille surpondérés en valeurs financières américaines, le sentiment reste nerveux. L'incertitude quant à la direction réglementaire pèse plus lourd que l'impact direct de cette proposition.",
     paywall_title: "Continuez à lire avec Investment Officer",
     paywall_sub: "Cet article fait partie de notre contenu premium.\nSelon votre secteur et votre organisation, vous pouvez bénéficier d'un accès gratuit.",
-    paywall_badge: "Accès gratuit\npour les professionnels Wealth\n+ 6 mois gratuits pour\nles autres organisations",
+    paywall_badge_title: "Vous travaillez chez un wealth manager ou investisseur institutionnel ?",
+    paywall_badge_sub: "Nous proposons des accès gratuits aux organisations en wealth management. Les autres organisations bénéficient de 6 mois gratuits.",
     paywall_login: "Se connecter",
     paywall_subscribe: "Activer l'accès",
     paywall_items: [
@@ -155,8 +159,7 @@ function ArticleImage() {
 
 function PaywallBlock({ onLogin, onSubscribe, txt }) {
   return (
-    <div className="paywall-card" style={{ marginTop:"2rem", border:`1px solid ${C.gray100}`, borderRadius:8, padding:"2rem", background:C.white, boxShadow:"0 2px 16px rgba(12,24,46,0.07)", position:"relative", overflow:"visible" }}>
-      <div className="good-news-badge" style={{ whiteSpace:"pre-line" }}>{txt.paywall_badge}</div>
+    <div className="paywall-card" style={{ marginTop:"2rem", border:`1px solid ${C.gray100}`, borderRadius:8, padding:"2rem", background:C.white, boxShadow:"0 2px 16px rgba(12,24,46,0.07)", position:"relative" }}>
       <div style={{ display:"flex", gap:"1.25rem", alignItems:"flex-start", marginBottom:"1.5rem" }}>
         <div style={{ width:64, height:48, flexShrink:0, borderRadius:4, overflow:"hidden" }}>
           <img src="/images/beeld_laptop_en_smartphone.png" alt="" style={{ width:"100%", height:"100%", objectFit:"cover" }} />
@@ -178,14 +181,25 @@ function PaywallBlock({ onLogin, onSubscribe, txt }) {
           <span>{b}</span>
         </div>
       ))}
+      {/* Hint banner — vervangt de rode bol */}
+      <div className="paywall-hint-banner">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" style={{ flexShrink:0, marginTop:1 }}>
+          <circle cx="9" cy="9" r="8" stroke={C.red} strokeWidth="1.5"/>
+          <path d="M9 8v4" stroke={C.red} strokeWidth="1.5" strokeLinecap="round"/>
+          <circle cx="9" cy="5.5" r="0.75" fill={C.red}/>
+        </svg>
+        <div>
+          <strong style={{ color:C.red }}>{txt.paywall_badge_title}</strong>
+          <div style={{ color:C.red, opacity:0.8, fontSize:"0.8125rem", marginTop:2 }}>{txt.paywall_badge_sub}</div>
+        </div>
+      </div>
     </div>
   )
 }
 
 function FreemiumPaywallBlock({ userEmail, onUpgradeTrial, onUpgradeBusiness, txt }) {
   return (
-    <div className="paywall-card" style={{ marginTop:"2rem", border:`1px solid ${C.gray100}`, borderRadius:8, padding:"2rem", background:C.white, boxShadow:"0 2px 16px rgba(12,24,46,0.07)", position:"relative", overflow:"visible" }}>
-      <div className="good-news-badge" style={{ whiteSpace:"pre-line" }}>{txt.paywall_badge}</div>
+    <div className="paywall-card" style={{ marginTop:"2rem", border:`1px solid ${C.gray100}`, borderRadius:8, padding:"2rem", background:C.white, boxShadow:"0 2px 16px rgba(12,24,46,0.07)", position:"relative" }}>
       {/* Logged-in acknowledgement */}
       <div style={{ display:"flex", alignItems:"center", gap:"0.625rem", background:"rgba(78,213,150,0.08)", border:"1px solid rgba(78,213,150,0.25)", borderRadius:8, padding:"0.75rem 1rem", marginBottom:"1.25rem" }}>
         <svg width="16" height="16" viewBox="0 0 18 18" fill="none">
@@ -199,13 +213,25 @@ function FreemiumPaywallBlock({ userEmail, onUpgradeTrial, onUpgradeBusiness, tx
       <div style={{ fontFamily:"var(--font-sans)", fontSize:"0.9375rem", color:C.gray700, lineHeight:"var(--lh-body)", marginBottom:"1.25rem" }}>
         {txt.freemium_no_access}
       </div>
-      <div style={{ display:"flex", gap:"0.75rem", flexWrap:"wrap" }}>
+      <div style={{ display:"flex", gap:"0.75rem", flexWrap:"wrap", marginBottom:"1.25rem" }}>
         <button className="btn-primary" onClick={onUpgradeTrial} style={{ flex:1, minWidth:200 }}>
           {txt.upsell_cta_trial}
         </button>
         <button className="btn-secondary" onClick={onUpgradeBusiness} style={{ flex:1, minWidth:200 }}>
           {txt.upsell_cta_business}
         </button>
+      </div>
+      {/* Hint banner — vervangt de rode bol */}
+      <div className="paywall-hint-banner">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" style={{ flexShrink:0, marginTop:1 }}>
+          <circle cx="9" cy="9" r="8" stroke={C.red} strokeWidth="1.5"/>
+          <path d="M9 8v4" stroke={C.red} strokeWidth="1.5" strokeLinecap="round"/>
+          <circle cx="9" cy="5.5" r="0.75" fill={C.red}/>
+        </svg>
+        <div>
+          <strong style={{ color:C.red }}>{txt.paywall_badge_title}</strong>
+          <div style={{ color:C.red, opacity:0.8, fontSize:"0.8125rem", marginTop:2 }}>{txt.paywall_badge_sub}</div>
+        </div>
       </div>
     </div>
   )
