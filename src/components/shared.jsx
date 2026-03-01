@@ -3,6 +3,7 @@ import { C } from '../tokens.js'
 import IOLogo from './IOLogo.jsx'
 import { useLang } from '../LanguageContext.jsx'
 import { img } from '../images.js'
+import HelpBot from './HelpBot.jsx'
 
 // ─── TopProgressBar (rode balk bovenaan, full-width, fixed) ─────────────────
 export function TopProgressBar({ total, current }) {
@@ -436,18 +437,8 @@ export function RegSidebar({ planName, planPrice, planPriceSuffix, planFeatures,
         ))}
       </div>
 
-      {/* Kom je er niet uit */}
-      <div className="reg-sidebar-card" style={{ background:C.gray50 }}>
-        <div style={{ fontFamily:"var(--font-sans)", fontSize:"0.9375rem", fontWeight:600, color:C.navy, marginBottom:"0.75rem" }}>{t("sidebar_help_title")}</div>
-        <div style={{ display:"flex", alignItems:"center", gap:"0.75rem" }}>
-          <div style={{ width:40, height:40, borderRadius:"50%", flexShrink:0, background:C.gray200, display:"flex", alignItems:"center", justifyContent:"center" }}>
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 12c2.7 0 4-1.8 4-4s-1.3-4-4-4-4 1.8-4 4 1.3 4 4 4zm0 2c-4 0-6 2-6 3.5h12c0-1.5-2-3.5-6-3.5z" fill="#8A8A82"/></svg>
-          </div>
-          <div>
-            <div style={{ fontFamily:"var(--font-sans)", fontSize:"0.875rem", color:C.gray700 }}>{t("sidebar_help_cta")}</div>
-          </div>
-        </div>
-      </div>
+      {/* IO HelpBot — vervangt statisch "Kom je er niet uit?" blok */}
+      <HelpBot />
     </>
   )
 }
