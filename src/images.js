@@ -89,6 +89,11 @@ export const IMAGES = {
   account_crosssell_visual: null,
   // "/images/impact-investor-promo.png"
 
+
+  // ── Stripe ────────────────────────────────────────────────────────────────
+  // Stripe woordmerk — gebruikt op overzichtspagina's en in de betaalsimulatie
+  stripe_logo: "/images/Stripe_LOGO.png",
+
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

@@ -5,6 +5,7 @@ import { TopProgressBar, RegSidebar, SelectionRow, JobRoleSelector, SegmentTypeS
 import { useLang } from '../LanguageContext.jsx'
 import { classifyEmailForReg, getWhitelistInfo, getCompanyNameFromEmail, hadRecentTrial } from '../utils.js'
 import IOLogo from '../components/IOLogo.jsx'
+import StripeCheckoutSim, { StripeLogo } from '../components/StripeCheckoutSim.jsx'
 
 /* ─── Segment → pricing logic ──────────────────────────────────────────── */
 const FREE_SEGMENTS = ["wealth", "institutional"]
@@ -124,8 +125,8 @@ export default function BusinessFlow({ onComplete, onSkipToSite, onBack, onGoLog
               {t("inline_confirm_email_at")} <strong>{email}</strong>.
             </p>
             <div style={{ display:"flex", gap:"1rem" }}>
-              <button className="btn-navy" style={{ padding:"0.875rem 2rem", fontSize:"1rem" }} onClick={onComplete}>{t("ob_start_intro")} →</button>
-              <button className="btn-secondary" style={{ padding:"0.875rem 2rem", fontSize:"1rem" }} onClick={onSkipToSite || onComplete}>{cameFromArticle ? t("ob_back_to_article") : t("ob_go_to_site")}</button>
+              <button className="btn-navy" style={{ padding:"0.875rem 2rem", fontSize:"1rem" }} onClick={() => onComplete(true)}>{t("ob_start_intro")} →</button>
+              <button className="btn-secondary" style={{ padding:"0.875rem 2rem", fontSize:"1rem" }} onClick={() => (onSkipToSite || onComplete)(true)}>{cameFromArticle ? t("ob_back_to_article") : t("ob_go_to_site")}</button>
             </div>
             <CdpProductLabel
               productName={
@@ -564,6 +565,19 @@ export default function BusinessFlow({ onComplete, onSkipToSite, onBack, onGoLog
                 )}
               </div>
 
+              {/* Stripe betaalblokje — alleen bij betaalde flow */}
+              {isPaidFlow && (
+                <div style={{ border:`1px solid ${C.gray200}`, borderRadius:8, padding:"1.125rem 1.25rem", marginBottom:"1.5rem", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+                  <div>
+                    <div style={{ fontFamily:"var(--font-sans)", fontSize:"0.7rem", fontWeight:700, letterSpacing:"0.08em", textTransform:"uppercase", color:C.gray500, marginBottom:"0.375rem" }}>
+                      5. {t("pf_confirm_pay")}
+                    </div>
+                    <div style={{ fontFamily:"var(--font-sans)", fontSize:"0.9rem", color:C.navy }}>{t("pf_confirm_stripe")}</div>
+                  </div>
+                  <StripeLogo height={24} />
+                </div>
+              )}
+
               <label style={{ display:"flex", gap:"0.75rem", alignItems:"flex-start", marginBottom:"1.5rem", cursor:"pointer" }}>
                 <input type="checkbox" checked={agreed} onChange={e => setAgreed(e.target.checked)} style={{ marginTop:3, accentColor:C.green }} />
                 <span style={{ fontFamily:"var(--font-sans)", fontSize:"0.85rem", color:C.gray700, lineHeight:"var(--lh-body)" }}>
@@ -586,31 +600,12 @@ export default function BusinessFlow({ onComplete, onSkipToSite, onBack, onGoLog
               <h2 className="reg-step-title">{t("bf_payment_title")}</h2>
               <p className="reg-step-sub">{t("bf_payment_sub")} Business {chosenSize?.label}.</p>
 
-              <div style={{ border:`2px solid ${C.gray200}`, borderRadius:10, padding:"2rem", marginBottom:"1.5rem", background:C.white }}>
-                <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"1.5rem", paddingBottom:"1rem", borderBottom:`1px solid ${C.gray200}` }}>
-                  <div>
-                    <div style={{ fontFamily:"var(--font-sans)", fontWeight:800, fontSize:"1rem", color:C.navy }}>Business {chosenSize?.label}</div>
-                    <div style={{ fontFamily:"var(--font-sans)", fontSize:"0.85rem", color:C.gray500 }}>{chosenSize ? tBiz(chosenSize.id, "users") : ""} · {company.name}</div>
-                  </div>
-                  <div style={{ textAlign:"right" }}>
-                    <div style={{ fontFamily:"var(--font-sans)", fontWeight:800, fontSize:"1.25rem", color:C.navy }}>
-                      € {(chosenSize?.id === "XL" ? xlPrice * 12 : (chosenSize?.monthlyPrice || 0) * 12).toLocaleString("nl-NL")},–
-                    </div>
-                    <div style={{ fontFamily:"var(--font-sans)", fontSize:"0.8rem", color:C.gray500 }}>{t("bf_payment_yearly")}</div>
-                  </div>
-                </div>
-                <div className="input-group"><label className="input-label">{t("bf_payment_card")}</label><input className="input-field" type="text" placeholder="4242 4242 4242 4242" disabled style={{ background:C.gray50 }} /></div>
-                <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"0 1rem" }}>
-                  <div className="input-group"><label className="input-label">{t("bf_payment_expiry")}</label><input className="input-field" type="text" placeholder="12 / 28" disabled style={{ background:C.gray50 }} /></div>
-                  <div className="input-group"><label className="input-label">{t("bf_payment_cvc")}</label><input className="input-field" type="text" placeholder="123" disabled style={{ background:C.gray50 }} /></div>
-                </div>
-              </div>
-              <div className="reg-nav-bar">
-                <BackButton onClick={() => setStep("overview")} />
-                <button className="btn-red btn-full" onClick={() => setStep("invite")}>
-                  {t("bf_payment_cta")} € {(chosenSize?.id === "XL" ? xlPrice * 12 : (chosenSize?.monthlyPrice || 0) * 12).toLocaleString("nl-NL")},– {t("bf_payment_activate")}
-                </button>
-              </div>
+              <StripeCheckoutSim
+                amount={`€ ${(chosenSize?.id === "XL" ? xlPrice * 12 : (chosenSize?.monthlyPrice || 0) * 12).toLocaleString("nl-NL")},–`}
+                description={`Business ${chosenSize?.label} — ${chosenSize ? tBiz(chosenSize.id, "users") : ""} · ${company.name}`}
+                onPay={() => setStep("invite")}
+                onBack={() => setStep("overview")}
+              />
             </>
           )}
 

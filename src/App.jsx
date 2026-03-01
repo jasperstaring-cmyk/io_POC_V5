@@ -186,9 +186,13 @@ export default function App() {
     setActivePlanType(pType)
     setUserData({ firstName:"New", lastName:"User", email:"new@example.com", jobRole:"Portfolio Manager", initials:"N" })
 
-    // Single-article unlock: Personal Free account created from a premium article
-    if (cameFromArticle && pType === "freemium") {
-      setArticleAccess({ articleId: "article_trump_creditcards", grantedAt: Date.now() })
+    // Single-article unlock: if user came from article, go back to article
+    if (cameFromArticle) {
+      // Personal Free gets temporary single-article access
+      if (pType === "freemium") {
+        setArticleAccess({ articleId: "article_trump_creditcards", grantedAt: Date.now() })
+      }
+      // All other plans (trial, pro, business, enterprise) have full subscription access
       setCameFromArticle(false)
       setView("article")
       return
@@ -201,15 +205,22 @@ export default function App() {
 
   function handleGoLogin(email) { setModal(null); setLoginEmail(email || ""); setView("login") }
 
-  function handleSkipToSite() {
+  function handleSkipToSite(planTypeOverride) {
     setLoggedIn(true)
-    // Single-article unlock: if user came from article and chose Personal Free
-    // At this point activePlanType may not be set yet, so also check selectedPlan
-    const effectivePlan = selectedPlan || activePlanType || "freemium"
-    if (cameFromArticle && (effectivePlan === "freemium" || effectivePlan === null)) {
-      setActivePlanType("freemium")
-      setArticleAccess({ articleId: "article_trump_creditcards", grantedAt: Date.now() })
+    // Determine the effective plan type
+    const pType = planTypeOverride === true ? "business"
+                : typeof planTypeOverride === "string" ? planTypeOverride
+                : selectedPlan || activePlanType || "freemium"
+    setActivePlanType(pType)
+
+    // Single-article unlock: if user came from article
+    if (cameFromArticle) {
+      if (pType === "freemium") {
+        setArticleAccess({ articleId: "article_trump_creditcards", grantedAt: Date.now() })
+      }
       setCameFromArticle(false)
+      setView("article")
+      return
     }
     setView("article")
   }

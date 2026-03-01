@@ -5,14 +5,15 @@ import { classifyEmailForReg, getWhitelistInfo } from '../utils.js'
 import { TopProgressBar, RegSidebar, SelectionRow, JobRoleSelector, EmailChip, AuthNav, CheckItem, CdpProductLabel } from '../components/shared.jsx'
 import { useLang } from '../LanguageContext.jsx'
 import IOLogo from '../components/IOLogo.jsx'
+import StripeCheckoutSim, { StripeLogo } from '../components/StripeCheckoutSim.jsx'
 
 // ─── Plan metadata (voor sidebar) ───────────────────────────────────────────
 function planMeta(planId, t) {
   if (!planId) return {}
   const map = {
-    freemium: { name: t("plan_freemium_name"),  price: null,                          cta: null,                                                        features: t("plan_freemium_features") || [] },
-    trial:    { name: t("plan_trial_name"),     price: t("plan_trial_price") + " " + (t("plan_trial_suffix") || ""), cta: t("sidebar_trial_cta"), features: t("plan_trial_features") || [] },
-    pro:      { name: t("plan_pro_name"),       price: t("plan_pro_price") + " " + (t("plan_pro_suffix") || ""),     cta: null,                                                        features: t("plan_pro_features") || [] },
+    freemium: { name: t("plan_freemium_name"),  price: null,               priceSuffix: null,                  cta: null,                  features: t("plan_freemium_features") || [] },
+    trial:    { name: t("plan_trial_name"),     price: t("plan_trial_price"), priceSuffix: t("plan_trial_suffix") || null, cta: t("sidebar_trial_cta"), features: t("plan_trial_features") || [] },
+    pro:      { name: t("plan_pro_name"),       price: t("plan_pro_price"),   priceSuffix: t("plan_pro_suffix") || null,   cta: null,                  features: t("plan_pro_features") || [] },
   }
   return map[planId] || {}
 }
@@ -24,7 +25,7 @@ export default function PersonalFlow({ selectedPlan, onComplete, onSkipToSite, o
   const hasPrefilledEmail = !!(invitedEmail || whitelistEmail || enterpriseEmail || gateEmail || profileData)
   const hasPrefilledProfile = !!(profileData)
   // If profileData is provided, skip both email and profile steps → start at plan choice (confirm)
-  const initialStep = hasPrefilledProfile ? (selectedPlan === "pro" ? "payment" : "confirm")
+  const initialStep = hasPrefilledProfile ? "confirm"
                     : hasPrefilledEmail ? "profile"
                     : "email"
   const [step, setStep]             = useState(initialStep)
@@ -39,7 +40,7 @@ export default function PersonalFlow({ selectedPlan, onComplete, onSkipToSite, o
   const [isInvited, setIsInvited]         = useState(!!(invitedEmail && invitedCompany))
 
   const totalSteps  = isEnterprise || isInvited ? 2 : chosenPlan === "pro" ? 4 : 3
-  const STEP_NUM    = { email:1, private_warning:1, generic_block:1, existing:1, enterprise:1, whitelist:1, profile:2, payment:3, confirm:3, done:4 }
+  const STEP_NUM    = { email:1, private_warning:1, generic_block:1, existing:1, enterprise:1, whitelist:1, profile:2, confirm:3, payment:3, done:4 }
   const currentStep = STEP_NUM[step] || 1
 
   // Sidebar plan info
@@ -68,7 +69,7 @@ export default function PersonalFlow({ selectedPlan, onComplete, onSkipToSite, o
     e.preventDefault()
     if (!jobRole) return               // job role selection required
     if (isEnterprise || isInvited) { setStep("done"); return }
-    setStep(chosenPlan === "pro" ? "payment" : "confirm")
+    setStep("confirm")
   }
 
   // Plan is al gekozen op de PlanPickerPage
@@ -113,8 +114,8 @@ export default function PersonalFlow({ selectedPlan, onComplete, onSkipToSite, o
               {t("pf_done_confirm")} <strong>{email}</strong>.
             </p>
             <div style={{ display:"flex", gap:"1rem" }}>
-              <button className="btn-navy" style={{ padding:"0.875rem 2rem", fontSize:"1rem" }} onClick={() => onComplete(isEnterprise ? "enterprise" : undefined)}>{t("ob_start_intro")} →</button>
-              <button className="btn-secondary" style={{ padding:"0.875rem 2rem", fontSize:"1rem" }} onClick={() => (onSkipToSite || onComplete)(isEnterprise ? "enterprise" : undefined)}>{cameFromArticle ? t("ob_back_to_article") : t("ob_go_to_site")}</button>
+              <button className="btn-navy" style={{ padding:"0.875rem 2rem", fontSize:"1rem" }} onClick={() => onComplete(isEnterprise ? "enterprise" : isInvited ? (invitedPlanType || "business") : chosenPlan)}>{t("ob_start_intro")} →</button>
+              <button className="btn-secondary" style={{ padding:"0.875rem 2rem", fontSize:"1rem" }} onClick={() => (onSkipToSite || onComplete)(isEnterprise ? "enterprise" : isInvited ? (invitedPlanType || "business") : chosenPlan)}>{cameFromArticle ? t("ob_back_to_article") : t("ob_go_to_site")}</button>
             </div>
             <CdpProductLabel
               productName={
@@ -297,23 +298,13 @@ export default function PersonalFlow({ selectedPlan, onComplete, onSkipToSite, o
             <>
               <h2 className="reg-step-title">{t("pf_payment_title")}</h2>
               <p className="reg-step-sub">{t("pf_payment_sub")}</p>
-              <div className="alert alert-info" style={{ display:"flex", alignItems:"center", gap:"0.75rem" }}>
-                <span style={{ fontSize:"1.25rem" }}>🔒</span>
-                <span>{t("pf_payment_secure")} <strong>Stripe</strong>.</span>
-              </div>
-              <form autoComplete="off" data-1p-ignore="true" data-lpignore="true" onSubmit={e => { e.preventDefault(); setStep("confirm") }}>
-                <div className="input-group"><label className="input-label">{t("pf_card_number")}</label><input className="input-field" type="text" defaultValue="4242 4242 4242 4242" required /></div>
-                <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"0 1rem" }}>
-                  <div className="input-group"><label className="input-label">{t("pf_card_expiry")}</label><input className="input-field" type="text" defaultValue="12/28" required /></div>
-                  <div className="input-group"><label className="input-label">{t("pf_card_cvv")}</label><input className="input-field" type="text" defaultValue="123" required /></div>
-                </div>
-                <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:"1.5rem" }}>
-                  <span style={{ fontFamily:"var(--font-sans)", fontSize:"1rem", fontWeight:700, color:C.navy }}>{t("pf_payment_total")}</span>
-                  <span style={{ fontFamily:"var(--font-sans)", fontSize:"1.25rem", fontWeight:700, color:C.navy }}>€ 648,–</span>
-                </div>
-                <button className="btn-red btn-full" type="submit">{t("pf_payment_cta")}</button>
-              </form>
-              <button className="btn-secondary btn-full" style={{ marginTop:"0.75rem" }} onClick={() => setStep("confirm")}>{t("pf_payment_back")}</button>
+
+              <StripeCheckoutSim
+                amount="€ 648,–"
+                description={`Premium — ${t("pf_payment_total")}`}
+                onPay={() => setStep("done")}
+                onBack={() => setStep("confirm")}
+              />
             </>
           )}
 
@@ -325,19 +316,28 @@ export default function PersonalFlow({ selectedPlan, onComplete, onSkipToSite, o
               {[
                 { label: t("pf_confirm_data"), items:[email, `${firstName} ${lastName}`, jobRole ? t(`jr_${jobRole}_name`) : ""], back:"profile" },
                 { label: t("pf_confirm_plan"), items:[chosenPlan === "freemium" ? t("pf_plan_freemium") : chosenPlan === "trial" ? t("pf_plan_trial") : t("pf_plan_pro")], back:"_planpicker" },
-                ...(chosenPlan === "pro" ? [{ label: t("pf_confirm_pay"), items:[t("pf_confirm_stripe")], back:"payment" }] : []),
+                ...(chosenPlan === "pro" ? [{ label: t("pf_confirm_pay"), items:["__stripe_logo__"], back:"payment" }] : []),
               ].map((section, i) => (
                 <div key={i} style={{ border:`1px solid ${C.gray200}`, borderRadius:6, padding:"1rem 1.25rem", marginBottom:"0.75rem" }}>
                   <div style={{ fontFamily:"var(--font-sans)", fontSize:"0.7rem", fontWeight:700, letterSpacing:"0.08em", textTransform:"uppercase", color:C.gray500, marginBottom:"0.5rem", display:"flex", justifyContent:"space-between" }}>
                     {section.label}
                     <button className="link-btn" style={{ fontSize:"0.8rem", textTransform:"none", letterSpacing:0 }} onClick={() => section.back === "_planpicker" ? onBack() : setStep(section.back)}>{t("pf_confirm_edit")}</button>
                   </div>
-                  {section.items.map((item,j) => <div key={j} style={{ fontFamily:"var(--font-sans)", fontSize:"0.9rem", color:C.navy }}>{item}</div>)}
+                  {section.items.map((item,j) =>
+                    item === "__stripe_logo__" ? (
+                      <div key={j} style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+                        <span style={{ fontFamily:"var(--font-sans)", fontSize:"0.9rem", color:C.navy }}>{t("pf_confirm_stripe")}</span>
+                        <StripeLogo height={22} />
+                      </div>
+                    ) : (
+                      <div key={j} style={{ fontFamily:"var(--font-sans)", fontSize:"0.9rem", color:C.navy }}>{item}</div>
+                    )
+                  )}
                 </div>
               ))}
               {chosenPlan === "trial" && <div className="alert alert-warning" style={{ marginTop:"1rem" }}>{t("pf_confirm_trial_warn")}</div>}
-              <button className="btn-red btn-full" style={{ marginTop:"1rem" }} onClick={() => setStep("done")}>
-                {chosenPlan === "pro" ? t("pf_confirm_pro") : t("pf_confirm_free")}
+              <button className="btn-red btn-full" style={{ marginTop:"1rem" }} onClick={() => setStep(chosenPlan === "pro" ? "payment" : "done")}>
+                {chosenPlan === "pro" ? t("bf_go_payment") : t("pf_confirm_free")}
               </button>
             </>
           )}
@@ -347,6 +347,7 @@ export default function PersonalFlow({ selectedPlan, onComplete, onSkipToSite, o
           <RegSidebar
             planName={meta.name}
             planPrice={meta.price}
+            planPriceSuffix={meta.priceSuffix}
             planFeatures={meta.features}
             planCta={meta.cta}
             sidebarContext={isEnterprise ? "business_buyside" : isInvited ? "business_trial" : chosenPlan === "pro" ? "personal_pro" : chosenPlan === "trial" ? "personal_trial" : "personal_free"}
