@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { C } from '../tokens.js'
-import { classifyEmailForLogin, getCompanyNameFromEmail, getWhitelistInfo } from '../utils.js'
+import { classifyEmailForLogin, getCompanyNameFromEmail, getWhitelistInfo, isNewSsoUser } from '../utils.js'
+import { JOB_ROLE_CLUSTERS } from '../data.js'
 import IOLogo from '../components/IOLogo.jsx'
-import { EmailChip, LangSwitcher } from '../components/shared.jsx'
+import { EmailChip, LangSwitcher, JobRoleSelector } from '../components/shared.jsx'
 import { GoogleIcon, MicrosoftIcon } from '../components/SsoIcons.jsx'
 import { useLang } from '../LanguageContext.jsx'
 
@@ -39,9 +40,23 @@ function SelectionButton({ icon, label, onClick }) {
 export default function LoginModal({ onClose, onGoRegister, onLoginSuccess, onGoWhitelist, initialEmail }) {
   const { t } = useLang()
   const hasInitialEmail = !!(initialEmail)
-  const [step, setStep]         = useState(hasInitialEmail ? "password" : "email")
+  // When initialEmail is provided, classify it to determine the correct step
+  const initialStep = (() => {
+    if (!hasInitialEmail) return "email"
+    const type = classifyEmailForLogin(initialEmail)
+    if (type === "sso") return "sso"
+    if (type === "whitelist") return "whitelist"
+    if (type === "private") return "private_warning"
+    if (type === "unknown") return "unknown"
+    return "password"
+  })()
+  const [step, setStep]         = useState(initialStep)
   const [email, setEmail]       = useState(initialEmail || "")
   const [password, setPassword] = useState("")
+  const [ssoProvider, setSsoProvider] = useState("")  // "Google" or "Microsoft"
+  const [ssoFirstName, setSsoFirstName] = useState("")
+  const [ssoLastName, setSsoLastName]   = useState("")
+  const [ssoJobRole, setSsoJobRole]     = useState("")
 
   const companyName = getCompanyNameFromEmail(email)
   const whitelistInfo = getWhitelistInfo(email)
@@ -161,19 +176,41 @@ export default function LoginModal({ onClose, onGoRegister, onLoginSuccess, onGo
               <h1 style={{ fontFamily:"var(--font-serif)", fontSize:"clamp(1.75rem,3.5vw,2.5rem)", fontWeight:700, color:C.navy, lineHeight:"var(--lh-heading)", letterSpacing:"var(--tracking-heading)", marginBottom:"0.75rem" }}>
                 {t("lm_sso_title")} {companyName || "uw organisatie"}
               </h1>
-              <p style={{ fontFamily:"var(--font-sans)", fontSize:"0.9375rem", color:C.gray500, lineHeight:"var(--lh-body)", marginBottom:"2rem" }}>
-                {t("lm_sso_intro")}
+              <EmailChip email={email} onEdit={resetToEmail} />
+              <p style={{ fontFamily:"var(--font-sans)", fontSize:"0.9375rem", color:C.gray500, lineHeight:"var(--lh-body)", marginBottom:"1.25rem" }}>
+                {t("lm_sso_body")}
               </p>
+
+              {/* Enterprise access info — shown on SSO screen so user knows what they get before clicking */}
+              {isNewSsoUser(email) && (
+                <div style={{ background:"rgba(12,24,46,0.03)", border:`1px solid ${C.gray200}`, borderRadius:8, padding:"1rem 1.125rem", marginBottom:"1.5rem" }}>
+                  <div style={{ fontFamily:"var(--font-sans)", fontWeight:700, fontSize:"0.9rem", color:C.navy, marginBottom:"0.5rem" }}>
+                    {t("lm_sso_ft_access_title").replace("{company}", companyName || t("lm_sso_ft_your_org"))}
+                  </div>
+                  {(t("lm_sso_ft_usps") || []).map((usp, i) => (
+                    <div key={i} style={{ display:"flex", alignItems:"center", gap:"0.5rem", marginBottom:"0.375rem" }}>
+                      <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8l3.5 3.5L13 5" stroke={C.green} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                      <span style={{ fontFamily:"var(--font-sans)", fontSize:"0.85rem", color:C.gray700 }}>{usp}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
 
               <SelectionButton
                 icon={<GoogleIcon />}
                 label={t("lm_google")}
-                onClick={handleLogin}
+                onClick={() => {
+                  if (isNewSsoUser(email)) { setSsoProvider("Google"); setStep("sso_firsttime") }
+                  else handleLogin()
+                }}
               />
               <SelectionButton
                 icon={<MicrosoftIcon />}
                 label={t("lm_microsoft")}
-                onClick={handleLogin}
+                onClick={() => {
+                  if (isNewSsoUser(email)) { setSsoProvider("Microsoft"); setStep("sso_firsttime") }
+                  else handleLogin()
+                }}
               />
               <SelectionButton
                 icon={<PasswordIcon />}
@@ -186,6 +223,59 @@ export default function LoginModal({ onClose, onGoRegister, onLoginSuccess, onGo
                   ← {t("lm_sso_other")}
                 </button>
               </p>
+            </>
+          )}
+
+          {/* ── SSO first-time: profile completion ── */}
+          {step === "sso_firsttime" && (
+            <>
+              <h1 style={{ fontFamily:"var(--font-serif)", fontSize:"clamp(1.75rem,3.5vw,2.25rem)", fontWeight:700, color:C.navy, lineHeight:"var(--lh-heading)", marginBottom:"0.75rem" }}>
+                {t("lm_sso_ft_title")}
+              </h1>
+              {/* SSO success banner */}
+              <div style={{ display:"flex", alignItems:"center", gap:"0.625rem", background:"rgba(78,213,150,0.08)", border:"1px solid rgba(78,213,150,0.25)", borderRadius:8, padding:"0.75rem 1rem", marginBottom:"1.5rem" }}>
+                <svg width="16" height="16" viewBox="0 0 18 18" fill="none">
+                  <circle cx="9" cy="9" r="8" stroke={C.green} strokeWidth="1.5"/>
+                  <path d="M5.5 9l2 2L12.5 7" stroke={C.green} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                <span style={{ fontFamily:"var(--font-sans)", fontSize:"0.85rem", color:C.navy }}>
+                  {t("lm_sso_ft_verified").replace("{provider}", ssoProvider).replace("{email}", email)}
+                </span>
+              </div>
+              {/* Profile fields */}
+              <p style={{ fontFamily:"var(--font-sans)", fontSize:"0.9rem", color:C.gray500, marginBottom:"1.25rem" }}>
+                {t("lm_sso_ft_sub")}
+              </p>
+              <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"0 1rem" }}>
+                <div className="input-group">
+                  <label className="input-label">{t("pf_firstname")}</label>
+                  <input className="input-field" type="text" value={ssoFirstName} onChange={e => setSsoFirstName(e.target.value)} autoFocus />
+                </div>
+                <div className="input-group">
+                  <label className="input-label">{t("pf_lastname")}</label>
+                  <input className="input-field" type="text" value={ssoLastName} onChange={e => setSsoLastName(e.target.value)} />
+                </div>
+              </div>
+              <div className="input-group">
+                <label className="input-label">{t("pf_jobrole")}</label>
+              </div>
+              <JobRoleSelector
+                clusters={JOB_ROLE_CLUSTERS}
+                selectedId={ssoJobRole}
+                onSelect={setSsoJobRole}
+                t={t}
+              />
+              <button
+                className="btn-red btn-full"
+                style={{ marginTop:"1.25rem" }}
+                disabled={!ssoFirstName.trim() || !ssoLastName.trim() || !ssoJobRole}
+                onClick={() => {
+                  onLoginSuccess(email, { firstName: ssoFirstName.trim(), lastName: ssoLastName.trim(), jobRole: ssoJobRole })
+                  onClose()
+                }}
+              >
+                {t("lm_sso_ft_cta")}
+              </button>
             </>
           )}
 

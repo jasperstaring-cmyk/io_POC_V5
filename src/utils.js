@@ -25,6 +25,9 @@ const PRIVATE_DOMAINS_LOGIN = ["gmail.com","hotmail.com","yahoo.com","outlook.co
 const SSO_DOMAINS           = ["abnamro.com"]
 const KNOWN_ACCOUNTS_LOGIN  = ["demo@aegon.com", "demo@trial.com", "demo@freemium.com"]
 
+// SSO accounts that already have a profile (demo@abnamro.com = existing, new@abnamro.com = first-time)
+const SSO_EXISTING_ACCOUNTS = ["demo@abnamro.com"]
+
 // SSO domain → company name (POC only; in production from CDP)
 const SSO_COMPANY_NAMES = { "abnamro.com":"ABN AMRO", "aegon.com":"Aegon", "ingim.com":"ING Investment Management", "robeco.nl":"Robeco" }
 
@@ -100,4 +103,26 @@ export function classifyEmailForLogin(email) {
   if (WHITELIST_DOMAINS.includes(domain)) return "whitelist"
   if (KNOWN_ACCOUNTS_LOGIN.includes(email.toLowerCase())) return "known"
   return "unknown"
+}
+
+/**
+ * Checks if an SSO-domain email is a first-time user (no existing IO profile).
+ * In production this would be determined by the backend after OAuth authentication.
+ * In the POC: demo@abnamro.com = existing, anything else @abnamro.com = new.
+ */
+export function isNewSsoUser(email) {
+  if (!email || !email.includes("@")) return false
+  const domain = email.toLowerCase().split("@")[1]
+  if (!SSO_DOMAINS.includes(domain)) return false
+  return !SSO_EXISTING_ACCOUNTS.includes(email.toLowerCase())
+}
+
+/**
+ * Checks if an email belongs to an SSO-enabled domain.
+ * Used by EmailGate to redirect enterprise SSO users to the login/SSO flow.
+ */
+export function isSsoDomain(email) {
+  if (!email || !email.includes("@")) return false
+  const domain = email.toLowerCase().split("@")[1]
+  return SSO_DOMAINS.includes(domain)
 }

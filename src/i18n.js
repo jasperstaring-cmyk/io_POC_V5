@@ -477,7 +477,19 @@ export const translations = {
     lm_sso_body:        "Uw organisatie gebruikt Single Sign-On. U wordt doorgestuurd naar de inlogpagina van uw organisatie.",
     lm_sso_cta:         "Verder met SSO",
     lm_sso_other:       "Ander e-mailadres gebruiken",
-    lm_demo_hint:       "Demo: gebruik demo@abnamro.com (→ SSO/Enterprise) of demo@aegon.com (→ wachtwoord). Onbekend domein → geen account.",
+    lm_sso_ft_title:    "Welkom bij Investment Officer",
+    lm_sso_ft_verified: "Aangemeld via {provider} als {email}",
+    lm_sso_ft_access_title: "{company} heeft een Enterprise-regeling",
+    lm_sso_ft_your_org: "uw organisatie",
+    lm_sso_ft_usps: [
+      "Onbeperkt toegang tot alle premium artikelen",
+      "Alle edities (NL, BE, DE, FR, LU, COM)",
+      "Dagelijkse nieuwsbrieven en Research Bulletin",
+      "Research database en analysetools",
+    ],
+    lm_sso_ft_sub:      "Vul uw gegevens aan om uw account te activeren.",
+    lm_sso_ft_cta:      "Account activeren",
+    lm_demo_hint:       "Demo: demo@abnamro.com (→ SSO bestaand) · new@abnamro.com (→ SSO nieuw) · demo@aegon.com (→ wachtwoord). Onbekend domein → geen account.",
 
     // ── ArticlePage ──
     ap_paywall_title:   "Lees verder met Investment Officer",
@@ -1534,7 +1546,19 @@ export const translations = {
     lm_sso_body:        "Your organisation uses Single Sign-On. You will be redirected to your organisation's login page.",
     lm_sso_cta:         "Continue with SSO",
     lm_sso_other:       "Use a different email address",
-    lm_demo_hint:       "Demo: use demo@abnamro.com (→ SSO/Enterprise) or demo@aegon.com (→ password). Unknown domain → no account.",
+    lm_sso_ft_title:    "Welcome to Investment Officer",
+    lm_sso_ft_verified: "Signed in via {provider} as {email}",
+    lm_sso_ft_access_title: "{company} has an Enterprise subscription",
+    lm_sso_ft_your_org: "your organisation",
+    lm_sso_ft_usps: [
+      "Unlimited access to all premium articles",
+      "All editions (NL, BE, DE, FR, LU, COM)",
+      "Daily newsletters and Research Bulletin",
+      "Research database and analysis tools",
+    ],
+    lm_sso_ft_sub:      "Complete your details to activate your account.",
+    lm_sso_ft_cta:      "Activate account",
+    lm_demo_hint:       "Demo: demo@abnamro.com (→ SSO existing) · new@abnamro.com (→ SSO first-time) · demo@aegon.com (→ password). Unknown domain → no account.",
 
     // ── ArticlePage ──
     ap_paywall_title:   "Continue reading with Investment Officer",
@@ -2579,7 +2603,19 @@ export const translations = {
     lm_sso_body:        "Ihre Organisation verwendet Single Sign-On. Sie werden zur Anmeldeseite Ihrer Organisation weitergeleitet.",
     lm_sso_cta:         "Weiter mit SSO",
     lm_sso_other:       "Andere E-Mail-Adresse verwenden",
-    lm_demo_hint:       "Demo: use demo@abnamro.com (→ SSO/Enterprise) or demo@aegon.com (→ password). Unknown domain → no account.",
+    lm_sso_ft_title:    "Willkommen bei Investment Officer",
+    lm_sso_ft_verified: "Angemeldet über {provider} als {email}",
+    lm_sso_ft_access_title: "{company} hat ein Enterprise-Abonnement",
+    lm_sso_ft_your_org: "Ihre Organisation",
+    lm_sso_ft_usps: [
+      "Unbegrenzter Zugang zu allen Premium-Artikeln",
+      "Alle Ausgaben (NL, BE, DE, FR, LU, COM)",
+      "Tägliche Newsletter und Research Bulletin",
+      "Research-Datenbank und Analysetools",
+    ],
+    lm_sso_ft_sub:      "Ergänzen Sie Ihre Daten, um Ihr Konto zu aktivieren.",
+    lm_sso_ft_cta:      "Konto aktivieren",
+    lm_demo_hint:       "Demo: demo@abnamro.com (→ SSO existing) · new@abnamro.com (→ SSO first-time) · demo@aegon.com (→ password). Unknown domain → no account.",
 
     // ── ArticlePage ──
     ap_paywall_title:   "Weiterlesen mit Investment Officer",
@@ -3625,7 +3661,19 @@ export const translations = {
     lm_sso_body:        "Votre organisation utilise le Single Sign-On. Vous serez redirigé vers la page de connexion de votre organisation.",
     lm_sso_cta:         "Continuer avec SSO",
     lm_sso_other:       "Utiliser une autre adresse e-mail",
-    lm_demo_hint:       "Demo: use demo@abnamro.com (→ SSO/Enterprise) or demo@aegon.com (→ password). Unknown domain → no account.",
+    lm_sso_ft_title:    "Bienvenue sur Investment Officer",
+    lm_sso_ft_verified: "Connecté via {provider} en tant que {email}",
+    lm_sso_ft_access_title: "{company} dispose d'un abonnement Enterprise",
+    lm_sso_ft_your_org: "votre organisation",
+    lm_sso_ft_usps: [
+      "Accès illimité à tous les articles premium",
+      "Toutes les éditions (NL, BE, DE, FR, LU, COM)",
+      "Newsletters quotidiennes et Research Bulletin",
+      "Base de données de recherche et outils d'analyse",
+    ],
+    lm_sso_ft_sub:      "Complétez vos données pour activer votre compte.",
+    lm_sso_ft_cta:      "Activer le compte",
+    lm_demo_hint:       "Demo: demo@abnamro.com (→ SSO existing) · new@abnamro.com (→ SSO first-time) · demo@aegon.com (→ password). Unknown domain → no account.",
 
     // ── ArticlePage ──
     ap_paywall_title:   "Continuez à lire avec Investment Officer",

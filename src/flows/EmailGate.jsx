@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { C } from '../tokens.js'
-import { classifyEmailForReg, getWhitelistInfo } from '../utils.js'
+import { classifyEmailForReg, getWhitelistInfo, isSsoDomain } from '../utils.js'
 import { TopProgressBar, RegSidebar, EmailChip, AuthNav } from '../components/shared.jsx'
 import { useLang } from '../LanguageContext.jsx'
 
@@ -17,7 +17,11 @@ export default function EmailGate({ onRoute, onBack, onGoLogin }) {
     if (type === "generic")                    { setStep("generic_block"); return }
     if (type === "private" && !privateOverride) { setStep("private_warning"); return }
     if (type === "existing")                   { setStep("existing"); return }
-    if (type === "enterprise")                 { onRoute("enterprise", email); return }
+    if (type === "enterprise") {
+      // SSO domains should always go through the login/SSO flow, not registration
+      if (isSsoDomain(email)) { onGoLogin(email); return }
+      onRoute("enterprise", email); return
+    }
     if (type === "whitelist") {
       const wlInfo = getWhitelistInfo(email)
       onRoute("whitelist", email, wlInfo)

@@ -157,12 +157,32 @@ function PocGuide({ onClose }) {
           <div style={S.sectionTitle}>2. Use cases to test</div>
 
           <div style={S.card}>
-            <div style={S.cardTitle}>🟢 Enterprise — domain-based (ABN AMRO)</div>
+            <div style={S.cardTitle}>🟢 Enterprise — SSO existing user (ABN AMRO)</div>
+            <div style={S.cardBody}>
+              Use: <span style={S.email}>demo@abnamro.com</span><br/>
+              <strong>Via Login:</strong> email → SSO screen → click Google/Microsoft → logged in directly<br/>
+              <span style={S.step}>2 steps</span> email → SSO → done<br/>
+              <em>Note: existing SSO user with a known IO profile. No profile creation needed.</em>
+            </div>
+          </div>
+
+          <div style={S.card}>
+            <div style={S.cardTitle}>🟢 Enterprise — SSO first-time user (ABN AMRO)</div>
+            <div style={S.cardBody}>
+              Use: <span style={S.email}>new@abnamro.com</span> (or any @abnamro.com except demo@)<br/>
+              <strong>Via Login:</strong> email → SSO screen → click Google/Microsoft → "Welcome" screen with Enterprise access info + profile form (first name, last name, job role — no password) → account activated<br/>
+              <span style={S.step}>3 steps</span> email → SSO → profile → done<br/>
+              <em>Note: simulates a new employee whose organisation already has SSO. Backend detects no IO profile after OAuth and shows a short onboarding.</em>
+            </div>
+          </div>
+
+          <div style={S.card}>
+            <div style={S.cardTitle}>🟢 Enterprise — domain-based registration (ABN AMRO)</div>
             <div style={S.cardBody}>
               Use: <span style={S.email}>anything@abnamro.com</span><br/>
               <strong>Via EmailGate:</strong> email → enterprise detection → profile → done<br/>
-              <strong>Via Login:</strong> email → SSO screen (Google / Microsoft / password) → logged in<br/>
-              <span style={S.step}>2 steps</span> profile → done
+              <span style={S.step}>2 steps</span> profile → done<br/>
+              <em>Note: registration flow (not login). User creates a full profile with password.</em>
             </div>
           </div>
 
@@ -574,7 +594,9 @@ export default function DemoBanner() {
     { email: "demo@aegon.com",      scenarios: "Login → password → Business admin (Account: users, billing, invoices)" },
     { email: "demo@freemium.com",   scenarios: "Login → password → Freemium user (Article: contextual paywall with upgrade options)" },
     { email: "new@aegon.com",       scenarios: "Register → profile → intent → Business or Personal" },
-    { email: "Any @abnamro.com",    scenarios: "Login → SSO/Enterprise · Register → Enterprise domain → profile only" },
+    { email: "demo@abnamro.com",    scenarios: "Login → SSO → direct login (existing user with IO profile)" },
+    { email: "new@abnamro.com",     scenarios: "Login → SSO → first-time onboarding (name + job role, no password) → activated" },
+    { email: "Any @abnamro.com",    scenarios: "Register → Enterprise domain → profile only" },
     { email: "new@wealthpro.com",   scenarios: "Login / Register → Enterprise NL (1 edition, free)" },
     { email: "new@globalfund.com",  scenarios: "Login / Register → Enterprise All (all editions, free)" },
     { email: "new@gmail.com",       scenarios: "Login → private warning · Register → warning → profile → Personal only (no intent)" },

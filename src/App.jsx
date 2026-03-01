@@ -142,12 +142,18 @@ export default function App() {
 
 
   /* ── Handlers ── */
-  function handleLoginSuccess(email) {
+  function handleLoginSuccess(email, ssoUserData) {
     setLoggedIn(true)
     setUserEmail(email)
-    const name = email.split("@")[0]
-    const cap  = name.charAt(0).toUpperCase() + name.slice(1)
-    setUserData({ firstName:cap, lastName:"", email, jobRole:"Portfolio Manager", initials:cap[0] })
+    if (ssoUserData) {
+      // SSO first-time user: use the profile data from the SSO onboarding form
+      const initials = (ssoUserData.firstName[0] || "") + (ssoUserData.lastName[0] || "")
+      setUserData({ firstName: ssoUserData.firstName, lastName: ssoUserData.lastName, email, jobRole: ssoUserData.jobRole, initials: initials.toUpperCase() })
+    } else {
+      const name = email.split("@")[0]
+      const cap  = name.charAt(0).toUpperCase() + name.slice(1)
+      setUserData({ firstName:cap, lastName:"", email, jobRole:"Portfolio Manager", initials:cap[0] })
+    }
     // Set plan type based on email domain for demo purposes
     const domain = email.toLowerCase().split("@")[1]
     if (domain === "abnamro.com") setActivePlanType("enterprise")
