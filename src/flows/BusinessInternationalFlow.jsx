@@ -38,7 +38,7 @@ function getSidebarMeta(size, segId, xlCount, t, tBizIntl) {
 }
 
 /* ─── Component ────────────────────────────────────────────────────────── */
-export default function BusinessInternationalFlow({ onComplete, onSkipToSite, onBack, onGoEnterprise, gateEmail, profileData, businessContext }) {
+export default function BusinessInternationalFlow({ onComplete, onStartOnboarding, onSkipToSite, onBack, onGoEnterprise, gateEmail, profileData, businessContext }) {
   const { t, tSeg, tType, tBizIntl } = useLang()
   const hasProfile = !!(profileData)
   const hasContext = !!(businessContext?.segment)
@@ -91,7 +91,7 @@ export default function BusinessInternationalFlow({ onComplete, onSkipToSite, on
               {t("inline_confirm_email_at")} <strong>{email}</strong>.
             </p>
             <div style={{ display:"flex", gap:"1rem" }}>
-              <button className="btn-navy" style={{ padding:"0.875rem 2rem", fontSize:"1rem" }} onClick={() => onComplete(true)}>{t("ob_start_intro")} →</button>
+              <button className="btn-navy" style={{ padding:"0.875rem 2rem", fontSize:"1rem" }} onClick={() => (onStartOnboarding || onComplete)(true)}>{t("ob_start_intro")} →</button>
               <button className="btn-secondary" style={{ padding:"0.875rem 2rem", fontSize:"1rem" }} onClick={() => (onSkipToSite || onComplete)(true)}>{t("ob_go_to_site")}</button>
             </div>
             <CdpProductLabel

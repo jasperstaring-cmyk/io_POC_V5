@@ -207,6 +207,22 @@ export default function App() {
     setView("onboarding")
   }
 
+  function handleStartOnboarding(planTypeOverride) {
+    setLoggedIn(true)
+    setUserEmail("new@example.com")
+    const pType = planTypeOverride === true ? "business"
+                : typeof planTypeOverride === "string" ? planTypeOverride
+                : selectedPlan || "freemium"
+    setActivePlanType(pType)
+    setUserData({ firstName:"New", lastName:"User", email:"new@example.com", jobRole:"Portfolio Manager", initials:"N" })
+    // Grant single-article access if user registered from a premium article as Personal Free
+    if (cameFromArticle && pType === "freemium") {
+      setArticleAccess({ articleId: "article_trump_creditcards", grantedAt: Date.now() })
+    }
+    setCameFromArticle(false)
+    setView("onboarding")
+  }
+
   const [loginEmail, setLoginEmail] = useState("")
 
   function handleGoLogin(email) { setModal(null); setLoginEmail(email || ""); setView("login") }
@@ -328,13 +344,13 @@ export default function App() {
         />
       )}
       {view === "personal" && (
-        <PersonalFlow selectedPlan={selectedPlan} onComplete={handleRegComplete} onSkipToSite={handleSkipToSite} onBack={() => setView("plans")} onGoLogin={handleGoLogin} onGoWhitelist={handleGoWhitelist} gateEmail={gateEmail} profileData={profileData} cameFromArticle={cameFromArticle} />
+        <PersonalFlow selectedPlan={selectedPlan} onComplete={handleRegComplete} onStartOnboarding={handleStartOnboarding} onSkipToSite={handleSkipToSite} onBack={() => setView("plans")} onGoLogin={handleGoLogin} onGoWhitelist={handleGoWhitelist} gateEmail={gateEmail} profileData={profileData} cameFromArticle={cameFromArticle} />
       )}
       {view === "business" && (
-        <BusinessFlow onComplete={() => handleRegComplete(true)} onSkipToSite={handleSkipToSite} onBack={() => { if (cameFromAccount) { setCameFromAccount(false); setView("account") } else if (cameFromPicker) { setCameFromPicker(false); setView("bizplans") } else if (profileData) { setView("profileintent") } else if (gateEmail) { setView("emailgate") } else { setView("bizplans") } }} onGoLogin={handleGoLogin} onGoEnterprise={handleGoEnterprise} gateEmail={gateEmail} profileData={profileData} onGoIntl={(ctx) => { setBusinessContext(ctx); setPickerMode("business_intl"); setView("bizplans") }} cameFromArticle={cameFromArticle} />
+        <BusinessFlow onComplete={() => handleRegComplete(true)} onStartOnboarding={() => handleStartOnboarding(true)} onSkipToSite={handleSkipToSite} onBack={() => { if (cameFromAccount) { setCameFromAccount(false); setView("account") } else if (cameFromPicker) { setCameFromPicker(false); setView("bizplans") } else if (profileData) { setView("profileintent") } else if (gateEmail) { setView("emailgate") } else { setView("bizplans") } }} onGoLogin={handleGoLogin} onGoEnterprise={handleGoEnterprise} gateEmail={gateEmail} profileData={profileData} onGoIntl={(ctx) => { setBusinessContext(ctx); setPickerMode("business_intl"); setView("bizplans") }} cameFromArticle={cameFromArticle} />
       )}
       {view === "bizintl" && (
-        <BusinessInternationalFlow onComplete={() => handleRegComplete(true)} onSkipToSite={handleSkipToSite} onBack={() => { if (cameFromPicker) { setCameFromPicker(false); setView("bizplans") } else if (profileData) { setView("business") } else { setView("bizplans") } }} onGoEnterprise={handleGoEnterprise} gateEmail={gateEmail} profileData={profileData} businessContext={businessContext} />
+        <BusinessInternationalFlow onComplete={() => handleRegComplete(true)} onStartOnboarding={() => handleStartOnboarding(true)} onSkipToSite={handleSkipToSite} onBack={() => { if (cameFromPicker) { setCameFromPicker(false); setView("bizplans") } else if (profileData) { setView("business") } else { setView("bizplans") } }} onGoEnterprise={handleGoEnterprise} gateEmail={gateEmail} profileData={profileData} businessContext={businessContext} />
       )}
       {view === "enterprise" && (
         <EnterpriseFlow onComplete={() => setView("article")} onBack={() => setView("bizplans")} />
@@ -343,6 +359,7 @@ export default function App() {
         <PersonalFlow
           selectedPlan={null}
           onComplete={handleRegComplete}
+          onStartOnboarding={handleStartOnboarding}
           onSkipToSite={handleSkipToSite}
           onBack={() => { setWhitelistEmail(null); setWhitelistInfo(null); setView("article") }}
           onGoLogin={handleGoLogin}
@@ -355,6 +372,7 @@ export default function App() {
         <PersonalFlow
           selectedPlan={null}
           onComplete={handleRegComplete}
+          onStartOnboarding={handleStartOnboarding}
           onSkipToSite={handleSkipToSite}
           onBack={() => { setWhitelistEmail(null); setView("article") }}
           onGoLogin={handleGoLogin}
@@ -375,6 +393,7 @@ export default function App() {
         <PersonalFlow
           selectedPlan={null}
           onComplete={() => handleRegComplete(true)}
+          onStartOnboarding={() => handleStartOnboarding(true)}
           onBack={() => { setInvitedEmail(null); setInvitedCompany(null); setView("article") }}
           onGoLogin={handleGoLogin}
           onGoWhitelist={handleGoWhitelist}

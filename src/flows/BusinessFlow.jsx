@@ -44,7 +44,7 @@ function getSidebarMeta(segId, isPaid, chosenSize, xlCount, t, tBiz) {
 }
 
 /* ─── Component ────────────────────────────────────────────────────────── */
-export default function BusinessFlow({ onComplete, onSkipToSite, onBack, onGoLogin, onGoEnterprise, gateEmail, profileData, onGoIntl, cameFromArticle }) {
+export default function BusinessFlow({ onComplete, onStartOnboarding, onSkipToSite, onBack, onGoLogin, onGoEnterprise, gateEmail, profileData, onGoIntl, cameFromArticle }) {
   const { t, tSeg, tType, tBiz } = useLang()
   const hasProfile = !!(profileData)
   const initialTrialBlocked = hasProfile && hadRecentTrial(profileData.email)
@@ -125,7 +125,7 @@ export default function BusinessFlow({ onComplete, onSkipToSite, onBack, onGoLog
               {t("inline_confirm_email_at")} <strong>{email}</strong>.
             </p>
             <div style={{ display:"flex", gap:"1rem" }}>
-              <button className="btn-navy" style={{ padding:"0.875rem 2rem", fontSize:"1rem" }} onClick={() => onComplete(true)}>{t("ob_start_intro")} →</button>
+              <button className="btn-navy" style={{ padding:"0.875rem 2rem", fontSize:"1rem" }} onClick={() => (onStartOnboarding || onComplete)(true)}>{t("ob_start_intro")} →</button>
               <button className="btn-secondary" style={{ padding:"0.875rem 2rem", fontSize:"1rem" }} onClick={() => (onSkipToSite || onComplete)(true)}>{cameFromArticle ? t("ob_back_to_article") : t("ob_go_to_site")}</button>
             </div>
             <CdpProductLabel

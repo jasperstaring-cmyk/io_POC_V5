@@ -18,7 +18,7 @@ function planMeta(planId, t) {
   return map[planId] || {}
 }
 
-export default function PersonalFlow({ selectedPlan, onComplete, onSkipToSite, onBack, onGoLogin, onGoWhitelist, invitedEmail, invitedCompany, invitedPlanType, whitelistEmail, whitelistInfo, enterpriseEmail, gateEmail, profileData, cameFromArticle }) {
+export default function PersonalFlow({ selectedPlan, onComplete, onStartOnboarding, onSkipToSite, onBack, onGoLogin, onGoWhitelist, invitedEmail, invitedCompany, invitedPlanType, whitelistEmail, whitelistInfo, enterpriseEmail, gateEmail, profileData, cameFromArticle }) {
   const { t } = useLang()
   const isWhitelistEnterprise = !!(whitelistEmail && whitelistInfo)
   const isEnterpriseRedirect = !!(enterpriseEmail)
@@ -114,7 +114,7 @@ export default function PersonalFlow({ selectedPlan, onComplete, onSkipToSite, o
               {t("pf_done_confirm")} <strong>{email}</strong>.
             </p>
             <div style={{ display:"flex", gap:"1rem" }}>
-              <button className="btn-navy" style={{ padding:"0.875rem 2rem", fontSize:"1rem" }} onClick={() => onComplete(isEnterprise ? "enterprise" : isInvited ? (invitedPlanType || "business") : chosenPlan)}>{t("ob_start_intro")} →</button>
+              <button className="btn-navy" style={{ padding:"0.875rem 2rem", fontSize:"1rem" }} onClick={() => (onStartOnboarding || onComplete)(isEnterprise ? "enterprise" : isInvited ? (invitedPlanType || "business") : chosenPlan)}>{t("ob_start_intro")} →</button>
               <button className="btn-secondary" style={{ padding:"0.875rem 2rem", fontSize:"1rem" }} onClick={() => (onSkipToSite || onComplete)(isEnterprise ? "enterprise" : isInvited ? (invitedPlanType || "business") : chosenPlan)}>{cameFromArticle ? t("ob_back_to_article") : t("ob_go_to_site")}</button>
             </div>
             <CdpProductLabel
