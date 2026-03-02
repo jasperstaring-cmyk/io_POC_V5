@@ -211,8 +211,8 @@ function PocGuide({ onClose }) {
             <div style={S.cardBody}>
               Use: <span style={S.email}>new@aegon.com</span> or any new business email<br/>
               <strong>EmailGate → ProfileIntent:</strong> email → profile (name, job role, password) → intent question → choose "Activate business plan"<br/>
-              <strong>Business flow:</strong> segment+type → international question → company details → overview → invite colleagues → done<br/>
-              <span style={S.step}>8 steps</span> email → profile → intent → segment/type → intl question → company → overview → invite → done<br/>
+              <strong>Business flow:</strong> segment+type → international question → company (D&amp;B lookup) → overview → invite colleagues → done<br/>
+              <span style={S.step}>8 steps</span> email → profile → intent → segment/type → intl question → company (D&amp;B) → overview → invite → done<br/>
               <span style={{ display:"inline-block", marginTop:"0.375rem", background:"#F0F0FF", border:"1px dashed #7B7BEE", borderRadius:4, padding:"0.15rem 0.5rem", fontSize:"0.75rem", color:"#4A4AB5" }}>CDP: Business Buy Side — .NL (Wealth/Institutional) or Business Sell Side — .NL (other)</span>
             </div>
           </div>
@@ -398,8 +398,67 @@ function PocGuide({ onClose }) {
 
           <hr style={S.divider} />
 
-          {/* ── 8. CDP Product matrix ── */}
-          <div style={S.sectionTitle}>8. CDP Product matrix (58 products)</div>
+          {/* ── 8. D&B Company Lookup ── */}
+          <div style={S.sectionTitle}>8. D&amp;B Company Lookup (Phase 11)</div>
+          <div style={S.card}>
+            <div style={S.cardTitle}>Three-phase lookup-first pattern</div>
+            <div style={S.cardBody}>
+              The company step in BusinessFlow uses the <strong>CompanyLookupStep</strong> component — a D&amp;B (Dun &amp; Bradstreet) lookup-first pattern that replaces the previous manual company form. Three phases:<br/><br/>
+              <span style={S.step}>Phase 1</span> <strong>Lookup</strong> — Search by company name (typeahead, min 3 chars, 300ms debounce) or by registration number. A country selector (NL, BE, DE, FR, LU) determines the registration number label: KvK-nummer (NL), KBO-nummer (BE), Handelsregisternummer (DE), Numéro SIREN (FR), RCS (LU). Typeahead dropdown shows matching entities from the simulated D&amp;B database. If no results: link to manual fallback.<br/><br/>
+              <span style={S.step}>Phase 2</span> <strong>Confirm</strong> — Read-only card with entity data from D&amp;B (name, address, registration number, VAT). "Verified via trade register" badge. Known entity matching (whitelisting):<br/>
+              • <strong style={{color:"#16a34a"}}>Match (green):</strong> entity's segment matches user's selection → "Known to us, registration processed faster"<br/>
+              • <strong style={{color:"#dc2626"}}>Mismatch (red):</strong> entity known under different segment → offers correction: "Change my segment to [correct]" button + "No, my selection is correct" link<br/>
+              • If user accepts correction: segment + orgType updated via <code style={{fontSize:"0.75rem",background:"rgba(78,213,150,0.12)",padding:"0.1rem 0.3rem",borderRadius:3}}>onSegmentCorrect</code> callback<br/>
+              • If user overrides: yellow notice "Your registration will be manually reviewed", Continue button appears<br/>
+              • "This is incorrect — edit manually" link → Phase 3 (retains D&amp;B data)<br/><br/>
+              <span style={S.step}>Phase 3</span> <strong>Manual fallback</strong> — Traditional form with all fields. When reached from Phase 2 ("Dit klopt niet"): fields pre-filled with D&amp;B data so user can correct specific fields. When reached from Phase 1 ("My organisation is not listed"): fields empty. "Back to search" link returns to Phase 1.
+            </div>
+          </div>
+
+          <div style={S.card}>
+            <div style={S.cardTitle}>Scope</div>
+            <div style={S.cardBody}>
+              D&amp;B lookup is implemented in <strong>BusinessFlow only</strong>. BusinessInternationalFlow and EnterpriseFlow retain their original manual company forms. In production, CompanyLookupStep can be reused as a shared component across all flows.<br/><br/>
+              <strong>Files:</strong> <code style={{fontSize:"0.75rem",background:"rgba(78,213,150,0.12)",padding:"0.1rem 0.3rem",borderRadius:3}}>CompanyLookupStep.jsx</code> (component) + <code style={{fontSize:"0.75rem",background:"rgba(78,213,150,0.12)",padding:"0.1rem 0.3rem",borderRadius:3}}>dnbLookup.js</code> (simulated D&amp;B database, 30+ entities, search functions, known entities table).
+            </div>
+          </div>
+
+          {/* D&B demo scenarios table */}
+          <div style={{ ...S.cardTitle, marginTop:"0.75rem", marginBottom:"0.375rem", fontSize:"0.8rem", letterSpacing:"0.06em", textTransform:"uppercase", color:C.gray500 }}>D&amp;B demo scenarios</div>
+          <div style={{ overflowX:"auto" }}>
+            <table style={{ width:"100%", borderCollapse:"collapse", fontFamily:"var(--font-sans)", fontSize:"0.8rem", marginBottom:"1rem" }}>
+              <thead>
+                <tr style={{ background:C.gray50 }}>
+                  <th style={{ textAlign:"left", padding:"0.5rem 0.625rem", borderBottom:`1px solid ${C.gray200}`, fontWeight:700, color:C.navy }}>Scenario</th>
+                  <th style={{ textAlign:"left", padding:"0.5rem 0.625rem", borderBottom:`1px solid ${C.gray200}`, fontWeight:700, color:C.navy }}>Action</th>
+                  <th style={{ textAlign:"left", padding:"0.5rem 0.625rem", borderBottom:`1px solid ${C.gray200}`, fontWeight:700, color:C.navy }}>Expected result</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  ["Typeahead match", "Segment: Wealth → type \"ABN\" → select ABN AMRO MeesPierson", "Green \"known to us\" badge, all fields pre-filled"],
+                  ["Segment mismatch", "Segment: Wealth → type \"UBS\" → select UBS Asset Management", "Red mismatch: \"known under Asset Management\". Buttons: change segment or continue"],
+                  ["Accept correction", "On mismatch screen: click \"Change my segment to Asset Management\"", "Segment updated, flow continues as Sell Side"],
+                  ["Override mismatch", "On mismatch screen: click \"No, my selection is correct\"", "Yellow notice \"manually reviewed\", Continue button appears"],
+                  ["KvK-nummer zoeken", "Switch to \"Search by registration number\" → enter 41079041", "Stichting Pensioenfonds ABP found"],
+                  ["Not found", "Type \"Fictief Bedrijf BV\"", "\"No results\" + link to manual fallback"],
+                  ["Belgian entity", "Country: Belgium → type \"Degroof\"", "Degroof Petercam found, KBO-nummer label"],
+                  ["\"Dit klopt niet\"", "Select entity → click \"This is incorrect — edit manually\"", "Manual form with D&B data pre-filled"],
+                ].map(([scenario, action, result], i) => (
+                  <tr key={i} style={{ borderBottom:`1px solid ${C.gray100}` }}>
+                    <td style={{ padding:"0.4rem 0.625rem", fontWeight:600, color:C.navy, whiteSpace:"nowrap" }}>{scenario}</td>
+                    <td style={{ padding:"0.4rem 0.625rem", color:C.gray700, fontSize:"0.75rem" }}>{action}</td>
+                    <td style={{ padding:"0.4rem 0.625rem", color:C.gray500, fontSize:"0.75rem" }}>{result}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <hr style={S.divider} />
+
+          {/* ── 9. CDP Product matrix ── */}
+          <div style={S.sectionTitle}>9. CDP Product matrix (58 products)</div>
           <div style={S.card}>
             <div style={S.cardBody}>
               Each registration results in a specific CDP product. The edition is determined by the website domain (.nl, .be, .lu, .de, .fr, .com). Below is the complete product catalogue.<br/><br/>
@@ -510,8 +569,8 @@ function PocGuide({ onClose }) {
 
           <hr style={S.divider} />
 
-          {/* ── 9. Account management ── */}
-          <div style={S.sectionTitle}>9. Account management</div>
+          {/* ── 10. Account management ── */}
+          <div style={S.sectionTitle}>10. Account management</div>
           <div style={S.card}>
             <div style={S.cardBody}>
               After login or registration, click the avatar (top right) → "My account" to access:<br/>
@@ -528,8 +587,8 @@ function PocGuide({ onClose }) {
 
           <hr style={S.divider} />
 
-          {/* ── 10. Article access levels ── */}
-          <div style={S.sectionTitle}>10. Article access levels</div>
+          {/* ── 11. Article access levels ── */}
+          <div style={S.sectionTitle}>11. Article access levels</div>
           <div style={S.card}>
             <div style={S.cardBody}>
               The article page (entry screen) has four access levels:<br/><br/>
