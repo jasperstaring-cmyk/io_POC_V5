@@ -40,8 +40,18 @@ const DEMO_DOMAIN = {
   pendingRequests: [],
 }
 
-// Wissel hier tussen "sso" en "domain" om beide varianten te testen
-const DEMO_CONFIG = DEMO_SSO
+// DEMO_CONFIG wordt nu bepaald via een UI-toggle in de pagina zelf (zie DemoVariantBar).
+// In productie wordt de config meegegeven via de config-prop vanuit de API.
+
+const DEMO_SSO_SETUP = {
+  type: "sso-setup",
+  provider: "microsoft",            // klant heeft "microsoft" gekozen in het request form
+  orgName: "Robeco Institutional Asset Management B.V.",
+  edition: "international",
+  licenseUsed: 0,
+  licenseTotal: 50,
+  pendingRequests: [],
+}
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 function daysUntil(date) {
@@ -225,19 +235,212 @@ function SecretUpdateModal({ onClose, onSave }) {
   )
 }
 
+
+// ─── SsoSetupCard ─────────────────────────────────────────────────────────────
+// Getoond wanneer SSO is goedgekeurd maar de klant nog geen credentials heeft
+// ingevoerd. De klant vult hier zelf Client ID, Tenant ID en Client Secret in.
+// Na opslaan gaat de status naar "actief" (type: "sso").
+function SsoSetupCard({ config, onActivate }) {
+  const { t } = useLang()
+  const [clientId, setClientId]     = useState("")
+  const [tenantId, setTenantId]     = useState("")
+  const [secret, setSecret]         = useState("")
+  const [showSecret, setShowSecret] = useState(false)
+  const [saving, setSaving]         = useState(false)
+  const [saved, setSaved]           = useState(false)
+
+  const isGoogle    = config.provider === "google"
+  const providerLabel = isGoogle ? "Google Workspace" : "Microsoft Entra ID (Azure AD)"
+  const ProviderIcon  = isGoogle ? GoogleIcon : MicrosoftIcon
+  const canSave = clientId.trim() && secret.trim() && (!isGoogle ? tenantId.trim() : true)
+
+  function handleSave() {
+    if (!canSave) return
+    setSaving(true)
+    setTimeout(() => {
+      setSaved(true)
+      setTimeout(() => {
+        onActivate({
+          type: "sso",
+          provider: config.provider,
+          orgName: config.orgName,
+          edition: config.edition,
+          clientId: clientId.trim(),
+          tenantId: tenantId.trim(),
+          clientSecret: secret.trim(),
+          secretExpiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
+          allowPasswordLogin: true,
+          licenseUsed: config.licenseUsed,
+          licenseTotal: config.licenseTotal,
+          pendingRequests: [],
+        })
+      }, 1200)
+    }, 800)
+  }
+
+  return (
+    <Card style={{ border:`1.5px solid rgba(78,213,150,0.35)`, background:"rgba(78,213,150,0.02)" }}>
+      {saved ? (
+        <div style={{ textAlign:"center", padding:"1.5rem 0" }}>
+          <div style={{ width:48, height:48, borderRadius:"50%", background:C.green, display:"flex", alignItems:"center", justifyContent:"center", margin:"0 auto 1rem" }}>
+            <svg width="22" height="18" viewBox="0 0 16 13" fill="none"><path d="M1 6.5L5.5 11L15 1.5" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+          </div>
+          <div style={{ fontFamily:"var(--font-sans)", fontSize:"1rem", fontWeight:700, color:C.navy, marginBottom:"0.3rem" }}>SSO-configuratie opgeslagen</div>
+          <div style={{ fontFamily:"var(--font-sans)", fontSize:"0.85rem", color:C.gray500 }}>Uw omgeving wordt nu geactiveerd…</div>
+        </div>
+      ) : (
+        <>
+          <div style={{ display:"flex", alignItems:"flex-start", gap:"0.875rem", background:"rgba(78,213,150,0.08)", border:`1px solid rgba(78,213,150,0.25)`, borderRadius:8, padding:"0.875rem 1rem", marginBottom:"1.5rem" }}>
+            <svg width="18" height="18" viewBox="0 0 20 20" fill="none" style={{ flexShrink:0, marginTop:"0.1rem" }}>
+              <circle cx="10" cy="10" r="9" stroke={C.green} strokeWidth="1.5"/>
+              <path d="M10 6v5M10 13v.5" stroke={C.green} strokeWidth="1.75" strokeLinecap="round"/>
+            </svg>
+            <div style={{ fontFamily:"var(--font-sans)", fontSize:"0.85rem", color:"#1B5E20", lineHeight:"1.55" }}>
+              <strong>Uw SSO-aanvraag is goedgekeurd.</strong> Voer hieronder uw {providerLabel}-gegevens in om de koppeling te activeren. Uw IT-afdeling heeft deze gegevens beschikbaar.
+            </div>
+          </div>
+
+          <CardTitle sub={`Configureer uw ${providerLabel} koppeling`}>SSO-gegevens invoeren</CardTitle>
+
+          <div style={{ display:"flex", alignItems:"center", gap:"0.5rem", marginBottom:"1.25rem" }}>
+            <ProviderIcon />
+            <span style={{ fontFamily:"var(--font-sans)", fontSize:"0.9rem", fontWeight:600, color:C.navy }}>{providerLabel}</span>
+          </div>
+
+          <div className="input-group">
+            <label className="input-label">Client ID <span style={{ color:C.red }}>*</span></label>
+            <input className="input-field" type="text" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+              value={clientId} onChange={e => setClientId(e.target.value)} autoComplete="off" />
+          </div>
+
+          {!isGoogle && (
+            <div className="input-group">
+              <label className="input-label">Tenant ID <span style={{ color:C.red }}>*</span></label>
+              <input className="input-field" type="text" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+                value={tenantId} onChange={e => setTenantId(e.target.value)} autoComplete="off" />
+            </div>
+          )}
+
+          <div className="input-group">
+            <label className="input-label">Client Secret <span style={{ color:C.red }}>*</span></label>
+            <div style={{ position:"relative" }}>
+              <input className="input-field" type={showSecret ? "text" : "password"}
+                placeholder="Plak hier uw client secret"
+                value={secret} onChange={e => setSecret(e.target.value)}
+                autoComplete="new-password"
+                style={{ paddingRight:"2.5rem" }} />
+              <button type="button" onClick={() => setShowSecret(s => !s)}
+                style={{ position:"absolute", right:"0.625rem", top:"50%", transform:"translateY(-50%)", background:"none", border:"none", cursor:"pointer", color:C.gray500, padding:"0.125rem", display:"flex", alignItems:"center" }}>
+                {showSecret
+                  ? <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><path d="M2 10s3-6 8-6 8 6 8 6-3 6-8 6-8-6-8-6z" stroke="currentColor" strokeWidth="1.5"/><circle cx="10" cy="10" r="2.5" stroke="currentColor" strokeWidth="1.5"/><path d="M3 3l14 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
+                  : <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><path d="M2 10s3-6 8-6 8 6 8 6-3 6-8 6-8-6-8-6z" stroke="currentColor" strokeWidth="1.5"/><circle cx="10" cy="10" r="2.5" stroke="currentColor" strokeWidth="1.5"/></svg>
+                }
+              </button>
+            </div>
+            <div style={{ fontFamily:"var(--font-sans)", fontSize:"0.75rem", color:C.gray500, marginTop:"0.3rem", lineHeight:"1.5" }}>
+              Het secret wordt versleuteld opgeslagen en is na het opslaan niet meer leesbaar in zijn geheel.
+            </div>
+          </div>
+
+          <div style={{ background:C.gray50, borderRadius:8, padding:"0.875rem 1rem", marginBottom:"1.25rem" }}>
+            <div style={{ fontFamily:"var(--font-sans)", fontSize:"0.75rem", fontWeight:700, color:C.navy, marginBottom:"0.25rem" }}>Redirect URI voor uw IT-afdeling</div>
+            <div style={{ fontFamily:"var(--font-mono, monospace)", fontSize:"0.8rem", color:C.gray500 }}>https://investmentofficer.nl/auth/sso/callback</div>
+            <div style={{ fontFamily:"var(--font-sans)", fontSize:"0.75rem", color:C.gray500, marginTop:"0.3rem" }}>
+              Voeg deze URI toe als toegestane redirect in uw {providerLabel} applicatieregistratie.
+            </div>
+          </div>
+
+          <button className="btn-navy" disabled={!canSave || saving} onClick={handleSave}
+            style={{ fontSize:"0.9rem", opacity: canSave ? 1 : 0.45 }}>
+            {saving ? "Opslaan…" : "SSO activeren"}
+          </button>
+        </>
+      )}
+    </Card>
+  )
+}
+
+// ─── DemoVariantBar (alleen POC) ──────────────────────────────────────────────
+// Kleine balk bovenaan de pagina waarmee je live kunt wisselen tussen
+// de SSO-variant en de domein-whitelist-variant, zonder code te wijzigen.
+function DemoVariantBar({ current, onChange }) {
+  const variants = [
+    { id: "sso",       label: "SSO actief",       sub: "Microsoft Entra ID",  icon: "🔐" },
+    { id: "sso-setup", label: "SSO — eerste setup", sub: "Credentials invoeren", icon: "⚙️" },
+    { id: "domain",    label: "Domeinherkenning",  sub: "E-mail whitelist",    icon: "🌐" },
+  ]
+  return (
+    <div style={{
+      display:"flex", alignItems:"center", gap:"0.75rem",
+      background:"rgba(12,24,46,0.04)", border:"1px solid rgba(12,24,46,0.08)",
+      borderRadius:10, padding:"0.625rem 1rem", marginBottom:"1.5rem",
+    }}>
+      <span style={{ fontFamily:"var(--font-sans)", fontSize:"0.7rem", fontWeight:700, letterSpacing:"0.07em", textTransform:"uppercase", color:"#6B7280", whiteSpace:"nowrap", flexShrink:0 }}>
+        POC — demo variant:
+      </span>
+      <div style={{ display:"flex", gap:"0.4rem", flexWrap:"wrap" }}>
+        {variants.map(v => {
+          const active = current === v.id
+          return (
+            <button
+              key={v.id}
+              onClick={() => onChange(v.id)}
+              style={{
+                display:"flex", alignItems:"center", gap:"0.4rem",
+                padding:"0.3rem 0.75rem", borderRadius:6, cursor:"pointer",
+                border: active ? `1.5px solid ${C.navy}` : "1.5px solid rgba(12,24,46,0.15)",
+                background: active ? C.navy : "transparent",
+                fontFamily:"var(--font-sans)", fontSize:"0.8rem",
+                fontWeight: active ? 700 : 400,
+                color: active ? C.white : C.gray500,
+                transition:"all 0.15s",
+              }}
+            >
+              <span>{v.icon}</span>
+              <span>{v.label}</span>
+              <span style={{ fontSize:"0.7rem", opacity: active ? 0.65 : 0.5 }}>({v.sub})</span>
+            </button>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
 // ═════════════════════════════════════════════════════════════════════════════
 // Hoofdpagina
 // ═════════════════════════════════════════════════════════════════════════════
-export default function EnterpriseAccessPage({ config = DEMO_CONFIG }) {
+export default function EnterpriseAccessPage({ config = null }) {
   const { t } = useLang()
 
-  const [ssoConfig, setSsoConfig]         = useState(config)
+  // In de POC bepaalt demoVariant welke config getoond wordt.
+  // In productie wordt config vanuit de API meegegeven als prop.
+  const [demoVariant, setDemoVariant]     = useState("sso")
+  const activeConfig                      = config ?? (
+    demoVariant === "sso"       ? DEMO_SSO :
+    demoVariant === "sso-setup" ? DEMO_SSO_SETUP :
+                                  DEMO_DOMAIN
+  )
+
+  const [ssoConfig, setSsoConfig]         = useState(activeConfig)
   const [modal, setModal]                 = useState(null)   // null | "domain" | "license" | "other" | "secret"
   const [requests, setRequests]           = useState([])
-  const [allowPassword, setAllowPassword] = useState(config.allowPasswordLogin ?? true)
+  const [allowPassword, setAllowPassword] = useState(activeConfig.allowPasswordLogin ?? true)
   const [secretUpdated, setSecretUpdated] = useState(false)
 
+  // Als de gebruiker wisselt van variant in de POC: reset alle state
+  function handleVariantChange(v) {
+    setDemoVariant(v)
+    const next = v === "sso" ? DEMO_SSO : v === "sso-setup" ? DEMO_SSO_SETUP : DEMO_DOMAIN
+    setSsoConfig(next)
+    setAllowPassword(next.allowPasswordLogin ?? true)
+    setRequests([])
+    setSecretUpdated(false)
+    setModal(null)
+  }
+
   const isSso    = ssoConfig.type === "sso"
+  const isSetup  = ssoConfig.type === "sso-setup"
   const isDomain = ssoConfig.type === "domain"
 
   const daysLeft   = isSso ? daysUntil(ssoConfig.secretExpiresAt) : null
@@ -312,10 +515,18 @@ export default function EnterpriseAccessPage({ config = DEMO_CONFIG }) {
           <div>
             <div style={{ fontFamily:"var(--font-sans)", fontSize:"0.7rem", fontWeight:700, letterSpacing:"0.08em", textTransform:"uppercase", color:C.gray500, marginBottom:"0.75rem" }}>{t("ea_subscription_label")}</div>
             <div style={{ fontFamily:"var(--font-sans)", fontSize:"0.9375rem", fontWeight:700, color:C.navy, marginBottom:"0.375rem" }}>Enterprise — {editionLabel}</div>
-            <StatusBadge ok label={t("ea_status_active")} />
+            <StatusBadge ok={!isSetup} label={isSetup ? "Activering in behandeling" : t("ea_status_active")} />
           </div>
         </div>
       </Card>
+
+      {/* ══ SSO SETUP VARIANT ════════════════════════════════════════════════ */}
+      {isSetup && (
+        <SsoSetupCard
+          config={ssoConfig}
+          onActivate={(activatedConfig) => setSsoConfig(activatedConfig)}
+        />
+      )}
 
       {/* ══ SSO VARIANT ══════════════════════════════════════════════════════ */}
       {isSso && (<>
@@ -444,6 +655,11 @@ export default function EnterpriseAccessPage({ config = DEMO_CONFIG }) {
           </div>
         )}
       </Card>
+
+      {/* ── POC variant-switcher (alleen zichtbaar in demo) ── */}
+      {!config && (
+        <DemoVariantBar current={demoVariant} onChange={handleVariantChange} />
+      )}
 
       {/* ── Modals ── */}
       {modal === "secret" && (
