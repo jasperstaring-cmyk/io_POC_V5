@@ -955,23 +955,71 @@ export const translations = {
     bi_done_body_post:   "is geactiveerd. U heeft nu toegang tot alle edities van Investment Officer voor",
 
     // ── EnterpriseFlow ──
-    ef_title:            "Enterprise aanvraag",
-    ef_sub:              "Vul het formulier in en wij nemen contact met u op voor een regeling op maat.",
     ef_sidebar_features: [
       "Een abonnement op maat",
       "Toegang tot Investmentofficer.nl",
       "Toegang tot de App",
       "Toegang tot onze nieuwsbrieven",
-      "Tot 100 collega's uitnodigen",
+      "Onbeperkt collega's uitnodigen",
     ],
     ef_sidebar_price:    "€ –,–",
     ef_sidebar_suffix:   "Prijs op aanvraag",
     ef_sidebar_cta:      "Uw organisatie komt misschien in aanmerking voor gratis toegang",
-    ef_agree_label:      "Ik ga akkoord met de voorwaarden en het privacy statement",
     ef_submit:           "Stuur aanvraag",
-    ef_confirm_title:    "Uw aanvraag is verstuurd",
-    ef_confirm_body:     "Bedankt voor uw interesse. Wij nemen zo snel mogelijk contact met u op om de mogelijkheden te bespreken.",
     ef_confirm_cta:      "Terug naar de website",
+
+    // Stap 2 — Segment
+    ef_form_title:       "Enterprise aanvraag",
+    ef_form_sub:         "Vul de gegevens in en wij nemen binnen 2 werkdagen contact met u op.",
+    ef_section_company_title:  "Uw organisatie",
+    ef_section_segment_title:  "Segment en type",
+    ef_section_edition_title:  "Editie",
+    ef_section_access_title:   "Toegang voor medewerkers",
+    ef_phone_label:      "Telefoonnummer",
+    ef_agree_prefix:     "Ik ga akkoord met de",
+
+    ef_segment_title:    "Wat voor organisatie is dit?",
+    ef_segment_sub:      "Dit helpt ons uw aanvraag snel te beoordelen en de juiste regeling voor te stellen.",
+
+    // Stap 3 — Editie
+    ef_edition_title:    "Welke toegang heeft u nodig?",
+    ef_edition_sub:      "Kies het bereik dat past bij uw organisatie.",
+    ef_edition_nl_title: "Nederlandse editie",
+    ef_edition_nl_desc:  "Toegang tot Investment Officer Nederland voor uw team.",
+    ef_edition_intl_title: "Internationale toegang — alle edities",
+    ef_edition_intl_desc:  "Toegang tot alle edities: NL, BE, DE, FR, LU en internationaal.",
+
+    // Stap 4 — Toegangsmethode
+    ef_access_title:     "Hoe wilt u uw medewerkers toegang geven?",
+    ef_access_sub:       "Dit bepaalt hoe wij de toegang voor uw organisatie inrichten.",
+    ef_access_domain_title: "Via zakelijk e-mailadres",
+    ef_access_domain_desc:  "Medewerkers registreren zich met hun e-mailadres op het domein van uw organisatie en krijgen automatisch toegang.",
+    ef_access_sso_title:    "Via Single Sign-On (SSO)",
+    ef_access_sso_desc:     "Medewerkers loggen in via Microsoft of Google. Vereist een technische koppeling met uw identity provider.",
+    ef_access_unknown_title: "Weet ik nog niet",
+    ef_access_unknown_desc:  "Wij bespreken de mogelijkheden met u tijdens het opvolgingsgesprek.",
+
+    // Bevestiging — domein
+    ef_confirm_domain_title: "Uw aanvraag is ontvangen",
+    ef_confirm_domain_body:  "Bedankt. Wij nemen binnen 2 werkdagen contact met u op om de regeling te activeren.",
+    ef_confirm_domain_next:  "Na activering kunnen medewerkers zich direct registreren via hun zakelijk e-mailadres op uw domein. U ontvangt hierover instructies per e-mail.",
+
+    // Bevestiging — SSO
+    ef_confirm_sso_title:    "Uw SSO-aanvraag is ontvangen",
+    ef_confirm_sso_body:     "Bedankt. Wij nemen binnen 2 werkdagen contact met u op om het technische intakeproces te starten.",
+    ef_confirm_sso_next:     "Na uw akkoord volgt een technisch intakeformulier. De koppeling met uw identity provider (Microsoft of Google) wordt daarna doorgaans binnen 1 week ingeregeld.",
+
+    // Bevestiging — onbekend
+    ef_confirm_unknown_title: "Uw aanvraag is ontvangen",
+    ef_confirm_unknown_body:  "Bedankt voor uw interesse. Wij nemen binnen 2 werkdagen contact met u op om de mogelijkheden te bespreken.",
+    ef_confirm_unknown_next:  "Onze accountmanager neemt contact met u op om de beste aanpak voor uw organisatie te bepalen.",
+
+    // Samenvatting
+    ef_confirm_summary_label:  "Uw aanvraag",
+    ef_confirm_org_label:      "Organisatie",
+    ef_confirm_segment_label:  "Segment",
+    ef_confirm_edition_label:  "Editie",
+    ef_confirm_access_label:   "Toegangsmethode",
 
     // ── Inline text (previously hardcoded) ──
     inline_your:              "Uw",
@@ -2036,23 +2084,64 @@ export const translations = {
     bi_done_body_post:   "has been activated. You now have access to all editions of Investment Officer for",
 
     // ── EnterpriseFlow ──
-    ef_title:            "Enterprise request",
-    ef_sub:              "Fill in the form and we will contact you for a custom plan.",
     ef_sidebar_features: [
       "A tailor-made subscription",
       "Access to Investmentofficer.nl",
       "Access to the App",
       "Access to our newsletters",
-      "Invite up to 100 colleagues",
+      "Unlimited colleagues",
     ],
     ef_sidebar_price:    "€ –,–",
     ef_sidebar_suffix:   "Price on request",
     ef_sidebar_cta:      "Your organisation may qualify for free access",
-    ef_agree_label:      "I agree to the terms and conditions and the privacy statement",
     ef_submit:           "Send request",
-    ef_confirm_title:    "Your request has been sent",
-    ef_confirm_body:     "Thank you for your interest. We will contact you as soon as possible to discuss the options.",
     ef_confirm_cta:      "Back to the website",
+
+    ef_form_title:       "Enterprise request",
+    ef_form_sub:         "Fill in the details and we will contact you within 2 business days.",
+    ef_section_company_title:  "Your organisation",
+    ef_section_segment_title:  "Segment and type",
+    ef_section_edition_title:  "Edition",
+    ef_section_access_title:   "Access for employees",
+    ef_phone_label:      "Phone number",
+    ef_agree_prefix:     "I agree to the",
+
+    ef_segment_title:    "What type of organisation is this?",
+    ef_segment_sub:      "This helps us assess your request quickly and propose the right plan.",
+
+    ef_edition_title:    "What level of access do you need?",
+    ef_edition_sub:      "Choose the scope that fits your organisation.",
+    ef_edition_nl_title: "Dutch edition",
+    ef_edition_nl_desc:  "Access to Investment Officer Netherlands for your team.",
+    ef_edition_intl_title: "International access — all editions",
+    ef_edition_intl_desc:  "Access to all editions: NL, BE, DE, FR, LU and international.",
+
+    ef_access_title:     "How do you want to give your employees access?",
+    ef_access_sub:       "This determines how we set up access for your organisation.",
+    ef_access_domain_title: "Via work email address",
+    ef_access_domain_desc:  "Employees register with their email address on your organisation's domain and get access automatically.",
+    ef_access_sso_title:    "Via Single Sign-On (SSO)",
+    ef_access_sso_desc:     "Employees log in via Microsoft or Google. Requires a technical integration with your identity provider.",
+    ef_access_unknown_title: "Not sure yet",
+    ef_access_unknown_desc:  "We will discuss the options with you during the follow-up call.",
+
+    ef_confirm_domain_title: "Your request has been received",
+    ef_confirm_domain_body:  "Thank you. We will contact you within 2 business days to activate the plan.",
+    ef_confirm_domain_next:  "Once activated, employees can register directly using their work email address on your domain. You will receive instructions by email.",
+
+    ef_confirm_sso_title:    "Your SSO request has been received",
+    ef_confirm_sso_body:     "Thank you. We will contact you within 2 business days to start the technical intake process.",
+    ef_confirm_sso_next:     "After your approval, a technical intake form will follow. The integration with your identity provider (Microsoft or Google) is typically completed within 1 week.",
+
+    ef_confirm_unknown_title: "Your request has been received",
+    ef_confirm_unknown_body:  "Thank you for your interest. We will contact you within 2 business days to discuss the options.",
+    ef_confirm_unknown_next:  "Our account manager will contact you to determine the best approach for your organisation.",
+
+    ef_confirm_summary_label:  "Your request",
+    ef_confirm_org_label:      "Organisation",
+    ef_confirm_segment_label:  "Segment",
+    ef_confirm_edition_label:  "Edition",
+    ef_confirm_access_label:   "Access method",
 
     // ── Inline text (previously hardcoded) ──
     inline_your:              "Your",
@@ -3118,23 +3207,64 @@ export const translations = {
     bi_done_body_post:   "wurde aktiviert. Sie haben jetzt Zugang zu allen Ausgaben von Investment Officer für",
 
     // ── EnterpriseFlow ──
-    ef_title:            "Enterprise-Anfrage",
-    ef_sub:              "Füllen Sie das Formular aus und wir kontaktieren Sie für eine maßgeschneiderte Regelung.",
     ef_sidebar_features: [
       "Ein maßgeschneidertes Abonnement",
       "Zugang zu Investmentofficer.nl",
       "Zugang zur App",
       "Zugang zu unseren Newslettern",
-      "Bis zu 100 Kollegen einladen",
+      "Unbegrenzte Kollegen",
     ],
     ef_sidebar_price:    "€ –,–",
     ef_sidebar_suffix:   "Preis auf Anfrage",
     ef_sidebar_cta:      "Ihre Organisation hat möglicherweise Anspruch auf kostenlosen Zugang",
-    ef_agree_label:      "Ich stimme den Allgemeinen Geschäftsbedingungen und der Datenschutzerklärung zu",
     ef_submit:           "Anfrage senden",
-    ef_confirm_title:    "Ihre Anfrage wurde gesendet",
-    ef_confirm_body:     "Vielen Dank für Ihr Interesse. Wir werden Sie so schnell wie möglich kontaktieren, um die Möglichkeiten zu besprechen.",
     ef_confirm_cta:      "Zurück zur Website",
+
+    ef_form_title:       "Enterprise-Anfrage",
+    ef_form_sub:         "Füllen Sie die Angaben aus und wir melden uns innerhalb von 2 Werktagen bei Ihnen.",
+    ef_section_company_title:  "Ihre Organisation",
+    ef_section_segment_title:  "Segment und Typ",
+    ef_section_edition_title:  "Ausgabe",
+    ef_section_access_title:   "Zugang für Mitarbeiter",
+    ef_phone_label:      "Telefonnummer",
+    ef_agree_prefix:     "Ich stimme den",
+
+    ef_segment_title:    "Was für eine Organisation ist das?",
+    ef_segment_sub:      "Dies hilft uns, Ihre Anfrage schnell zu beurteilen und das richtige Angebot vorzuschlagen.",
+
+    ef_edition_title:    "Welchen Zugang benötigen Sie?",
+    ef_edition_sub:      "Wählen Sie den Umfang, der zu Ihrer Organisation passt.",
+    ef_edition_nl_title: "Niederländische Ausgabe",
+    ef_edition_nl_desc:  "Zugang zu Investment Officer Niederlande für Ihr Team.",
+    ef_edition_intl_title: "Internationaler Zugang — alle Ausgaben",
+    ef_edition_intl_desc:  "Zugang zu allen Ausgaben: NL, BE, DE, FR, LU und international.",
+
+    ef_access_title:     "Wie möchten Sie Ihren Mitarbeitern Zugang geben?",
+    ef_access_sub:       "Dies bestimmt, wie wir den Zugang für Ihre Organisation einrichten.",
+    ef_access_domain_title: "Über geschäftliche E-Mail-Adresse",
+    ef_access_domain_desc:  "Mitarbeiter registrieren sich mit ihrer E-Mail-Adresse auf der Domain Ihrer Organisation und erhalten automatisch Zugang.",
+    ef_access_sso_title:    "Über Single Sign-On (SSO)",
+    ef_access_sso_desc:     "Mitarbeiter melden sich über Microsoft oder Google an. Erfordert eine technische Integration mit Ihrem Identity Provider.",
+    ef_access_unknown_title: "Noch nicht sicher",
+    ef_access_unknown_desc:  "Wir besprechen die Möglichkeiten mit Ihnen im Folgegespräch.",
+
+    ef_confirm_domain_title: "Ihre Anfrage ist eingegangen",
+    ef_confirm_domain_body:  "Vielen Dank. Wir werden Sie innerhalb von 2 Werktagen kontaktieren, um die Regelung zu aktivieren.",
+    ef_confirm_domain_next:  "Nach der Aktivierung können sich Mitarbeiter direkt über ihre geschäftliche E-Mail-Adresse registrieren. Sie erhalten hierzu Anweisungen per E-Mail.",
+
+    ef_confirm_sso_title:    "Ihre SSO-Anfrage ist eingegangen",
+    ef_confirm_sso_body:     "Vielen Dank. Wir werden Sie innerhalb von 2 Werktagen kontaktieren, um den technischen Intake-Prozess zu starten.",
+    ef_confirm_sso_next:     "Nach Ihrer Zustimmung folgt ein technisches Intake-Formular. Die Kopplung mit Ihrem Identity Provider (Microsoft oder Google) wird in der Regel innerhalb einer Woche eingerichtet.",
+
+    ef_confirm_unknown_title: "Ihre Anfrage ist eingegangen",
+    ef_confirm_unknown_body:  "Vielen Dank für Ihr Interesse. Wir werden Sie innerhalb von 2 Werktagen kontaktieren, um die Möglichkeiten zu besprechen.",
+    ef_confirm_unknown_next:  "Unser Account-Manager wird Sie kontaktieren, um den besten Ansatz für Ihre Organisation zu bestimmen.",
+
+    ef_confirm_summary_label:  "Ihre Anfrage",
+    ef_confirm_org_label:      "Organisation",
+    ef_confirm_segment_label:  "Segment",
+    ef_confirm_edition_label:  "Ausgabe",
+    ef_confirm_access_label:   "Zugangsmethode",
 
     // ── Inline text ──
     inline_your:              "Ihre",
@@ -4207,16 +4337,59 @@ export const translations = {
       "Accès à Investmentofficer.nl",
       "Accès à l'application",
       "Accès à nos newsletters",
-      "Inviter jusqu'à 100 collègues",
+      "Collègues illimités",
     ],
     ef_sidebar_price:    "€ –,–",
     ef_sidebar_suffix:   "Prix sur demande",
     ef_sidebar_cta:      "Votre organisation peut avoir droit à un accès gratuit",
-    ef_agree_label:      "J'accepte les conditions générales et la déclaration de confidentialité",
     ef_submit:           "Envoyer la demande",
-    ef_confirm_title:    "Votre demande a été envoyée",
-    ef_confirm_body:     "Merci pour votre intérêt. Nous vous contacterons dès que possible pour discuter des options.",
     ef_confirm_cta:      "Retour au site web",
+
+    ef_form_title:       "Demande Enterprise",
+    ef_form_sub:         "Remplissez les informations et nous vous contacterons dans les 2 jours ouvrables.",
+    ef_section_company_title:  "Votre organisation",
+    ef_section_segment_title:  "Segment et type",
+    ef_section_edition_title:  "Édition",
+    ef_section_access_title:   "Accès pour les collaborateurs",
+    ef_phone_label:      "Numéro de téléphone",
+    ef_agree_prefix:     "J'accepte les",
+
+    ef_segment_title:    "Quel type d'organisation est-ce ?",
+    ef_segment_sub:      "Cela nous aide à évaluer rapidement votre demande et à proposer la bonne formule.",
+
+    ef_edition_title:    "Quel niveau d'accès vous faut-il ?",
+    ef_edition_sub:      "Choisissez la portée qui correspond à votre organisation.",
+    ef_edition_nl_title: "Édition néerlandaise",
+    ef_edition_nl_desc:  "Accès à Investment Officer Pays-Bas pour votre équipe.",
+    ef_edition_intl_title: "Accès international — toutes les éditions",
+    ef_edition_intl_desc:  "Accès à toutes les éditions : NL, BE, DE, FR, LU et international.",
+
+    ef_access_title:     "Comment souhaitez-vous donner accès à vos collaborateurs ?",
+    ef_access_sub:       "Cela détermine comment nous configurons l'accès pour votre organisation.",
+    ef_access_domain_title: "Via adresse e-mail professionnelle",
+    ef_access_domain_desc:  "Les collaborateurs s'inscrivent avec leur adresse e-mail sur le domaine de votre organisation et obtiennent un accès automatique.",
+    ef_access_sso_title:    "Via Single Sign-On (SSO)",
+    ef_access_sso_desc:     "Les collaborateurs se connectent via Microsoft ou Google. Nécessite une intégration technique avec votre fournisseur d'identité.",
+    ef_access_unknown_title: "Pas encore sûr",
+    ef_access_unknown_desc:  "Nous discuterons des options avec vous lors de l'entretien de suivi.",
+
+    ef_confirm_domain_title: "Votre demande a été reçue",
+    ef_confirm_domain_body:  "Merci. Nous vous contacterons dans les 2 jours ouvrables pour activer la formule.",
+    ef_confirm_domain_next:  "Une fois activés, les collaborateurs pourront s'inscrire directement via leur adresse e-mail professionnelle. Vous recevrez les instructions par e-mail.",
+
+    ef_confirm_sso_title:    "Votre demande SSO a été reçue",
+    ef_confirm_sso_body:     "Merci. Nous vous contacterons dans les 2 jours ouvrables pour démarrer le processus d'intégration technique.",
+    ef_confirm_sso_next:     "Après votre accord, un formulaire d'intégration technique suivra. La connexion avec votre fournisseur d'identité (Microsoft ou Google) est généralement établie en 1 semaine.",
+
+    ef_confirm_unknown_title: "Votre demande a été reçue",
+    ef_confirm_unknown_body:  "Merci pour votre intérêt. Nous vous contacterons dans les 2 jours ouvrables pour discuter des options.",
+    ef_confirm_unknown_next:  "Notre gestionnaire de compte vous contactera pour déterminer la meilleure approche pour votre organisation.",
+
+    ef_confirm_summary_label:  "Votre demande",
+    ef_confirm_org_label:      "Organisation",
+    ef_confirm_segment_label:  "Segment",
+    ef_confirm_edition_label:  "Édition",
+    ef_confirm_access_label:   "Méthode d'accès",
 
     // ── Inline text ──
     inline_your:              "Votre",
