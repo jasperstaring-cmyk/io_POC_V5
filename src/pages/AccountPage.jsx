@@ -5,6 +5,7 @@ import IOLogo from '../components/IOLogo.jsx'
 import { LangSwitcher } from '../components/shared.jsx'
 import { useLang } from '../LanguageContext.jsx'
 import { img } from '../images.js'
+import EnterpriseAccessPage from '../components/EnterpriseAccessPage.jsx'
 
 function initials(first, last) {
   return ((first?.[0] || "") + (last?.[0] || "")).toUpperCase()
@@ -37,6 +38,7 @@ function NavIcon({ type, active, disabled }) {
     card:    <><rect x="2" y="5" width="20" height="14" rx="2" stroke={color} strokeWidth="1.5" fill="none"/><path d="M2 10h20" stroke={color} strokeWidth="1.5"/></>,
     people:  <path d="M16 11c1.7 0 3-1.3 3-3s-1.3-3-3-3-3 1.3-3 3 1.3 3 3 3zm-8 0c1.7 0 3-1.3 3-3S9.7 5 8 5 5 6.3 5 8s1.3 3 3 3zm0 2c-2.3 0-7 1.2-7 3.5V19h14v-2.5c0-2.3-4.7-3.5-7-3.5zm8 0c-.3 0-.6 0-1 .1 1.2.9 2 2.1 2 3.4V19h6v-2.5c0-2.3-4.7-3.5-7-3.5z" fill={color}/>,
     billing: <><rect x="2" y="4" width="20" height="16" rx="2" stroke={color} strokeWidth="1.5" fill="none"/><path d="M7 8h10M7 12h6" stroke={color} strokeWidth="1.5" strokeLinecap="round"/></>,
+    shield:  <path d="M12 2L4 6v5c0 4.4 3.4 8.5 8 9.5 4.6-1 8-5.1 8-9.5V6l-8-4zm0 4a2 2 0 1 1 0 4 2 2 0 0 1 0-4zm0 10c-2.3 0-4.3-1.2-5.5-3 1.2-1.8 3.2-3 5.5-3s4.3 1.2 5.5 3c-1.2 1.8-3.2 3-5.5 3z" fill={color}/>,
   }
   return <svg width="18" height="18" viewBox="0 0 24 24" fill="none">{icons[type]}</svg>
 }
@@ -49,15 +51,16 @@ function Sidebar({ active, onNav }) {
     { id:"abonnementen", label: t("acc_subscriptions"), icon:"card"    },
     { id:"gebruikers",   label: t("acc_users"),         icon:"people"  },
     { id:"facturatie",   label: t("acc_billing"),       icon:"billing" },
+    { id:"enterprise",    label: t("acc_enterprise_access"), icon:"shield",  enterprise: true },
   ]
   return (
     <div style={{ width:260, flexShrink:0 }}>
       <div style={{ background:C.white, borderRadius:10, padding:"1.5rem", boxShadow:"0 2px 16px rgba(12,24,46,0.06)" }}>
         {NAV_ITEMS.map(item => (
           <button key={item.id} onClick={() => onNav(item.id)}
-            style={{ display:"flex", alignItems:"center", gap:"0.75rem", width:"100%", padding:"0.625rem 0.75rem", borderRadius:6, border:"none", background: active===item.id ? C.gray50 : "transparent", cursor:"pointer", marginBottom:"0.25rem", textAlign:"left" }}>
-            <NavIcon type={item.icon} active={active===item.id} />
-            <span style={{ fontFamily:"var(--font-sans)", fontSize:"0.9rem", fontWeight: active===item.id ? 700 : 400, color: active===item.id ? C.navy : C.gray700 }}>
+            style={{ display:"flex", alignItems:"center", gap:"0.75rem", width:"100%", padding:"0.625rem 0.75rem", borderRadius:6, border:"none", background: active===item.id ? (item.enterprise ? "rgba(224,27,65,0.06)" : C.gray50) : "transparent", cursor:"pointer", marginBottom:"0.25rem", textAlign:"left" }}>
+            <NavIcon type={item.icon} active={active===item.id} disabled={false} />
+            <span style={{ fontFamily:"var(--font-sans)", fontSize:"0.9rem", fontWeight: active===item.id ? 700 : 400, color: item.enterprise ? C.red : (active===item.id ? C.navy : C.gray700) }}>
               {item.label}
             </span>
           </button>
@@ -711,9 +714,9 @@ function GebruikersSection({ planType, onSimulateInvite, onUpgrade }) {
 }
 
 // ─── Main AccountPage ─────────────────────────────────────────────────────────
-export default function AccountPage({ user, planType, onBack, onSimulateInvite, onUpgrade, bizVariant }) {
+export default function AccountPage({ user, planType, onBack, onSimulateInvite, onUpgrade, bizVariant, initialSection }) {
   const { t } = useLang()
-  const [section, setSection]     = useState("account")
+  const [section, setSection]     = useState(initialSection || "account")
   const [currentUser, setCurrentUser] = useState(user)
   const ini = initials(currentUser.firstName, currentUser.lastName)
 
@@ -747,6 +750,7 @@ export default function AccountPage({ user, planType, onBack, onSimulateInvite, 
             {section === "abonnementen" && <AbonnementenSection planType={planType} onUpgrade={onUpgrade} bizVariant={bizVariant} />}
             {section === "gebruikers"   && <GebruikersSection planType={planType} onSimulateInvite={onSimulateInvite} onUpgrade={onUpgrade} />}
             {section === "facturatie"   && <FacturatieSection />}
+            {section === "enterprise"   && <EnterpriseAccessPage />}
           </div>
         </div>
       </div>

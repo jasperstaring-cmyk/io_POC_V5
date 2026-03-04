@@ -30,6 +30,7 @@ export default function App() {
   const [selectedPlan, setSelectedPlan] = useState(null)
   const [activePlanType, setActivePlanType] = useState("freemium")
   const [bizVariant, setBizVariant] = useState("trial") // "trial" | "free" — for business status banner
+  const [initialSection, setInitialSection] = useState(null)
   const [userData, setUserData]   = useState({ firstName:"Jasper", lastName:"", email:"", jobRole:"Portfolio Manager", initials:"J" })
   const [whitelistEmail, setWhitelistEmail] = useState(null)
   const [whitelistInfo, setWhitelistInfo]   = useState(null)
@@ -111,6 +112,7 @@ export default function App() {
       else if (scenario === "trial")    { setActivePlanType("trial") }
       else if (scenario === "freemium") { setActivePlanType("freemium") }
       else if (scenario === "pro")      { setActivePlanType("pro") }
+      else if (scenario === "enterprise") { setInitialSection("enterprise") }
       setView("account")
       history.replaceState(null, "", window.location.pathname)
       return
@@ -387,7 +389,7 @@ export default function App() {
         />
       )}
       {view === "account" && (
-        <AccountPage user={userData} planType={activePlanType} bizVariant={bizVariant} onBack={() => setView("article")} onSimulateInvite={handleSimulateInvite} onUpgrade={handleUpgrade} />
+        <AccountPage user={userData} planType={activePlanType} bizVariant={bizVariant} initialSection={initialSection} onBack={() => setView("article")} onSimulateInvite={handleSimulateInvite} onUpgrade={handleUpgrade} />
       )}
       {view === "invited" && (
         <PersonalFlow

@@ -13,22 +13,22 @@ function PocGuide({ onClose }) {
       padding:"2rem",
     },
     modal: {
-      background:C.white, borderRadius:16, maxWidth:960, width:"100%",
-      maxHeight:"90vh", overflowY:"auto", position:"relative",
+      background:C.white, borderRadius:16, maxWidth:820, width:"100%",
+      maxHeight:"88vh", overflowY:"auto", position:"relative",
       boxShadow:"0 24px 80px rgba(0,0,0,0.25)",
     },
     header: {
       position:"sticky", top:0, background:C.navy, color:C.white,
-      padding:"2rem 2.75rem 1.75rem", borderRadius:"16px 16px 0 0",
+      padding:"1.75rem 2.25rem 1.5rem", borderRadius:"16px 16px 0 0",
       zIndex:1,
     },
-    body: { padding:"2.25rem 2.75rem 2.75rem" },
+    body: { padding:"2rem 2.25rem 2.5rem" },
     h1: {
-      fontFamily:"var(--font-serif)", fontSize:"1.65rem", fontWeight:700,
+      fontFamily:"var(--font-serif)", fontSize:"1.5rem", fontWeight:700,
       color:C.white, margin:0, lineHeight:1.3,
     },
     subtitle: {
-      fontFamily:"var(--font-sans)", fontSize:"0.95rem", color:"rgba(255,255,255,0.65)",
+      fontFamily:"var(--font-sans)", fontSize:"0.85rem", color:"rgba(255,255,255,0.65)",
       marginTop:"0.5rem", lineHeight:1.6,
     },
     closeBtn: {
@@ -38,43 +38,43 @@ function PocGuide({ onClose }) {
       alignItems:"center", justifyContent:"center", color:C.white,
     },
     sectionTitle: {
-      fontFamily:"var(--font-sans)", fontSize:"0.8rem", fontWeight:700,
+      fontFamily:"var(--font-sans)", fontSize:"0.7rem", fontWeight:700,
       letterSpacing:"0.08em", textTransform:"uppercase", color:C.green,
-      marginBottom:"0.75rem", marginTop:"2rem",
+      marginBottom:"0.625rem", marginTop:"1.75rem",
     },
     sectionTitleFirst: {
-      fontFamily:"var(--font-sans)", fontSize:"0.8rem", fontWeight:700,
+      fontFamily:"var(--font-sans)", fontSize:"0.7rem", fontWeight:700,
       letterSpacing:"0.08em", textTransform:"uppercase", color:C.green,
-      marginBottom:"0.75rem", marginTop:0,
+      marginBottom:"0.625rem", marginTop:0,
     },
     card: {
-      background:C.gray50, borderRadius:10, padding:"1.125rem 1.375rem",
-      marginBottom:"0.75rem", border:`1px solid ${C.gray200}`,
+      background:C.gray50, borderRadius:10, padding:"1rem 1.25rem",
+      marginBottom:"0.625rem", border:`1px solid ${C.gray200}`,
     },
     cardTitle: {
-      fontFamily:"var(--font-sans)", fontSize:"0.975rem", fontWeight:700,
-      color:C.navy, marginBottom:"0.3rem",
+      fontFamily:"var(--font-sans)", fontSize:"0.875rem", fontWeight:700,
+      color:C.navy, marginBottom:"0.25rem",
     },
     cardBody: {
-      fontFamily:"var(--font-sans)", fontSize:"0.9rem", color:C.gray500,
-      lineHeight:1.7,
+      fontFamily:"var(--font-sans)", fontSize:"0.8rem", color:C.gray500,
+      lineHeight:1.65,
     },
     email: {
-      fontFamily:"monospace", fontSize:"0.85rem", background:"rgba(78,213,150,0.12)",
-      padding:"0.15rem 0.45rem", borderRadius:3, color:C.navy, whiteSpace:"nowrap",
+      fontFamily:"monospace", fontSize:"0.75rem", background:"rgba(78,213,150,0.12)",
+      padding:"0.1rem 0.4rem", borderRadius:3, color:C.navy, whiteSpace:"nowrap",
     },
     step: {
-      display:"inline-block", fontFamily:"var(--font-sans)", fontSize:"0.8rem",
-      background:C.navy, color:C.white, padding:"0.125rem 0.5rem",
-      borderRadius:3, marginRight:"0.3rem", fontWeight:600,
+      display:"inline-block", fontFamily:"var(--font-sans)", fontSize:"0.7rem",
+      background:C.navy, color:C.white, padding:"0.1rem 0.45rem",
+      borderRadius:3, marginRight:"0.25rem", fontWeight:600,
     },
     divider: {
       border:"none", borderTop:`1px solid ${C.gray200}`,
       margin:"1.5rem 0",
     },
     note: {
-      fontFamily:"var(--font-sans)", fontSize:"0.85rem", color:C.gray500,
-      lineHeight:1.65, fontStyle:"italic",
+      fontFamily:"var(--font-sans)", fontSize:"0.75rem", color:C.gray500,
+      lineHeight:1.6, fontStyle:"italic",
     },
   }
 
@@ -148,7 +148,14 @@ function PocGuide({ onClose }) {
           </div>
           <div style={S.card}>
             <div style={S.cardTitle}>Enterprise</div>
-            <div style={S.cardBody}>Free access at organisation level, managed by Investment Officer. Two variants: Enterprise NL (1 edition) and Enterprise All (all editions). No payment, no subscription choice. Activated via domain or whitelist configuration.</div>
+            <div style={S.cardBody}>
+              Free access at organisation level, managed by Investment Officer. Two variants: Enterprise NL (1 edition) and Enterprise All (all editions). No payment, no subscription choice.<br/><br/>
+              <strong>Access methods:</strong><br/>
+              • <strong>Domain whitelist</strong> — employees register with their work email; access granted automatically<br/>
+              • <strong>SSO</strong> — Google Workspace or Microsoft Entra ID; optional password-login toggle<br/><br/>
+              <strong>Registration flow:</strong> The enterprise customer submits a request via the Enterprise request form (accordion, single page). IO configures the backend. The customer then manages their setup in Account → Enterprise access.<br/><br/>
+              <strong>Account management:</strong> Licence counter, SSO credentials (Client ID, Tenant ID, Secret with show/hide), domain list, secret expiry warnings at 30 and 7 days, and a requests panel (add domain, request more licences, other changes).
+            </div>
           </div>
 
           <hr style={S.divider} />
@@ -207,12 +214,49 @@ function PocGuide({ onClose }) {
           </div>
 
           <div style={S.card}>
+            <div style={S.cardTitle}>🟢 Enterprise — request form (new organisation)</div>
+            <div style={S.cardBody}>
+              Use: <span style={S.email}>new@robeco.com</span> or any new business email routed to Enterprise<br/>
+              <strong>Via EmailGate:</strong> email → profile → intent → "Activate business plan" → Business flow → <em>Enterprise option selected</em> → Enterprise request form<br/>
+              <strong>Or direct:</strong> deep link <code>#enterpriseReg</code><br/><br/>
+              The form is a single-page accordion with 4 sections (conditionally 3 if segment already known):<br/>
+              <span style={S.step}>1</span> Organisation (D&amp;B lookup — name search or registration number — or manual)<br/>
+              <span style={S.step}>2</span> Segment + type (skipped if already known from upstream)<br/>
+              <span style={S.step}>3</span> Edition (NL or International — direct select, no confirm button)<br/>
+              <span style={S.step}>4</span> Access method — "Via work email address" (optional domain field), "SSO", or "Not sure yet"<br/><br/>
+              Personal details (name, job role, email, optional phone) shown as non-editable card above accordion.<br/>
+              Terms &amp; Conditions checkbox collapses section 4. Submit button appears below accordion.<br/>
+              Each completed section shows a summary + Edit link (edit reopens only that section, others stay intact).<br/>
+              <em>After submit: IO configures backend, customer receives email with link to Account → Enterprise access.</em>
+            </div>
+          </div>
+
+          <div style={S.card}>
+            <div style={S.cardTitle}>🟢 Enterprise — access management (Account page)</div>
+            <div style={S.cardBody}>
+              Accessible via Account → "Enterprise access" (shield icon, red label in sidebar).<br/>
+              Use deep link: <code>#account-enterprise</code><br/><br/>
+              <strong>SSO variant</strong> (default demo — Microsoft Entra ID):<br/>
+              • Provider + credentials: Client ID, Tenant ID, Client Secret (show/hide toggle)<br/>
+              • Redirect URI shown for IT department<br/>
+              • Secret expiry warning: orange at 30 days, red at 7 days — inline "Renew secret" button opens modal<br/>
+              • Toggle: allow/block password login alongside SSO<br/><br/>
+              <strong>Domain variant</strong> (change <code>DEMO_CONFIG</code> in EnterpriseAccessPage.jsx to <code>DEMO_DOMAIN</code>):<br/>
+              • Active domain list with status badges<br/>
+              • Request new domain button → modal<br/><br/>
+              <strong>Both variants:</strong><br/>
+              • Licence bar: used / total with colour progression (green → amber → red)<br/>
+              • Requests panel: add domain, more licences, other change — submitted requests show as "Pending"
+            </div>
+          </div>
+
+          <div style={S.card}>
             <div style={S.cardTitle}>🔵 New business email → Business (recommended path)</div>
             <div style={S.cardBody}>
               Use: <span style={S.email}>new@aegon.com</span> or any new business email<br/>
               <strong>EmailGate → ProfileIntent:</strong> email → profile (name, job role, password) → intent question → choose "Activate business plan"<br/>
-              <strong>Business flow:</strong> segment+type → international question → company (D&amp;B lookup) → overview → invite colleagues → done<br/>
-              <span style={S.step}>8 steps</span> email → profile → intent → segment/type → intl question → company (D&amp;B) → overview → invite → done<br/>
+              <strong>Business flow:</strong> segment+type → international question → company details → overview → invite colleagues → done<br/>
+              <span style={S.step}>8 steps</span> email → profile → intent → segment/type → intl question → company → overview → invite → done<br/>
               <span style={{ display:"inline-block", marginTop:"0.375rem", background:"#F0F0FF", border:"1px dashed #7B7BEE", borderRadius:4, padding:"0.15rem 0.5rem", fontSize:"0.75rem", color:"#4A4AB5" }}>CDP: Business Buy Side — .NL (Wealth/Institutional) or Business Sell Side — .NL (other)</span>
             </div>
           </div>
@@ -398,67 +442,8 @@ function PocGuide({ onClose }) {
 
           <hr style={S.divider} />
 
-          {/* ── 8. D&B Company Lookup ── */}
-          <div style={S.sectionTitle}>8. D&amp;B Company Lookup (Phase 11)</div>
-          <div style={S.card}>
-            <div style={S.cardTitle}>Three-phase lookup-first pattern</div>
-            <div style={S.cardBody}>
-              The company step in BusinessFlow uses the <strong>CompanyLookupStep</strong> component — a D&amp;B (Dun &amp; Bradstreet) lookup-first pattern that replaces the previous manual company form. Three phases:<br/><br/>
-              <span style={S.step}>Phase 1</span> <strong>Lookup</strong> — Search by company name (typeahead, min 3 chars, 300ms debounce) or by registration number. A country selector (NL, BE, DE, FR, LU) determines the registration number label: KvK-nummer (NL), KBO-nummer (BE), Handelsregisternummer (DE), Numéro SIREN (FR), RCS (LU). Typeahead dropdown shows matching entities from the simulated D&amp;B database. If no results: link to manual fallback.<br/><br/>
-              <span style={S.step}>Phase 2</span> <strong>Confirm</strong> — Read-only card with entity data from D&amp;B (name, address, registration number, VAT). "Verified via trade register" badge. Known entity matching (whitelisting):<br/>
-              • <strong style={{color:"#16a34a"}}>Match (green):</strong> entity's segment matches user's selection → "Known to us, registration processed faster"<br/>
-              • <strong style={{color:"#dc2626"}}>Mismatch (red):</strong> entity known under different segment → offers correction: "Change my segment to [correct]" button + "No, my selection is correct" link<br/>
-              • If user accepts correction: segment + orgType updated via <code style={{fontSize:"0.8rem",background:"rgba(78,213,150,0.12)",padding:"0.1rem 0.3rem",borderRadius:3}}>onSegmentCorrect</code> callback<br/>
-              • If user overrides: yellow notice "Your registration will be manually reviewed", Continue button appears<br/>
-              • "This is incorrect — edit manually" link → Phase 3 (retains D&amp;B data)<br/><br/>
-              <span style={S.step}>Phase 3</span> <strong>Manual fallback</strong> — Traditional form with all fields. When reached from Phase 2 ("Dit klopt niet"): fields pre-filled with D&amp;B data so user can correct specific fields. When reached from Phase 1 ("My organisation is not listed"): fields empty. "Back to search" link returns to Phase 1.
-            </div>
-          </div>
-
-          <div style={S.card}>
-            <div style={S.cardTitle}>Scope</div>
-            <div style={S.cardBody}>
-              D&amp;B lookup is implemented in <strong>BusinessFlow only</strong>. BusinessInternationalFlow and EnterpriseFlow retain their original manual company forms. In production, CompanyLookupStep can be reused as a shared component across all flows.<br/><br/>
-              <strong>Files:</strong> <code style={{fontSize:"0.8rem",background:"rgba(78,213,150,0.12)",padding:"0.1rem 0.3rem",borderRadius:3}}>CompanyLookupStep.jsx</code> (component) + <code style={{fontSize:"0.8rem",background:"rgba(78,213,150,0.12)",padding:"0.1rem 0.3rem",borderRadius:3}}>dnbLookup.js</code> (simulated D&amp;B database, 30+ entities, search functions, known entities table).
-            </div>
-          </div>
-
-          {/* D&B demo scenarios table */}
-          <div style={{ ...S.cardTitle, marginTop:"0.75rem", marginBottom:"0.375rem", fontSize:"0.875rem", letterSpacing:"0.06em", textTransform:"uppercase", color:C.gray500 }}>D&amp;B demo scenarios</div>
-          <div style={{ overflowX:"auto" }}>
-            <table style={{ width:"100%", borderCollapse:"collapse", fontFamily:"var(--font-sans)", fontSize:"0.9rem", marginBottom:"1rem" }}>
-              <thead>
-                <tr style={{ background:C.gray50 }}>
-                  <th style={{ textAlign:"left", padding:"0.5rem 0.625rem", borderBottom:`1px solid ${C.gray200}`, fontWeight:700, color:C.navy }}>Scenario</th>
-                  <th style={{ textAlign:"left", padding:"0.5rem 0.625rem", borderBottom:`1px solid ${C.gray200}`, fontWeight:700, color:C.navy }}>Action</th>
-                  <th style={{ textAlign:"left", padding:"0.5rem 0.625rem", borderBottom:`1px solid ${C.gray200}`, fontWeight:700, color:C.navy }}>Expected result</th>
-                </tr>
-              </thead>
-              <tbody>
-                {[
-                  ["Typeahead match", "Segment: Wealth → type \"ABN\" → select ABN AMRO MeesPierson", "Green \"known to us\" badge, all fields pre-filled"],
-                  ["Segment mismatch", "Segment: Wealth → type \"UBS\" → select UBS Asset Management", "Red mismatch: \"known under Asset Management\". Buttons: change segment or continue"],
-                  ["Accept correction", "On mismatch screen: click \"Change my segment to Asset Management\"", "Segment updated, flow continues as Sell Side"],
-                  ["Override mismatch", "On mismatch screen: click \"No, my selection is correct\"", "Yellow notice \"manually reviewed\", Continue button appears"],
-                  ["KvK-nummer zoeken", "Switch to \"Search by registration number\" → enter 41079041", "Stichting Pensioenfonds ABP found"],
-                  ["Not found", "Type \"Fictief Bedrijf BV\"", "\"No results\" + link to manual fallback"],
-                  ["Belgian entity", "Country: Belgium → type \"Degroof\"", "Degroof Petercam found, KBO-nummer label"],
-                  ["\"Dit klopt niet\"", "Select entity → click \"This is incorrect — edit manually\"", "Manual form with D&B data pre-filled"],
-                ].map(([scenario, action, result], i) => (
-                  <tr key={i} style={{ borderBottom:`1px solid ${C.gray100}` }}>
-                    <td style={{ padding:"0.4rem 0.625rem", fontWeight:600, color:C.navy, whiteSpace:"nowrap" }}>{scenario}</td>
-                    <td style={{ padding:"0.4rem 0.625rem", color:C.gray700, fontSize:"0.8rem" }}>{action}</td>
-                    <td style={{ padding:"0.4rem 0.625rem", color:C.gray500, fontSize:"0.8rem" }}>{result}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          <hr style={S.divider} />
-
-          {/* ── 9. CDP Product matrix ── */}
-          <div style={S.sectionTitle}>9. CDP Product matrix (58 products)</div>
+          {/* ── 8. CDP Product matrix ── */}
+          <div style={S.sectionTitle}>8. CDP Product matrix (58 products)</div>
           <div style={S.card}>
             <div style={S.cardBody}>
               Each registration results in a specific CDP product. The edition is determined by the website domain (.nl, .be, .lu, .de, .fr, .com). Below is the complete product catalogue.<br/><br/>
@@ -467,9 +452,9 @@ function PocGuide({ onClose }) {
           </div>
 
           {/* Personal products */}
-          <div style={{ ...S.cardTitle, marginTop:"0.75rem", marginBottom:"0.375rem", fontSize:"0.875rem", letterSpacing:"0.06em", textTransform:"uppercase", color:C.gray500 }}>Personal — 18 products (3 × 6 editions)</div>
+          <div style={{ ...S.cardTitle, marginTop:"0.75rem", marginBottom:"0.375rem", fontSize:"0.8rem", letterSpacing:"0.06em", textTransform:"uppercase", color:C.gray500 }}>Personal — 18 products (3 × 6 editions)</div>
           <div style={{ overflowX:"auto" }}>
-            <table style={{ width:"100%", borderCollapse:"collapse", fontFamily:"var(--font-sans)", fontSize:"0.9rem", marginBottom:"1rem" }}>
+            <table style={{ width:"100%", borderCollapse:"collapse", fontFamily:"var(--font-sans)", fontSize:"0.8rem", marginBottom:"1rem" }}>
               <thead>
                 <tr style={{ background:C.gray50 }}>
                   <th style={{ textAlign:"left", padding:"0.5rem 0.625rem", borderBottom:`1px solid ${C.gray200}`, fontWeight:700, color:C.navy }}>Product</th>
@@ -487,7 +472,7 @@ function PocGuide({ onClose }) {
                   <tr key={i} style={{ borderBottom:`1px solid ${C.gray100}` }}>
                     <td style={{ padding:"0.4rem 0.625rem", fontWeight:600, color:C.navy }}>{name}</td>
                     <td style={{ padding:"0.4rem 0.625rem", color:C.gray700 }}>{price}</td>
-                    <td style={{ padding:"0.4rem 0.625rem", color:C.gray500, fontSize:"0.8rem" }}>{eds}</td>
+                    <td style={{ padding:"0.4rem 0.625rem", color:C.gray500, fontSize:"0.75rem" }}>{eds}</td>
                     <td style={{ padding:"0.4rem 0.625rem", color:C.gray500 }}>{users}</td>
                   </tr>
                 ))}
@@ -496,9 +481,9 @@ function PocGuide({ onClose }) {
           </div>
 
           {/* Business NL products */}
-          <div style={{ ...S.cardTitle, marginTop:"0.5rem", marginBottom:"0.375rem", fontSize:"0.875rem", letterSpacing:"0.06em", textTransform:"uppercase", color:C.gray500 }}>Business NL — 36 products (6 × 6 editions)</div>
+          <div style={{ ...S.cardTitle, marginTop:"0.5rem", marginBottom:"0.375rem", fontSize:"0.8rem", letterSpacing:"0.06em", textTransform:"uppercase", color:C.gray500 }}>Business NL — 36 products (6 × 6 editions)</div>
           <div style={{ overflowX:"auto" }}>
-            <table style={{ width:"100%", borderCollapse:"collapse", fontFamily:"var(--font-sans)", fontSize:"0.9rem", marginBottom:"1rem" }}>
+            <table style={{ width:"100%", borderCollapse:"collapse", fontFamily:"var(--font-sans)", fontSize:"0.8rem", marginBottom:"1rem" }}>
               <thead>
                 <tr style={{ background:C.gray50 }}>
                   <th style={{ textAlign:"left", padding:"0.5rem 0.625rem", borderBottom:`1px solid ${C.gray200}`, fontWeight:700, color:C.navy }}>Product</th>
@@ -519,9 +504,9 @@ function PocGuide({ onClose }) {
                 ].map(([name, seg, price, eds, users], i) => (
                   <tr key={i} style={{ borderBottom:`1px solid ${C.gray100}` }}>
                     <td style={{ padding:"0.4rem 0.625rem", fontWeight:600, color:C.navy }}>{name}</td>
-                    <td style={{ padding:"0.4rem 0.625rem", color:C.gray700, fontSize:"0.8rem" }}>{seg}</td>
+                    <td style={{ padding:"0.4rem 0.625rem", color:C.gray700, fontSize:"0.75rem" }}>{seg}</td>
                     <td style={{ padding:"0.4rem 0.625rem", color:C.gray700 }}>{price}</td>
-                    <td style={{ padding:"0.4rem 0.625rem", color:C.gray500, fontSize:"0.8rem" }}>{eds}</td>
+                    <td style={{ padding:"0.4rem 0.625rem", color:C.gray500, fontSize:"0.75rem" }}>{eds}</td>
                     <td style={{ padding:"0.4rem 0.625rem", color:C.gray500 }}>{users}</td>
                   </tr>
                 ))}
@@ -530,9 +515,9 @@ function PocGuide({ onClose }) {
           </div>
 
           {/* Business International products */}
-          <div style={{ ...S.cardTitle, marginTop:"0.5rem", marginBottom:"0.375rem", fontSize:"0.875rem", letterSpacing:"0.06em", textTransform:"uppercase", color:C.gray500 }}>Business International — 4 products (all editions included)</div>
+          <div style={{ ...S.cardTitle, marginTop:"0.5rem", marginBottom:"0.375rem", fontSize:"0.8rem", letterSpacing:"0.06em", textTransform:"uppercase", color:C.gray500 }}>Business International — 4 products (all editions included)</div>
           <div style={{ overflowX:"auto" }}>
-            <table style={{ width:"100%", borderCollapse:"collapse", fontFamily:"var(--font-sans)", fontSize:"0.9rem", marginBottom:"1rem" }}>
+            <table style={{ width:"100%", borderCollapse:"collapse", fontFamily:"var(--font-sans)", fontSize:"0.8rem", marginBottom:"1rem" }}>
               <thead>
                 <tr style={{ background:C.gray50 }}>
                   <th style={{ textAlign:"left", padding:"0.5rem 0.625rem", borderBottom:`1px solid ${C.gray200}`, fontWeight:700, color:C.navy }}>Product</th>
@@ -551,7 +536,7 @@ function PocGuide({ onClose }) {
                   <tr key={i} style={{ borderBottom:`1px solid ${C.gray100}` }}>
                     <td style={{ padding:"0.4rem 0.625rem", fontWeight:600, color:C.navy }}>{name}</td>
                     <td style={{ padding:"0.4rem 0.625rem", color:C.gray700 }}>{price}</td>
-                    <td style={{ padding:"0.4rem 0.625rem", color:C.gray500, fontSize:"0.8rem" }}>{eds}</td>
+                    <td style={{ padding:"0.4rem 0.625rem", color:C.gray500, fontSize:"0.75rem" }}>{eds}</td>
                     <td style={{ padding:"0.4rem 0.625rem", color:C.gray500 }}>{users}</td>
                   </tr>
                 ))}
@@ -569,8 +554,8 @@ function PocGuide({ onClose }) {
 
           <hr style={S.divider} />
 
-          {/* ── 10. Account management ── */}
-          <div style={S.sectionTitle}>10. Account management</div>
+          {/* ── 9. Account management ── */}
+          <div style={S.sectionTitle}>9. Account management</div>
           <div style={S.card}>
             <div style={S.cardBody}>
               After login or registration, click the avatar (top right) → "My account" to access:<br/>
@@ -587,8 +572,8 @@ function PocGuide({ onClose }) {
 
           <hr style={S.divider} />
 
-          {/* ── 11. Article access levels ── */}
-          <div style={S.sectionTitle}>11. Article access levels</div>
+          {/* ── 10. Article access levels ── */}
+          <div style={S.sectionTitle}>10. Article access levels</div>
           <div style={S.card}>
             <div style={S.cardBody}>
               The article page (entry screen) has four access levels:<br/><br/>
@@ -635,6 +620,7 @@ export default function DemoBanner() {
     { label: "Subscriptions",     hash: "#subscriptions" },
     { label: "Onboarding",        hash: "#onboarding" },
     { label: "Account",           hash: "#account" },
+    { label: "Enterprise access", hash: "#account-enterprise" },
     { label: "Invited user",      hash: "#invited" },
     { label: "Choice (old)",      hash: "#choice" },
   ]
@@ -646,70 +632,39 @@ export default function DemoBanner() {
     { label: "Personal Trial",   hash: "#account-trial",       desc: "Personal 10d trial" },
     { label: "Personal Free",    hash: "#account-freemium",    desc: "Personal Free" },
     { label: "Personal Premium", hash: "#account-pro",         desc: "Personal Premium (paid)" },
+    { label: "Enterprise SSO",   hash: "#account-enterprise",  desc: "Enterprise access management (SSO + domain)" },
   ]
 
-  /* ── Test accounts — grouped by type ── */
-  const accountGroups = [
-    {
-      label: "Enterprise",
-      color: "#4ED896",
-      bg: "rgba(78,213,150,0.08)",
-      border: "rgba(78,213,150,0.25)",
-      accounts: [
-        { email: "demo@abnamro.com",   flow: "SSO existing user",      scenario: "Login → SSO → direct login" },
-        { email: "new@abnamro.com",     flow: "SSO first-time",         scenario: "Login → SSO → onboarding → activated" },
-        { email: "Any @abnamro.com",    flow: "Domain registration",    scenario: "Register → profile only" },
-        { email: "new@wealthpro.com",   flow: "Whitelist NL",           scenario: "Login / Register → Enterprise NL (1 edition)" },
-        { email: "new@globalfund.com",  flow: "Whitelist All",          scenario: "Login / Register → Enterprise All editions" },
-      ],
-    },
-    {
-      label: "Business",
-      color: "#60A5FA",
-      bg: "rgba(96,165,250,0.08)",
-      border: "rgba(96,165,250,0.25)",
-      accounts: [
-        { email: "new@aegon.com",       flow: "New business email",     scenario: "Register → profile → intent → Business or Personal" },
-        { email: "demo@aegon.com",      flow: "Existing account",       scenario: "Login → Business admin (users, billing, invoices)" },
-        { email: "trial@company.com",   flow: "Trial block (new)",      scenario: "Register → 24-month block → paid Business S/M/L/XL" },
-        { email: "demo@trial.com",      flow: "Trial block (existing)", scenario: "Login → Account → upgrade → trial block → paid" },
-        { email: "colleague@aegon.com", flow: "Invited user",           scenario: "Profile only (use #invited or invite from Account)" },
-      ],
-    },
-    {
-      label: "Personal",
-      color: "#FBBF24",
-      bg: "rgba(251,191,36,0.08)",
-      border: "rgba(251,191,36,0.25)",
-      accounts: [
-        { email: "new@gmail.com",       flow: "Private email",          scenario: "Warning → profile → Personal only (no intent)" },
-        { email: "demo@freemium.com",   flow: "Freemium user",         scenario: "Login → Article: contextual paywall + upgrade" },
-      ],
-    },
-    {
-      label: "Edge cases",
-      color: "#F87171",
-      bg: "rgba(248,113,113,0.08)",
-      border: "rgba(248,113,113,0.25)",
-      accounts: [
-        { email: "info@company.com",    flow: "Generic address",        scenario: "Blocked — use a personal email" },
-        { email: "user@unknown.com",    flow: "Unknown domain",         scenario: "Login → not found · Register → intent → Business or Personal" },
-      ],
-    },
+  /* ── Test accounts ── */
+  const accounts = [
+    { email: "demo@aegon.com",      scenarios: "Login → password → Business admin (Account: users, billing, invoices)" },
+    { email: "demo@freemium.com",   scenarios: "Login → password → Freemium user (Article: contextual paywall with upgrade options)" },
+    { email: "new@aegon.com",       scenarios: "Register → profile → intent → Business or Personal" },
+    { email: "demo@abnamro.com",    scenarios: "Login → SSO → direct login (existing user with IO profile)" },
+    { email: "new@abnamro.com",     scenarios: "Login → SSO → first-time onboarding (name + job role, no password) → activated" },
+    { email: "Any @abnamro.com",    scenarios: "Register → Enterprise domain → profile only" },
+    { email: "new@wealthpro.com",   scenarios: "Login / Register → Enterprise NL (1 edition, free)" },
+    { email: "new@globalfund.com",  scenarios: "Login / Register → Enterprise All (all editions, free)" },
+    { email: "new@gmail.com",       scenarios: "Login → private warning · Register → warning → profile → Personal only (no intent)" },
+    { email: "info@company.com",    scenarios: "Login / Register → generic address blocked" },
+    { email: "user@unknown.com",    scenarios: "Login → no account found · Register → profile → intent → Business or Personal" },
+    { email: "trial@company.com",   scenarios: "Register → 24-month block → profile → paid Business (S/M/L/XL)" },
+    { email: "demo@trial.com",      scenarios: "Login → Account → upgrade → trial block → paid Business" },
+    { email: "colleague@aegon.com", scenarios: "Invited user → profile only (use #invited or invite from Account)" },
   ]
 
   /* ── Business rules ── */
   const rules = [
-    { rule: "Wealth / Institutional", effect: "NL → free 24 months · Intl. → 50% discount" },
-    { rule: "Other segments",         effect: "NL → 6 months free trial · Intl. → standard rate" },
-    { rule: "After trial block",      effect: "Paid packages S/M/L/XL" },
-    { rule: "Trial cooldown",         effect: "Personal: 12 months · Business: 24 months" },
+    { rule: "Wealth / Institutional segment", effect: "Business NL → free 24 months · Business Intl. → 50% discount" },
+    { rule: "Other segments",                 effect: "Business NL → 6 months free trial · Business Intl. → standard rate" },
+    { rule: "After trial block",              effect: "Paid packages S/M/L/XL (see POC Guide for prices)" },
+    { rule: "Trial cooldown",                 effect: "Personal: 12 months · Business: 24 months" },
   ]
 
   const pillStyle = {
-    display:"inline-block", padding:"0.25rem 0.575rem", borderRadius:4,
+    display:"inline-block", padding:"0.2rem 0.5rem", borderRadius:4,
     background:"rgba(255,255,255,0.1)", color:"rgba(255,255,255,0.85)",
-    fontSize:"0.725rem", cursor:"pointer", textDecoration:"none",
+    fontSize:"0.65rem", cursor:"pointer", textDecoration:"none",
     border:"1px solid rgba(255,255,255,0.12)", transition:"all 0.15s",
     whiteSpace:"nowrap",
   }
@@ -717,7 +672,7 @@ export default function DemoBanner() {
   const guideBtnStyle = {
     ...pillStyle,
     background:"rgba(78,213,150,0.15)", border:`1px solid ${C.green}`,
-    color:C.green, fontWeight:700, fontSize:"0.725rem",
+    color:C.green, fontWeight:700, fontSize:"0.65rem",
     padding:"0.25rem 0.75rem", cursor:"pointer",
   }
 
@@ -726,7 +681,7 @@ export default function DemoBanner() {
       <div style={{
         position:"relative", top:0, left:0, right:0, zIndex:9999,
         background:C.navy, color:"rgba(255,255,255,0.9)",
-        fontFamily:"var(--font-sans)", fontSize:"0.825rem",
+        fontFamily:"var(--font-sans)", fontSize:"0.75rem",
       }}>
         {/* Toggle bar */}
         <div style={{
@@ -737,7 +692,7 @@ export default function DemoBanner() {
             display:"flex", alignItems:"center", gap:"0.5rem",
             background:"none", border:"none",
             color:"rgba(255,255,255,0.7)", cursor:"pointer", fontFamily:"var(--font-sans)",
-            fontSize:"0.775rem", letterSpacing:"0.06em", textTransform:"uppercase",
+            fontSize:"0.7rem", letterSpacing:"0.06em", textTransform:"uppercase",
           }}>
             <span style={{ background:"rgba(255,255,255,0.15)", padding:"0.15rem 0.5rem", borderRadius:4, fontWeight:700, color:C.green }}>
               POC
@@ -764,7 +719,7 @@ export default function DemoBanner() {
 
             {/* ── Deep-link pills ── */}
             <div style={{ marginBottom:"1rem" }}>
-              <div style={{ fontWeight:700, fontSize:"0.725rem", letterSpacing:"0.06em", textTransform:"uppercase", color:C.green, marginBottom:"0.4rem" }}>
+              <div style={{ fontWeight:700, fontSize:"0.65rem", letterSpacing:"0.06em", textTransform:"uppercase", color:C.green, marginBottom:"0.4rem" }}>
                 Jump to screen
               </div>
               <div style={{ display:"flex", flexWrap:"wrap", gap:"0.3rem" }}>
@@ -791,7 +746,7 @@ export default function DemoBanner() {
 
             {/* ── Banner scenario pills ── */}
             <div style={{ marginBottom:"1rem" }}>
-              <div style={{ fontWeight:700, fontSize:"0.725rem", letterSpacing:"0.06em", textTransform:"uppercase", color:"#F59E0B", marginBottom:"0.4rem" }}>
+              <div style={{ fontWeight:700, fontSize:"0.65rem", letterSpacing:"0.06em", textTransform:"uppercase", color:"#F59E0B", marginBottom:"0.4rem" }}>
                 🎯 Upsell banner scenarios (Account page)
               </div>
               <div style={{ display:"flex", flexWrap:"wrap", gap:"0.3rem" }}>
@@ -806,87 +761,43 @@ export default function DemoBanner() {
               </div>
             </div>
 
-            {/* ── Three-column: accounts (grouped) | scenario | rules + language ── */}
-            <div style={{ display:"grid", gridTemplateColumns:"3fr 4fr 2.5fr", gap:"0 1.5rem" }}>
+            {/* ── Two-column: accounts + rules ── */}
+            <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"1rem 2rem" }}>
 
-              {/* Column 1: Emails grouped by type */}
+              {/* Test accounts */}
               <div>
-                <div style={{ fontWeight:700, fontSize:"0.725rem", letterSpacing:"0.06em", textTransform:"uppercase", color:C.green, marginBottom:"0.5rem" }}>
-                  Test e-mail
+                <div style={{ fontWeight:700, fontSize:"0.65rem", letterSpacing:"0.06em", textTransform:"uppercase", color:C.green, marginBottom:"0.4rem" }}>
+                  Test e-mail accounts
                 </div>
-                {accountGroups.map((group) => (
-                  <div key={group.label} style={{ marginBottom:"0.625rem" }}>
-                    <div style={{
-                      display:"inline-block", fontSize:"0.625rem", fontWeight:700,
-                      letterSpacing:"0.05em", textTransform:"uppercase",
-                      color:group.color, marginBottom:"0.25rem",
-                    }}>
-                      {group.label}
-                    </div>
-                    {group.accounts.map((a, i) => (
-                      <div key={i} style={{ marginBottom:"0.2rem", lineHeight:1.45 }}>
-                        <code style={{
-                          background:"rgba(255,255,255,0.1)", padding:"0.1rem 0.35rem",
-                          borderRadius:3, fontSize:"0.725rem", whiteSpace:"nowrap",
-                          borderLeft:`2px solid ${group.color}`,
-                        }}>
-                          {a.email}
-                        </code>
-                      </div>
-                    ))}
+                {accounts.map((a, i) => (
+                  <div key={i} style={{ marginBottom:"0.35rem", lineHeight:1.5 }}>
+                    <code style={{ background:"rgba(255,255,255,0.1)", padding:"0.1rem 0.375rem", borderRadius:3, fontSize:"0.7rem", whiteSpace:"nowrap" }}>
+                      {a.email}
+                    </code>
+                    <span style={{ color:"rgba(255,255,255,0.45)", fontSize:"0.65rem", marginLeft:"0.4rem" }}>
+                      {a.scenarios}
+                    </span>
                   </div>
                 ))}
               </div>
 
-              {/* Column 2: Flow + scenario per account */}
+              {/* Business rules + language */}
               <div>
-                <div style={{ fontWeight:700, fontSize:"0.725rem", letterSpacing:"0.06em", textTransform:"uppercase", color:C.green, marginBottom:"0.5rem" }}>
-                  Flow → scenario
-                </div>
-                {accountGroups.map((group) => (
-                  <div key={group.label} style={{ marginBottom:"0.625rem" }}>
-                    <div style={{ fontSize:"0.625rem", marginBottom:"0.25rem", color:"transparent" }}>
-                      &nbsp;
-                    </div>
-                    {group.accounts.map((a, i) => (
-                      <div key={i} style={{ marginBottom:"0.2rem", lineHeight:1.45 }}>
-                        <span style={{
-                          display:"inline-block", fontSize:"0.65rem", fontWeight:600,
-                          color:group.color, marginRight:"0.35rem", minWidth:"10rem",
-                        }}>
-                          {a.flow}
-                        </span>
-                        <span style={{ color:"rgba(255,255,255,0.5)", fontSize:"0.7rem" }}>
-                          {a.scenario}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                ))}
-              </div>
-
-              {/* Column 3: Pricing rules + language */}
-              <div>
-                <div style={{ fontWeight:700, fontSize:"0.725rem", letterSpacing:"0.06em", textTransform:"uppercase", color:C.green, marginBottom:"0.5rem" }}>
+                <div style={{ fontWeight:700, fontSize:"0.65rem", letterSpacing:"0.06em", textTransform:"uppercase", color:C.green, marginBottom:"0.4rem" }}>
                   Segment pricing rules
                 </div>
                 {rules.map((r, i) => (
-                  <div key={i} style={{
-                    marginBottom:"0.4rem", lineHeight:1.5,
-                    padding:"0.3rem 0.5rem", borderRadius:4,
-                    background:"rgba(255,255,255,0.04)",
-                    borderLeft:`2px solid ${C.green}`,
-                  }}>
-                    <div style={{ fontSize:"0.725rem", fontWeight:600, color:"rgba(255,255,255,0.85)" }}>
+                  <div key={i} style={{ marginBottom:"0.35rem", lineHeight:1.5 }}>
+                    <code style={{ background:"rgba(255,255,255,0.1)", padding:"0.1rem 0.375rem", borderRadius:3, fontSize:"0.7rem", whiteSpace:"nowrap" }}>
                       {r.rule}
-                    </div>
-                    <div style={{ fontSize:"0.675rem", color:"rgba(255,255,255,0.45)", marginTop:"0.1rem" }}>
+                    </code>
+                    <span style={{ color:"rgba(255,255,255,0.45)", fontSize:"0.65rem", marginLeft:"0.4rem" }}>
                       {r.effect}
-                    </div>
+                    </span>
                   </div>
                 ))}
 
-                <div style={{ marginTop:"1rem", fontWeight:700, fontSize:"0.725rem", letterSpacing:"0.06em", textTransform:"uppercase", color:C.green, marginBottom:"0.4rem" }}>
+                <div style={{ marginTop:"0.75rem", fontWeight:700, fontSize:"0.65rem", letterSpacing:"0.06em", textTransform:"uppercase", color:C.green, marginBottom:"0.4rem" }}>
                   Language
                 </div>
                 <div style={{ display:"flex", gap:"0.3rem" }}>
@@ -902,8 +813,8 @@ export default function DemoBanner() {
 
             </div>
 
-            <div style={{ marginTop:"0.75rem", paddingTop:"0.625rem", borderTop:"1px solid rgba(255,255,255,0.1)", color:"rgba(255,255,255,0.4)", fontSize:"0.725rem" }}>
-              Stripe payment screens are simulations. Passwords are not validated. All data is fictional. KvK numbers starting with "99" trigger data degradation.
+            <div style={{ marginTop:"0.75rem", paddingTop:"0.625rem", borderTop:"1px solid rgba(255,255,255,0.1)", color:"rgba(255,255,255,0.4)", fontSize:"0.65rem" }}>
+              Stripe payment screens are simulations. Passwords are not validated. All data is fictional. KvK numbers starting with "99" trigger data degradation. Enterprise access page: switch between SSO and domain variant via DEMO_CONFIG in EnterpriseAccessPage.jsx.
             </div>
           </div>
         )}
